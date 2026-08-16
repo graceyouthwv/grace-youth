@@ -13,7 +13,7 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 const AppContext = createContext();
 
 // Clean State Version Key for Production Reset
-const STORAGE_VERSION = 'gy_prod_v2';
+const STORAGE_VERSION = 'gy_clean_v3_pure';
 
 const GUEST_USER = {
   id: 'guest',
@@ -88,6 +88,8 @@ export const AppProvider = ({ children }) => {
   useEffect(() => {
     const currentVersion = localStorage.getItem('gy_version');
     if (currentVersion !== STORAGE_VERSION) {
+      localStorage.removeItem('gy_tutors');
+      localStorage.removeItem('gy_bible_studies');
       localStorage.removeItem('gy_requests');
       localStorage.removeItem('gy_my_bookings');
       localStorage.removeItem('gy_my_groups');
@@ -125,7 +127,7 @@ export const AppProvider = ({ children }) => {
 
   const [requests, setRequests] = useState(() => {
     const saved = localStorage.getItem('gy_requests');
-    return saved ? JSON.parse(saved) : INITIAL_REQUESTS;
+    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_REQUESTS;
   });
 
   const [bibleStudies, setBibleStudies] = useState(() => {
@@ -140,22 +142,22 @@ export const AppProvider = ({ children }) => {
 
   const [prayers, setPrayers] = useState(() => {
     const saved = localStorage.getItem('gy_prayers');
-    return saved ? JSON.parse(saved) : INITIAL_PRAYERS;
+    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_PRAYERS;
   });
 
   const [events, setEvents] = useState(() => {
     const saved = localStorage.getItem('gy_events');
-    return saved ? JSON.parse(saved) : INITIAL_EVENTS;
+    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_EVENTS;
   });
 
   const [reviewers, setReviewers] = useState(() => {
     const saved = localStorage.getItem('gy_reviewers');
-    return saved ? JSON.parse(saved) : INITIAL_REVIEWERS;
+    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_REVIEWERS;
   });
 
   const [campaigns, setCampaigns] = useState(() => {
     const saved = localStorage.getItem('gy_campaigns');
-    return saved ? JSON.parse(saved) : INITIAL_CAMPAIGNS;
+    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_CAMPAIGNS;
   });
 
   const [myBookings, setMyBookings] = useState(() => {
