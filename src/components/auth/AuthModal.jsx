@@ -135,7 +135,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => handleFillDemo('admin@graceyouth.ph', 'password123')}
+                  onClick={() => handleFillDemo('graceyouth.wv@proton.me', 'password123')}
                   className="px-2 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-xl text-[11px] font-bold text-left cursor-pointer flex items-center gap-1.5"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 shrink-0" />

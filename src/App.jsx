@@ -246,7 +246,7 @@ export const App = () => {
                 Free Peer Tutoring • Weekly Life Groups • Annual Youth Camps • 24/7 Prayer Wall
               </p>
               <div className="font-bold text-pink-500">
-                campus@graceyouth.ph
+                graceyouth.wv@proton.me
               </div>
             </div>
           </div>

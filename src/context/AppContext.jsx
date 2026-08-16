@@ -71,7 +71,7 @@ export const DEMO_ACCOUNTS = [
   {
     id: 'usr-admin-1',
     name: 'Pastor Tim',
-    email: 'admin@graceyouth.ph',
+    email: 'graceyouth.wv@proton.me',
     password: 'password123',
     role: 'leader',
     roleLabel: 'Ministry Admin / Coordinator',
