@@ -1,6 +1,7 @@
 import React from 'react';
 import { BookOpen, Users, Heart, School } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { CAMPUSES } from '../../data/campuses';
 
 export const QuickStats = () => {
   const { tutors, bibleStudies, prayers, theme } = useApp();
@@ -9,32 +10,32 @@ export const QuickStats = () => {
   const stats = [
     {
       label: 'Free Peer Tutors',
-      value: `${tutors.length + 15}`,
-      subtext: 'Across all subjects',
+      value: `${tutors.length}`,
+      subtext: 'Verified peer tutors',
       icon: BookOpen,
       iconColor: 'text-amber-500',
       bg: isDark ? 'bg-amber-400/10 border-amber-400/20' : 'bg-amber-50 border-amber-200'
     },
     {
       label: 'Campus Life Groups',
-      value: `${bibleStudies.length + 8}`,
-      subtext: 'In dorms & cafes',
+      value: `${bibleStudies.length}`,
+      subtext: 'Grace Youth circles',
       icon: Users,
       iconColor: 'text-emerald-500',
       bg: isDark ? 'bg-emerald-400/10 border-emerald-400/20' : 'bg-emerald-50 border-emerald-200'
     },
     {
       label: 'Prayers Lifted Up',
-      value: `${prayers.reduce((acc, p) => acc + p.prayedCount, 0) + 120}`,
+      value: `${prayers.reduce((acc, p) => acc + (p.prayedCount || 1), 0)}`,
       subtext: 'By campus warriors',
       icon: Heart,
       iconColor: 'text-rose-500',
       bg: isDark ? 'bg-rose-400/10 border-rose-400/20' : 'bg-rose-50 border-rose-200'
     },
     {
-      label: 'Iloilo Universities',
-      value: '10+',
-      subtext: 'UPV, ISUFST, CPU, WVSU...',
+      label: 'Iloilo Campuses',
+      value: `${CAMPUSES.filter((c) => c.id !== 'all').length}`,
+      subtext: 'ISUFST, UPV, CPU, WVSU, ISAT-U, USA',
       icon: School,
       iconColor: 'text-violet-500',
       bg: isDark ? 'bg-violet-400/10 border-violet-400/20' : 'bg-violet-50 border-violet-200'
