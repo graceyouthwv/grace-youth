@@ -1,0 +1,62 @@
+export const INITIAL_EVENTS = [
+  {
+    id: 'ev-1',
+    title: 'Midterm Chill Night & Free Coffee Hub',
+    campusId: 'cpu',
+    campusName: 'CPU (Jaro, Iloilo)',
+    date: 'Friday, August 28, 2026',
+    time: '5:30 PM - 8:30 PM',
+    venue: 'Big Yellow Cafe Jaro (Near CPU Gate 1)',
+    category: 'Fellowship & Care',
+    image: 'https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?w=500&auto=format&fit=crop&q=80',
+    description: 'De-stress from midterm exams! Free brewed coffee, peer tutoring crash course, board games, acoustic worship, and uplifting fellowship.',
+    attendeesCount: 45,
+    isRsvp: false,
+    freebies: ['Free Iced/Hot Coffee', 'Exam Care Kit', 'Reviewer Handouts']
+  },
+  {
+    id: 'ev-2',
+    title: 'UPV Campus Prayer Walk & Sunset Fellowship',
+    campusId: 'upv',
+    campusName: 'UP Visayas (Miagao)',
+    date: 'Saturday, September 5, 2026',
+    time: '4:30 PM - 7:00 PM',
+    venue: 'UPV Miagao Beachfront & CAS Gazebo',
+    category: 'Prayer & Worship',
+    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=500&auto=format&fit=crop&q=80',
+    description: 'Gathering Christian students across UPV dorms to pray for our campus, professors, and freshmen, followed by acoustic worship by the seaside.',
+    attendeesCount: 32,
+    isRsvp: false,
+    freebies: ['Sunset Snacks', 'Prayer Journal']
+  },
+  {
+    id: 'ev-3',
+    title: 'WVSU Nursing & Allied Medics Praise Gathering',
+    campusId: 'wvsu',
+    campusName: 'WVSU (La Paz)',
+    date: 'Thursday, September 10, 2026',
+    time: '6:00 PM - 8:00 PM',
+    venue: 'Balay Alumni Hall',
+    category: 'Worship & Word',
+    image: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=500&auto=format&fit=crop&q=80',
+    description: 'An evening of worship and encouragement specifically for future nurses, doctors, and medtechs carrying heavy clinical hospital duties.',
+    attendeesCount: 58,
+    isRsvp: true,
+    freebies: ['Duty Snacks', 'Scripture Pocket Cards']
+  },
+  {
+    id: 'ev-4',
+    title: 'Western Visayas Youth Discipleship Summit 2026',
+    campusId: 'all',
+    campusName: 'All Campuses (Regional)',
+    date: 'October 17-18, 2026',
+    time: 'All Day (Weekend)',
+    venue: 'Iloilo Convention Center / Hybrid Stream',
+    category: 'Regional Summit',
+    image: 'https://images.unsplash.com/photo-1475721027785-f74eccf877e2?w=500&auto=format&fit=crop&q=80',
+    description: 'Over 500 college students gathering from Iloilo, Bacolod, Capiz, and Antique for workshops on faith, academic excellence, leadership, and missions.',
+    attendeesCount: 210,
+    isRsvp: false,
+    freebies: ['Summit Kit', 'Buffet Meals', 'Workshop Modules']
+  }
+];
