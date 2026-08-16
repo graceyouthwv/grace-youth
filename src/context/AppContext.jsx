@@ -12,6 +12,9 @@ import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 const AppContext = createContext();
 
+// Clean State Version Key for Production Reset
+const STORAGE_VERSION = 'gy_prod_v2';
+
 const GUEST_USER = {
   id: 'guest',
   isGuest: true,
@@ -80,40 +83,22 @@ export const DEMO_ACCOUNTS = [
   }
 ];
 
-const INITIAL_LIFE_GROUP_REQUESTS = [
-  {
-    id: 'lgr-1',
-    campusId: 'isufst',
-    campusName: 'ISUFST (Barotac Viejo Campus)',
-    proposedTitle: 'ISUFST Barotac Viejo Freshmen Circle',
-    targetAudience: '1st Year Fisheries & Agriculture Dormers',
-    preferredSchedule: 'Thursdays 5:00 PM',
-    preferredLocation: 'Barotac Viejo Student Lounge',
-    interestedCount: '4-6 students',
-    requestedBy: 'Kenzo Ramirez',
-    contact: '0919-482-9912',
-    note: 'We want to start a weekly prayer and Bible reflection group for boarding house freshmen.',
-    status: 'Pending Admin Approval',
-    createdAt: '1 day ago'
-  },
-  {
-    id: 'lgr-2',
-    campusId: 'wvsu',
-    campusName: 'WVSU (La Paz)',
-    proposedTitle: 'WVSU MedTech & Pharmacy Life Hub',
-    targetAudience: 'College of Allied Health Sciences',
-    preferredSchedule: 'Fridays 6:00 PM',
-    preferredLocation: 'La Paz Café / Meet',
-    interestedCount: '7-10+ students',
-    requestedBy: 'Chloe Joy Villanueva',
-    contact: 'chloe@wvsu.edu.ph',
-    note: 'Many classmates are dealing with high board exam pressure and need spiritual grounding.',
-    status: 'Pending Admin Approval',
-    createdAt: '2 days ago'
-  }
-];
-
 export const AppProvider = ({ children }) => {
+  // Check and run storage clean migration if old version exists
+  useEffect(() => {
+    const currentVersion = localStorage.getItem('gy_version');
+    if (currentVersion !== STORAGE_VERSION) {
+      localStorage.removeItem('gy_requests');
+      localStorage.removeItem('gy_my_bookings');
+      localStorage.removeItem('gy_my_groups');
+      localStorage.removeItem('gy_campaigns');
+      localStorage.removeItem('gy_prayers');
+      localStorage.removeItem('gy_lg_requests');
+      localStorage.removeItem('gy_volunteer_apps');
+      localStorage.setItem('gy_version', STORAGE_VERSION);
+    }
+  }, []);
+
   const [registeredUsers, setRegisteredUsers] = useState(() => {
     const saved = localStorage.getItem('gy_registered_users');
     return saved ? JSON.parse(saved) : DEMO_ACCOUNTS;
@@ -126,7 +111,7 @@ export const AppProvider = ({ children }) => {
 
   const [theme, setTheme] = useState(() => {
     const saved = localStorage.getItem('gy_theme');
-    return saved || 'dark';
+    return saved || 'light';
   });
 
   const [selectedCampus, setSelectedCampus] = useState('all');
@@ -140,7 +125,7 @@ export const AppProvider = ({ children }) => {
 
   const [requests, setRequests] = useState(() => {
     const saved = localStorage.getItem('gy_requests');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_REQUESTS;
+    return saved ? JSON.parse(saved) : INITIAL_REQUESTS;
   });
 
   const [bibleStudies, setBibleStudies] = useState(() => {
@@ -150,64 +135,37 @@ export const AppProvider = ({ children }) => {
 
   const [lifeGroupRequests, setLifeGroupRequests] = useState(() => {
     const saved = localStorage.getItem('gy_lg_requests');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_LIFE_GROUP_REQUESTS;
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [prayers, setPrayers] = useState(() => {
     const saved = localStorage.getItem('gy_prayers');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_PRAYERS;
+    return saved ? JSON.parse(saved) : INITIAL_PRAYERS;
   });
 
   const [events, setEvents] = useState(() => {
     const saved = localStorage.getItem('gy_events');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_EVENTS;
+    return saved ? JSON.parse(saved) : INITIAL_EVENTS;
   });
 
   const [reviewers, setReviewers] = useState(() => {
     const saved = localStorage.getItem('gy_reviewers');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_REVIEWERS;
+    return saved ? JSON.parse(saved) : INITIAL_REVIEWERS;
   });
 
   const [campaigns, setCampaigns] = useState(() => {
     const saved = localStorage.getItem('gy_campaigns');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_CAMPAIGNS;
+    return saved ? JSON.parse(saved) : INITIAL_CAMPAIGNS;
   });
 
   const [myBookings, setMyBookings] = useState(() => {
     const saved = localStorage.getItem('gy_my_bookings');
-    return saved ? JSON.parse(saved) : [
-      {
-        id: 'bk-1',
-        studentName: 'Bea Claridad',
-        tutorName: 'Joshua Alcantara',
-        tutorAvatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
-        subject: 'Math 17 (Calculus & Trigonometric Limits)',
-        day: 'Tuesday',
-        time: '4:00 PM - 5:30 PM',
-        mode: 'In-Person (CAS Gazebo, UPV Miagao)',
-        bookedAt: 'Aug 15, 2026',
-        status: 'Confirmed',
-        meetingNote: 'Bring your Math 17 syllabus and previous exam papers. Tutor will begin with a 10-min Gospel life check and prayer.'
-      },
-      {
-        id: 'bk-2',
-        studentName: 'Kenzo Ramirez',
-        tutorName: 'Janelle Marie Tan',
-        tutorAvatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
-        subject: 'General Chemistry (G-Chem 1 Stoichiometry)',
-        day: 'Wednesday',
-        time: '4:00 PM - 5:30 PM',
-        mode: 'In-Person (ISUFST Barotac Nuevo Library)',
-        bookedAt: 'Aug 14, 2026',
-        status: 'Confirmed',
-        meetingNote: 'Reviewing chemical balancing, mole conversions, and pre-midterm problem sets.'
-      }
-    ];
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [myGroups, setMyGroups] = useState(() => {
     const saved = localStorage.getItem('gy_my_groups');
-    return saved ? JSON.parse(saved) : ['bs-1', 'bs-2'];
+    return saved ? JSON.parse(saved) : [];
   });
 
   const [toasts, setToasts] = useState([]);
@@ -319,22 +277,6 @@ export const AppProvider = ({ children }) => {
       setTutors((prev) => [newTutorListing, ...prev]);
     }
 
-    if (isSupabaseConfigured && supabase) {
-      try {
-        await supabase.from('profiles').insert([{
-          full_name: newUser.name,
-          campus_id: newUser.campusId,
-          college_program: newUser.program,
-          year_level: newUser.yearLevel,
-          role: newUser.role,
-          bio: newUser.bio,
-          avatar_url: newUser.avatar
-        }]);
-      } catch (err) {
-        console.warn('Supabase profile sync notice:', err);
-      }
-    }
-
     showToast(`🎉 Welcome to Grace Youth, ${newUser.name}!`, 'success');
     setActiveTab('portal');
     triggerConfetti();
@@ -364,14 +306,6 @@ export const AppProvider = ({ children }) => {
         return u;
       })
     );
-
-    if (isSupabaseConfigured && supabase) {
-      try {
-        await supabase.from('profiles').update({ role: newRole }).eq('id', userId);
-      } catch (err) {
-        // Fallback
-      }
-    }
 
     showToast(`🛡️ Role updated! ${targetUserName} is now a "${updatedRoleLabel}".`, 'success');
     triggerConfetti();
@@ -446,25 +380,6 @@ export const AppProvider = ({ children }) => {
     };
 
     setMyBookings((prev) => [newBooking, ...prev]);
-
-    if (isSupabaseConfigured && supabase) {
-      try {
-        await supabase.from('bookings').insert([{
-          student_name: currentUser.name,
-          tutor_name: tutor.name,
-          subject: newBooking.subject,
-          day_slot: slot.day,
-          time_slot: slot.time,
-          venue_mode: slot.mode,
-          student_note: note,
-          gospel_shared: false,
-          status: 'Confirmed'
-        }]);
-      } catch (err) {
-        console.warn('Supabase booking sync notice:', err);
-      }
-    }
-
     showToast(`🎉 Session booked with ${tutor.name} for ${slot.day}!`, 'success');
     triggerConfetti();
   };
@@ -526,33 +441,11 @@ export const AppProvider = ({ children }) => {
     };
 
     setTutors((prev) => [created, ...prev]);
-
-    if (isSupabaseConfigured && supabase) {
-      try {
-        await supabase.from('tutors').insert([{
-          name: created.name,
-          campus_id: created.campusId,
-          campus_name: created.campusName,
-          role: created.role,
-          subjects: created.subjects,
-          category: created.category,
-          rating: 5.0,
-          sessions_given: 0,
-          badge: created.badge,
-          bio: created.bio,
-          preferred_mode: created.preferredMode
-        }]);
-      } catch (err) {
-        console.warn('Supabase tutor insert notice:', err);
-      }
-    }
-
     showToast('🌟 You are now registered as a Peer Tutor!', 'success');
     triggerConfetti();
   };
 
   const togglePrayerSupport = async (prayerId) => {
-    let updatedItem = null;
     setPrayers((prev) =>
       prev.map((p) => {
         if (p.id === prayerId) {
@@ -562,20 +455,11 @@ export const AppProvider = ({ children }) => {
           if (hasPrayed) {
             showToast('🙏 Amen! You prayed for this student.', 'info');
           }
-          updatedItem = { ...p, hasPrayed, prayedCount: newCount };
-          return updatedItem;
+          return { ...p, hasPrayed, prayedCount: newCount };
         }
         return p;
       })
     );
-
-    if (isSupabaseConfigured && supabase && updatedItem) {
-      try {
-        await supabase.from('prayer_requests').update({ prayed_count: updatedItem.prayedCount }).eq('id', prayerId);
-      } catch (err) {
-        // Fallback
-      }
-    }
   };
 
   const addPrayerRequest = async (prayerData) => {
@@ -595,24 +479,6 @@ export const AppProvider = ({ children }) => {
     };
 
     setPrayers((prev) => [created, ...prev]);
-
-    if (isSupabaseConfigured && supabase) {
-      try {
-        await supabase.from('prayer_requests').insert([{
-          author: created.author,
-          is_anonymous: created.isAnonymous,
-          campus_id: created.campusId,
-          campus_name: created.campusName,
-          category: created.category,
-          content: created.content,
-          prayed_count: 1,
-          type: created.type
-        }]);
-      } catch (err) {
-        console.warn('Supabase prayer insert notice:', err);
-      }
-    }
-
     showToast(prayerData.type === 'praise' ? '🙌 Praise report posted!' : '🙏 Prayer request posted to the wall!', 'success');
     triggerConfetti();
   };
@@ -742,6 +608,7 @@ export const AppProvider = ({ children }) => {
         currentUser,
         setCurrentUser,
         registeredUsers,
+        setRegisteredUsers,
         updateUserRole,
         login,
         register,
@@ -755,6 +622,7 @@ export const AppProvider = ({ children }) => {
         activeTab,
         setActiveTab,
         tutors,
+        setTutors,
         requests,
         bibleStudies,
         lifeGroupRequests,
