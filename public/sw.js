@@ -1,4 +1,4 @@
-const CACHE_NAME = 'grace-youth-v2';
+const CACHE_NAME = 'grace-youth-v3';
 
 self.addEventListener('install', (event) => {
   self.skipWaiting();
