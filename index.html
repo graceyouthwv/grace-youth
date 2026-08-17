@@ -24,17 +24,17 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>
-      // Clear legacy service worker caches and force immediate live reload
+      // Unregister legacy service workers and clear caches to guarantee instant fresh code
       if ('serviceWorker' in navigator) {
-        caches.keys().then((keys) => {
-          keys.forEach((key) => {
-            if (key !== 'grace-youth-v4') caches.delete(key);
-          });
-        });
         navigator.serviceWorker.getRegistrations().then((registrations) => {
           for (const registration of registrations) {
-            registration.update();
+            registration.unregister();
           }
+        });
+      }
+      if ('caches' in window) {
+        caches.keys().then((keys) => {
+          keys.forEach((key) => caches.delete(key));
         });
       }
     </script>

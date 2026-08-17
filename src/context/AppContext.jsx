@@ -11,7 +11,7 @@ import { triggerConfetti } from '../utils/helpers';
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v5_strict_approval';
+const STORAGE_VERSION = 'gy_clean_v6_roles_council';
 
 const GUEST_USER = {
   id: 'guest',
