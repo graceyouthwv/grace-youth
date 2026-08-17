@@ -70,20 +70,33 @@ export const YouthWorkerPortal = () => {
 
   const [selectedSeriesId, setSelectedSeriesId] = useState(curriculumSeries[0]?.id || 'ser-1');
 
-  // Class Rosters with Attendance
-  const [classAttendance, setClassAttendance] = useState({
+  // Master Class Rosters with Attendance
+  const DEFAULT_CLASS_ROSTERS = {
     'bs-1': [
-      { id: 'st-1', name: 'Bea Claridad', program: 'BS Biology', attended: true },
-      { id: 'st-2', name: 'Kenzo Ramirez', program: 'BS Civil Engg', attended: true },
-      { id: 'st-3', name: 'Althea Marie', program: 'BS Nursing', attended: false },
-      { id: 'st-4', name: 'John Paul', program: 'BS Fisheries', attended: true }
+      { id: 'st-1', name: 'Bea Claridad', program: 'BS Biology, UP Visayas', attended: true },
+      { id: 'st-2', name: 'Kenzo Ramirez', program: 'BS Civil Engg, CPU', attended: true },
+      { id: 'st-3', name: 'Althea Marie', program: 'BS Nursing, WVSU', attended: false },
+      { id: 'st-4', name: 'John Paul Villar', program: 'BS Fisheries, ISUFST', attended: true }
     ],
     'bs-2': [
-      { id: 'st-5', name: 'Joshua Dizon', program: 'BS Applied Math', attended: true },
-      { id: 'st-6', name: 'Chloe Anne', program: 'BA Communication', attended: true },
-      { id: 'st-7', name: 'Dave Gabriel', program: 'BS Chemistry', attended: false }
+      { id: 'st-5', name: 'Joshua Dizon', program: 'BS Applied Math, UP Visayas', attended: true },
+      { id: 'st-6', name: 'Chloe Anne', program: 'BA Communication, WVSU', attended: true },
+      { id: 'st-7', name: 'Dave Gabriel', program: 'BS Chemistry, CPU', attended: false },
+      { id: 'st-8', name: 'Hannah Grace', program: 'BS Accountancy, CPU', attended: true }
+    ],
+    'bs-3': [
+      { id: 'st-9', name: 'Michael Santos', program: 'BS Architecture, ISAT-U', attended: true },
+      { id: 'st-10', name: 'Sarah Joy', program: 'BS Psychology, UPV', attended: true },
+      { id: 'st-11', name: 'Daniel Reyes', program: 'BS Marine Engg, JBLFMU', attended: false }
+    ],
+    'bs-4': [
+      { id: 'st-12', name: 'Ezekiel Cruz', program: 'BS Computer Science, UPV', attended: true },
+      { id: 'st-13', name: 'Faith Morales', program: 'BS Education, WVSU', attended: true },
+      { id: 'st-14', name: 'Rachel Mae', program: 'BS Pharmacy, CPU', attended: true }
     ]
-  });
+  };
+
+  const [classAttendance, setClassAttendance] = useState(DEFAULT_CLASS_ROSTERS);
 
   const [careNotes, setCareNotes] = useState([
     {
@@ -172,12 +185,13 @@ export const YouthWorkerPortal = () => {
   };
 
   const toggleAttendance = (classId, studentId) => {
+    const targetClassId = classId || 'bs-1';
     setClassAttendance((prev) => {
-      const roster = prev[classId] || [];
+      const roster = prev[targetClassId] || DEFAULT_CLASS_ROSTERS[targetClassId] || DEFAULT_CLASS_ROSTERS['bs-1'];
       const updated = roster.map((s) => (s.id === studentId ? { ...s, attended: !s.attended } : s));
-      return { ...prev, [classId]: updated };
+      return { ...prev, [targetClassId]: updated };
     });
-    showToast('Attendance record updated!', 'success');
+    showToast('✓ Attendance status updated!', 'success');
   };
 
   const handleSendBroadcast = (e) => {
@@ -653,45 +667,56 @@ export const YouthWorkerPortal = () => {
 
                 {/* Student Attendance List */}
                 <div className="mt-4 space-y-3">
-                  <div className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center justify-between">
-                    <span>Enrolled Student Members ({classAttendance[selectedClassForRoster?.id || 'bs-1']?.length || 4}):</span>
-                    <span>Attendance Status</span>
-                  </div>
+                  {(() => {
+                    const currentClassId = selectedClassForRoster?.id || 'bs-1';
+                    const activeRoster = classAttendance[currentClassId] || DEFAULT_CLASS_ROSTERS[currentClassId] || DEFAULT_CLASS_ROSTERS['bs-1'];
+                    const presentCount = activeRoster.filter((s) => s.attended).length;
 
-                  {(classAttendance[selectedClassForRoster?.id || 'bs-1'] || [
-                    { id: 'st-1', name: 'Bea Claridad', program: 'BS Biology', attended: true },
-                    { id: 'st-2', name: 'Kenzo Ramirez', program: 'BS Civil Engg', attended: true },
-                    { id: 'st-3', name: 'Althea Marie', program: 'BS Nursing', attended: false }
-                  ]).map((st) => (
-                    <div
-                      key={st.id}
-                      className={`p-3 rounded-2xl border flex items-center justify-between ${
-                        isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-50 border-slate-200'
-                      }`}
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-black text-xs flex items-center justify-center border border-emerald-500/30">
-                          {st.name.charAt(0)}
+                    return (
+                      <>
+                        <div className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                          <span>Enrolled Students ({activeRoster.length}) • <strong className="text-emerald-400">{presentCount} Present</strong>:</span>
+                          <span>Attendance Status</span>
                         </div>
-                        <div>
-                          <div className={`font-bold text-xs ${isDark ? 'text-white' : 'text-slate-900'}`}>{st.name}</div>
-                          <div className="text-[10px] text-slate-400">{st.program}</div>
-                        </div>
-                      </div>
 
-                      <button
-                        onClick={() => toggleAttendance(selectedClassForRoster?.id || 'bs-1', st.id)}
-                        className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
-                          st.attended
-                            ? 'bg-emerald-600 text-white shadow-xs'
-                            : isDark ? 'bg-slate-800 text-slate-400 border border-slate-700 hover:text-white' : 'bg-white text-slate-500 border border-slate-300'
-                        }`}
-                      >
-                        <CheckCircle2 className="w-3.5 h-3.5" />
-                        <span>{st.attended ? 'Present' : 'Absent'}</span>
-                      </button>
-                    </div>
-                  ))}
+                        {activeRoster.map((st) => (
+                          <div
+                            key={st.id}
+                            className={`p-3 rounded-2xl border flex items-center justify-between ${
+                              isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+                            }`}
+                          >
+                            <div className="flex items-center gap-3">
+                              <div className={`w-8 h-8 rounded-full font-black text-xs flex items-center justify-center border ${
+                                st.attended
+                                  ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                                  : 'bg-slate-800 text-slate-400 border-slate-700'
+                              }`}>
+                                {st.name.charAt(0)}
+                              </div>
+                              <div>
+                                <div className={`font-bold text-xs ${isDark ? 'text-white' : 'text-slate-900'}`}>{st.name}</div>
+                                <div className="text-[10px] text-slate-400">{st.program}</div>
+                              </div>
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => toggleAttendance(currentClassId, st.id)}
+                              className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 active:scale-95 ${
+                                st.attended
+                                  ? 'bg-emerald-600 text-white shadow-xs'
+                                  : isDark ? 'bg-slate-800 text-slate-400 border border-slate-700 hover:text-white' : 'bg-white text-slate-500 border border-slate-300'
+                              }`}
+                            >
+                              <CheckCircle2 className="w-3.5 h-3.5" />
+                              <span>{st.attended ? 'Present' : 'Absent'}</span>
+                            </button>
+                          </div>
+                        ))}
+                      </>
+                    );
+                  })()}
                 </div>
 
                 {/* Broadcast Reminder to Class */}
