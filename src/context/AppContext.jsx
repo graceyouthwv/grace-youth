@@ -11,7 +11,7 @@ import { triggerConfetti } from '../utils/helpers';
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v4_roles';
+const STORAGE_VERSION = 'gy_clean_v5_strict_approval';
 
 const GUEST_USER = {
   id: 'guest',
@@ -52,10 +52,13 @@ export const DEMO_ACCOUNTS = [
     campusId: 'upv',
     campusName: 'UP Visayas (Miagao)',
     yearLevel: '4th Year',
+    subjects: ['Calculus 1 & 2', 'Algebra', 'Trigonometry', 'General Physics'],
+    preferredMode: 'Hybrid',
     isApproved: true,
     status: 'Active',
+    verificationSteps: { applicationReview: true, backgroundCheck: true, certified: true },
     avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
-    bio: 'Calculus tutor and life group co-facilitator. Passionate about sharing Jesus before problem sets.'
+    bio: 'Calculus and physics peer tutor. Ready to help students ace their exams!'
   },
   {
     id: 'usr-worker-1',
@@ -215,8 +218,14 @@ export const AppProvider = ({ children }) => {
       }
 
       // Check if Youth Worker requires approval
-      if (user.role === 'worker' && user.status === 'Pending Admin Approval') {
-        showToast('⏳ Your Youth Worker account is pending verification and approval by Ministry Leadership.', 'error');
+      if (user.role === 'worker' && (!user.isApproved || user.status === 'Pending Admin Approval')) {
+        showToast('⏳ Your Youth Worker account is pending verification and approval in the Admin Portal.', 'error');
+        return false;
+      }
+
+      // Check if Tutor requires approval
+      if (user.role === 'tutor' && (!user.isApproved || user.status === 'Pending Admin Approval')) {
+        showToast('⏳ Your Tutor application is pending verification & certification in the Admin Portal.', 'error');
         return false;
       }
 
@@ -227,7 +236,7 @@ export const AppProvider = ({ children }) => {
       triggerConfetti();
       return true;
     } else {
-      showToast('Account not found with this email. Please sign up below.', 'error');
+      showToast('Account not found with this email. Please apply or sign up.', 'error');
       return false;
     }
   };
@@ -245,13 +254,17 @@ export const AppProvider = ({ children }) => {
     const isTutorApp = userData.role === 'tutor';
 
     const role = isWorkerApp ? 'worker' : isTutorApp ? 'tutor' : 'student';
-    const status = isWorkerApp ? 'Pending Admin Approval' : 'Active';
-    const isApproved = !isWorkerApp;
+    const status = (isWorkerApp || isTutorApp) ? 'Pending Admin Approval' : 'Active';
+    const isApproved = !(isWorkerApp || isTutorApp);
 
     let roleLabel = 'Student Member';
     if (isWorkerApp) roleLabel = 'Campus Youth Worker (Pending Approval)';
-    else if (isTutorApp) roleLabel = `Volunteer Peer Tutor (${userData.program || 'Student'})`;
+    else if (isTutorApp) roleLabel = `Peer Tutor Applicant (${userData.program || 'Student'})`;
     else roleLabel = `Student (${userData.program || 'College Member'})`;
+
+    const subjectsArray = userData.subjects
+      ? userData.subjects.split(',').map((s) => s.trim()).filter(Boolean)
+      : [userData.program ? `${userData.program} Core` : 'General Academics'];
 
     const newUser = {
       id: `usr-${Date.now()}`,
@@ -266,49 +279,38 @@ export const AppProvider = ({ children }) => {
       campusName: userData.campusName || 'UP Visayas',
       program: userData.program || '',
       yearLevel: userData.yearLevel || '1st Year',
+      subjects: subjectsArray,
+      preferredMode: userData.preferredMode || 'Hybrid',
       bioNote: userData.bioNote || '',
+      verificationSteps: {
+        applicationReview: false,
+        backgroundCheck: false,
+        certified: false
+      },
       avatar:
         role === 'worker'
           ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
           : role === 'tutor'
           ? 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80'
           : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-      bio: isWorkerApp ? 'Applying as campus youth missionary.' : 'College student.'
+      bio: isWorkerApp ? 'Applying as campus youth missionary.' : isTutorApp ? 'Applying as volunteer peer tutor.' : 'College student.'
     };
 
     setRegisteredUsers((prev) => [...prev, newUser]);
 
     if (isWorkerApp) {
-      showToast('🕊️ Youth Worker application submitted! Once verified by an Admin, you will be able to log in.', 'info');
+      showToast('🕊️ Youth Worker application submitted! An Administrator must review and activate your account.', 'info');
       return true;
     }
 
-    setCurrentUser(newUser);
-    localStorage.setItem('gy_active_session', JSON.stringify(newUser));
-
-    if (newUser.role === 'tutor') {
-      const newTutorListing = {
-        id: `tut-${Date.now()}`,
-        name: newUser.name,
-        avatar: newUser.avatar,
-        role: newUser.roleLabel,
-        campusId: newUser.campusId,
-        campusName: newUser.campusName,
-        subjects: [userData.program ? `${userData.program} Core` : 'General Academics'],
-        category: 'Academics',
-        rating: 5.0,
-        sessionsGiven: 0,
-        badge: 'Volunteer Peer Tutor',
-        bio: newUser.bio,
-        preferredMode: 'Hybrid',
-        slots: [
-          { day: 'Tuesday', time: '4:00 PM - 5:30 PM', mode: 'In-Person' },
-          { day: 'Thursday', time: '5:00 PM - 6:30 PM', mode: 'Online (Google Meet)' }
-        ]
-      };
-      setTutors((prev) => [newTutorListing, ...prev]);
+    if (isTutorApp) {
+      showToast('📚 Tutor application submitted! An Administrator will review your credentials and certify your account.', 'info');
+      return true;
     }
 
+    // Normal student can sign in immediately
+    setCurrentUser(newUser);
+    localStorage.setItem('gy_active_session', JSON.stringify(newUser));
     showToast(`🎉 Welcome to Grace Youth, ${newUser.name}!`, 'success');
     setActiveTab('portal');
     triggerConfetti();
@@ -333,6 +335,55 @@ export const AppProvider = ({ children }) => {
       })
     );
     triggerConfetti();
+  };
+
+  const approveTutor = (userId) => {
+    let approvedUserObj = null;
+
+    setRegisteredUsers((prev) =>
+      prev.map((u) => {
+        if (u.id === userId) {
+          approvedUserObj = u;
+          return {
+            ...u,
+            role: 'tutor',
+            roleLabel: `Volunteer Peer Tutor (${u.program || 'Academics'})`,
+            status: 'Active',
+            isApproved: true,
+            verificationSteps: { applicationReview: true, backgroundCheck: true, certified: true }
+          };
+        }
+        return u;
+      })
+    );
+
+    if (approvedUserObj) {
+      const existingListing = tutors.find((t) => t.name === approvedUserObj.name);
+      if (!existingListing) {
+        const newTutorListing = {
+          id: `tut-${Date.now()}`,
+          name: approvedUserObj.name,
+          avatar: approvedUserObj.avatar,
+          role: `Volunteer Peer Tutor (${approvedUserObj.program || 'Academics'})`,
+          campusId: approvedUserObj.campusId,
+          campusName: approvedUserObj.campusName,
+          subjects: approvedUserObj.subjects?.length ? approvedUserObj.subjects : ['General Academics', approvedUserObj.program],
+          category: 'Academics',
+          rating: 5.0,
+          sessionsGiven: 0,
+          badge: 'Verified Peer Tutor',
+          bio: approvedUserObj.bio || 'Verified volunteer peer tutor ready to help batchmates succeed.',
+          preferredMode: approvedUserObj.preferredMode || 'Hybrid',
+          slots: [
+            { day: 'Tuesday', time: '4:00 PM - 5:30 PM', mode: 'In-Person' },
+            { day: 'Thursday', time: '5:00 PM - 6:30 PM', mode: 'Online' }
+          ]
+        };
+        setTutors((prev) => [newTutorListing, ...prev]);
+      }
+      showToast(`🎉 ${approvedUserObj.name} has been certified and activated as a Peer Tutor!`, 'success');
+      triggerConfetti();
+    }
   };
 
   const updateUserRole = async (userId, newRole) => {
@@ -471,30 +522,7 @@ export const AppProvider = ({ children }) => {
           : r
       )
     );
-    showToast(`Tutor matched! Gospel-First Blueprint shared with tutor.`, 'success');
-  };
-
-  const addTutorListing = async (newTutorData) => {
-    const created = {
-      id: `tut-${Date.now()}`,
-      name: currentUser.name,
-      avatar: currentUser.avatar,
-      role: `${currentUser.roleLabel} (${currentUser.yearLevel || 'Student'})`,
-      campusId: newTutorData.campusId || currentUser.campusId,
-      campusName: newTutorData.campusName || currentUser.campusName,
-      subjects: newTutorData.subjects,
-      category: newTutorData.category,
-      rating: 5.0,
-      sessionsGiven: 0,
-      badge: 'Volunteer Peer Tutor',
-      bio: newTutorData.bio || 'Eager to share knowledge and encourage fellow students!',
-      preferredMode: newTutorData.preferredMode || 'Hybrid',
-      slots: newTutorData.slots
-    };
-
-    setTutors((prev) => [created, ...prev]);
-    showToast('🌟 You are now registered as a Peer Tutor!', 'success');
-    triggerConfetti();
+    showToast(`Tutor matched for session.`, 'success');
   };
 
   const togglePrayerSupport = async (prayerId) => {
@@ -584,16 +612,6 @@ export const AppProvider = ({ children }) => {
     triggerConfetti();
   };
 
-  const createOfficialLifeGroup = (newGroupData) => {
-    const created = {
-      ...newGroupData,
-      id: `bs-${Date.now()}`
-    };
-    setBibleStudies((prev) => [created, ...prev]);
-    showToast(`🎉 Official Life Group "${created.title}" launched!`, 'success');
-    triggerConfetti();
-  };
-
   const toggleEventRsvp = (eventId) => {
     setEvents((prev) =>
       prev.map((ev) => {
@@ -647,14 +665,6 @@ export const AppProvider = ({ children }) => {
     triggerConfetti();
   };
 
-  const createCampaign = (newCampaignData) => {
-    const created = {
-      ...newCampaignData,
-      id: `camp-${Date.now()}`
-    };
-    setCampaigns((prev) => [created, ...prev]);
-  };
-
   return (
     <AppContext.Provider
       value={{
@@ -664,6 +674,7 @@ export const AppProvider = ({ children }) => {
         setRegisteredUsers,
         updateUserRole,
         approveYouthWorker,
+        approveTutor,
         login,
         register,
         logout,
@@ -693,17 +704,14 @@ export const AppProvider = ({ children }) => {
         cancelBooking,
         addTutorialRequest,
         claimRequest,
-        addTutorListing,
         togglePrayerSupport,
         addPrayerRequest,
         joinLifeGroup,
         requestLifeGroup,
         approveLifeGroupRequest,
-        createOfficialLifeGroup,
         toggleEventRsvp,
         incrementReviewerDownload,
         donateToCampaign,
-        createCampaign,
         dailyDevotionals: DAILY_DEVOTIONALS
       }}
     >

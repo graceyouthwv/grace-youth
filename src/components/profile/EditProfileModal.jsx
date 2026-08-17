@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
-import { User, Mail, School, BookOpen, Save, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { User, Mail, School, BookOpen, Save, Sparkles, Image as ImageIcon, HeartHandshake, GraduationCap } from 'lucide-react';
 
 const AVATAR_OPTIONS = [
   'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
@@ -14,8 +14,12 @@ const AVATAR_OPTIONS = [
 ];
 
 export const EditProfileModal = ({ isOpen, onClose }) => {
-  const { currentUser, setCurrentUser, setRegisteredUsers, showToast, theme } = useApp();
+  const { currentUser, setCurrentUser, setRegisteredUsers, tutors, setTutors, showToast, theme } = useApp();
   const isDark = theme === 'dark';
+
+  const isTutor = currentUser.role === 'tutor';
+  const isWorker = currentUser.role === 'worker';
+  const isStudent = currentUser.role === 'student' || currentUser.role === 'guest';
 
   const [name, setName] = useState(currentUser.name || '');
   const [email, setEmail] = useState(currentUser.email || '');
@@ -25,6 +29,12 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
   const [bio, setBio] = useState(currentUser.bio || '');
   const [avatar, setAvatar] = useState(currentUser.avatar || AVATAR_OPTIONS[0]);
 
+  // Tutor Specific Fields
+  const [subjectsInput, setSubjectsInput] = useState(
+    currentUser.subjects ? currentUser.subjects.join(', ') : 'Calculus 1, General Chemistry'
+  );
+  const [preferredMode, setPreferredMode] = useState(currentUser.preferredMode || 'Hybrid');
+
   const handleSave = (e) => {
     e.preventDefault();
     if (!name.trim()) {
@@ -33,6 +43,11 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
     }
 
     const campusObj = CAMPUSES.find((c) => c.id === campusId);
+    const subjectsArray = subjectsInput
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean);
+
     const updatedUser = {
       ...currentUser,
       name: name.trim(),
@@ -42,7 +57,8 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
       program: program.trim(),
       yearLevel,
       bio: bio.trim(),
-      avatar
+      avatar,
+      ...(isTutor && { subjects: subjectsArray, preferredMode })
     };
 
     setCurrentUser(updatedUser);
@@ -52,6 +68,26 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
       prev.map((u) => (u.id === currentUser.id ? { ...u, ...updatedUser } : u))
     );
 
+    // If Tutor, also update their live public tutor card
+    if (isTutor) {
+      setTutors((prev) =>
+        prev.map((t) =>
+          t.name === currentUser.name || t.id === currentUser.id
+            ? {
+                ...t,
+                name: updatedUser.name,
+                avatar: updatedUser.avatar,
+                campusId: updatedUser.campusId,
+                campusName: updatedUser.campusName,
+                subjects: subjectsArray,
+                preferredMode: updatedUser.preferredMode,
+                bio: updatedUser.bio
+              }
+            : t
+        )
+      );
+    }
+
     showToast('✨ Profile updated successfully!', 'success');
     onClose();
   };
@@ -60,7 +96,7 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="✏️ Edit My Profile"
+      title={`✏️ Edit Profile (${isTutor ? 'Peer Tutor' : isWorker ? 'Youth Worker' : 'Student'})`}
       maxWidth="max-w-lg"
     >
       <form onSubmit={handleSave} className="space-y-4 text-xs sm:text-sm">
@@ -120,7 +156,7 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Your University *
+              Your University Campus *
             </label>
             <select
               value={campusId}
@@ -137,11 +173,11 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
 
           <div>
             <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Degree Program / Major
+              {isWorker ? 'Ministry Role / Title' : 'Degree Program / Major'}
             </label>
             <input
               type="text"
-              placeholder="e.g. BS Fisheries, BS Nursing"
+              placeholder="e.g. BS Fisheries / Campus Missionary"
               value={program}
               onChange={(e) => setProgram(e.target.value)}
               className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
@@ -150,6 +186,47 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
             />
           </div>
         </div>
+
+        {/* Tutor Specific Subject & Mode Configuration */}
+        {isTutor && (
+          <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/20 space-y-3">
+            <span className="text-xs font-black uppercase tracking-wider text-amber-600 dark:text-amber-400 block">
+              📚 Tutor Teaching Settings
+            </span>
+
+            <div>
+              <label className={`block text-[11px] font-bold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Subjects You Can Tutor (comma-separated):
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. Math 53 Calculus 1, Chem 16 General Chemistry, Physics 71"
+                value={subjectsInput}
+                onChange={(e) => setSubjectsInput(e.target.value)}
+                className={`w-full px-3 py-2 rounded-xl border text-xs ${
+                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                }`}
+              />
+            </div>
+
+            <div>
+              <label className={`block text-[11px] font-bold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Preferred Tutoring Mode:
+              </label>
+              <select
+                value={preferredMode}
+                onChange={(e) => setPreferredMode(e.target.value)}
+                className={`w-full px-3 py-2 rounded-xl border text-xs font-bold ${
+                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                }`}
+              >
+                <option value="Hybrid">Hybrid (In-Person & Online)</option>
+                <option value="In-Person">In-Person Only (Campus Library / Lounge)</option>
+                <option value="Online">Online Only (Google Meet / Zoom)</option>
+              </select>
+            </div>
+          </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
@@ -173,11 +250,11 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
 
           <div>
             <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Short Bio / Life Verse
+              Bio / Note
             </label>
             <input
               type="text"
-              placeholder="e.g. Philippians 4:13 • Seeking God daily"
+              placeholder="e.g. Ready to teach Calculus and encourage classmates!"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${

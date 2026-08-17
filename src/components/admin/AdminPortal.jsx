@@ -30,7 +30,8 @@ import {
   Eye,
   EyeOff,
   LogOut,
-  Settings
+  Settings,
+  GraduationCap
 } from 'lucide-react';
 import { CAMPUSES } from '../../data/campuses';
 import { AddUserModal } from './AddUserModal';
@@ -47,6 +48,7 @@ export const AdminPortal = () => {
     setRegisteredUsers,
     updateUserRole,
     approveYouthWorker,
+    approveTutor,
     lifeGroupRequests,
     approveLifeGroupRequest,
     currentUser,
@@ -80,7 +82,6 @@ export const AdminPortal = () => {
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [selectedCampusFilter, setSelectedCampusFilter] = useState('all');
   const [showAddUserModal, setShowAddUserModal] = useState(false);
-  const [verifiedTutorIds, setVerifiedTutorIds] = useState(() => ['tut-1', 'tut-2', 'tut-3', 'tut-4', 'tut-5']);
 
   // Handle In-Portal Admin Sign-In
   const handleAdminSignIn = (e) => {
@@ -243,8 +244,11 @@ export const AdminPortal = () => {
   }
 
   // 2. AUTHENTICATED SUPER ADMIN WORKSPACE
-  const pendingWorkers = registeredUsers.filter((u) => u.role === 'worker' && u.status === 'Pending Admin Approval');
-  const activeWorkers = registeredUsers.filter((u) => u.role === 'worker' && u.status !== 'Pending Admin Approval');
+  const pendingWorkers = registeredUsers.filter((u) => u.role === 'worker' && (u.status === 'Pending Admin Approval' || !u.isApproved));
+  const activeWorkers = registeredUsers.filter((u) => u.role === 'worker' && u.status !== 'Pending Admin Approval' && u.isApproved);
+
+  const pendingTutors = registeredUsers.filter((u) => u.role === 'tutor' && (u.status === 'Pending Admin Approval' || !u.isApproved));
+  const activeTutors = registeredUsers.filter((u) => u.role === 'tutor' && u.status !== 'Pending Admin Approval' && u.isApproved);
 
   const filteredUsers = registeredUsers.filter((u) => {
     const matchesSearch =
@@ -253,16 +257,6 @@ export const AdminPortal = () => {
     const matchesCampus = selectedCampusFilter === 'all' || u.campusId === selectedCampusFilter;
     return matchesSearch && matchesCampus;
   });
-
-  const handleToggleVerifyTutor = (tutorId, tutorName) => {
-    if (verifiedTutorIds.includes(tutorId)) {
-      setVerifiedTutorIds((prev) => prev.filter((id) => id !== tutorId));
-      showToast(`Verification revoked for ${tutorName}.`, 'info');
-    } else {
-      setVerifiedTutorIds((prev) => [...prev, tutorId]);
-      showToast(`✅ ${tutorName} is officially verified for peer tutoring!`, 'success');
-    }
-  };
 
   const handleDeleteUser = (userId, userName) => {
     if (userId === currentUser.id) {
@@ -307,7 +301,7 @@ export const AdminPortal = () => {
             className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-black text-xs shadow-lg shadow-rose-500/25 transition-all cursor-pointer flex-1 md:flex-initial"
           >
             <UserPlus className="w-4 h-4" />
-            <span>Add Person</span>
+            <span>Add Person / Staff</span>
           </button>
 
           <button
@@ -339,21 +333,21 @@ export const AdminPortal = () => {
 
         <div className={`p-4 sm:p-5 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'}`}>
           <div className="flex items-center justify-between mb-2">
-            <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Pending Workers</span>
-            <HeartHandshake className="w-4 h-4 text-emerald-500" />
+            <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Pending Tutors</span>
+            <Award className="w-4 h-4 text-amber-500" />
           </div>
-          <div className={`text-2xl sm:text-3xl font-black font-heading ${pendingWorkers.length ? 'text-emerald-500 animate-pulse' : isDark ? 'text-white' : 'text-slate-900'}`}>
-            {pendingWorkers.length}
+          <div className={`text-2xl sm:text-3xl font-black font-heading ${pendingTutors.length ? 'text-amber-500 animate-pulse' : isDark ? 'text-white' : 'text-slate-900'}`}>
+            {pendingTutors.length}
           </div>
         </div>
 
         <div className={`p-4 sm:p-5 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'}`}>
           <div className="flex items-center justify-between mb-2">
-            <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Verified Tutors</span>
-            <Award className="w-4 h-4 text-amber-500" />
+            <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Pending Workers</span>
+            <HeartHandshake className="w-4 h-4 text-emerald-500" />
           </div>
-          <div className={`text-2xl sm:text-3xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-            {tutors.length}
+          <div className={`text-2xl sm:text-3xl font-black font-heading ${pendingWorkers.length ? 'text-emerald-500 animate-pulse' : isDark ? 'text-white' : 'text-slate-900'}`}>
+            {pendingWorkers.length}
           </div>
         </div>
 
@@ -380,7 +374,23 @@ export const AdminPortal = () => {
               : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
           }`}
         >
-          👥 People & Staff ({registeredUsers.length})
+          👥 People & Roles ({registeredUsers.length})
+        </button>
+
+        <button
+          onClick={() => setAdminTab('tutors')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+            adminTab === 'tutors'
+              ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
+              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+          }`}
+        >
+          <span>👨‍🏫 Verify Peer Tutors</span>
+          {pendingTutors.length > 0 && (
+            <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 font-black text-[10px]">
+              {pendingTutors.length}
+            </span>
+          )}
         </button>
 
         <button
@@ -397,17 +407,6 @@ export const AdminPortal = () => {
               {pendingWorkers.length}
             </span>
           )}
-        </button>
-
-        <button
-          onClick={() => setAdminTab('tutors')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
-            adminTab === 'tutors'
-              ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
-              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
-          }`}
-        >
-          👨‍🏫 Peer Tutors ({tutors.length})
         </button>
 
         <button
@@ -489,7 +488,7 @@ export const AdminPortal = () => {
               className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
             >
               <UserPlus className="w-3.5 h-3.5" />
-              <span>Add Person</span>
+              <span>Add Person / Staff</span>
             </button>
           </div>
 
@@ -517,9 +516,9 @@ export const AdminPortal = () => {
                           ? 'bg-amber-500/20 text-amber-700 dark:text-amber-300 border-amber-500/30'
                           : 'bg-indigo-500/20 text-indigo-700 dark:text-indigo-300 border-indigo-500/30'
                       }`}>
-                        {user.role === 'worker' ? 'Youth Worker' : user.role === 'leader' ? 'Admin' : user.role}
+                        {user.role === 'worker' ? 'Youth Worker' : user.role === 'leader' ? 'Admin' : user.role === 'tutor' ? 'Peer Tutor' : user.role}
                       </span>
-                      {user.status === 'Pending Admin Approval' && (
+                      {(user.status === 'Pending Admin Approval' || !user.isApproved) && (
                         <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-600 border border-amber-500/30">
                           Pending Approval
                         </span>
@@ -565,7 +564,124 @@ export const AdminPortal = () => {
         </div>
       )}
 
-      {/* TAB 2: YOUTH WORKER APPROVALS */}
+      {/* TAB 2: TUTOR MULTI-STEP VERIFICATION & CERTIFICATION */}
+      {adminTab === 'tutors' && (
+        <div className="space-y-4">
+          <div className={`p-4 rounded-2xl border text-xs leading-relaxed ${
+            isDark ? 'bg-amber-950/30 border-amber-500/30 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-950'
+          }`}>
+            👨‍🏫 <strong>Peer Tutor Multi-Step Verification:</strong> Tutors cannot self-register directly. Review applicant subjects and confirm campus identity before certifying. Once verified here, their tutor account is activated!
+          </div>
+
+          {/* Pending Tutor Applications */}
+          <div>
+            <h3 className={`text-sm font-black uppercase tracking-wider mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Pending Tutor Applicants ({pendingTutors.length})
+            </h3>
+
+            <div className="space-y-3">
+              {pendingTutors.length > 0 ? (
+                pendingTutors.map((tutor) => (
+                  <div
+                    key={tutor.id}
+                    className={`p-5 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
+                      isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+                    }`}
+                  >
+                    <div className="flex items-start gap-3.5 flex-1">
+                      <img src={tutor.avatar} alt={tutor.name} className="w-12 h-12 rounded-2xl object-cover ring-2 ring-amber-500/30 shrink-0" />
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                            {tutor.name}
+                          </span>
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-600 border border-amber-500/30">
+                            Awaiting Certification
+                          </span>
+                        </div>
+
+                        <div className={`text-xs ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                          Email: <strong>{tutor.email}</strong> • Campus: <strong>{tutor.campusName}</strong> • Program: {tutor.program} ({tutor.yearLevel})
+                        </div>
+
+                        <div className="text-xs text-amber-600 dark:text-amber-400 font-bold">
+                          Subjects: {tutor.subjects?.join(', ') || 'General Academics'}
+                        </div>
+
+                        {/* Multi-Step Verification Checklist */}
+                        <div className="flex items-center gap-3 pt-1 text-[11px] text-slate-400">
+                          <span className="flex items-center gap-1 text-emerald-500 font-bold">
+                            <CheckCircle2 className="w-3.5 h-3.5" /> 1. Application Submitted
+                          </span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1 text-emerald-500 font-bold">
+                            <CheckCircle2 className="w-3.5 h-3.5" /> 2. Campus Identity Checked
+                          </span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1 text-amber-500 font-bold">
+                            <ShieldCheck className="w-3.5 h-3.5" /> 3. Ready for Admin Certification
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => approveTutor(tutor.id)}
+                      className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs shadow-lg hover:scale-105 transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+                    >
+                      <Award className="w-4 h-4 text-slate-950" />
+                      <span>✓ Certify & Activate Tutor Account</span>
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <div className={`p-6 text-center rounded-2xl border border-dashed text-xs ${
+                  isDark ? 'bg-slate-900/40 border-slate-800 text-slate-500' : 'bg-white border-slate-200 text-slate-500'
+                }`}>
+                  No pending tutor applications at this time.
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Active Certified Peer Tutors */}
+          <div className="pt-4">
+            <h3 className={`text-sm font-black uppercase tracking-wider mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Active Certified Tutors ({activeTutors.length})
+            </h3>
+
+            <div className="space-y-3">
+              {activeTutors.map((tutor) => (
+                <div
+                  key={tutor.id}
+                  className={`p-4 rounded-2xl border flex items-center justify-between gap-4 ${
+                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <img src={tutor.avatar} alt={tutor.name} className="w-10 h-10 rounded-xl object-cover ring-2 ring-amber-500/20" />
+                    <div>
+                      <div className="font-extrabold text-sm flex items-center gap-2">
+                        <span>{tutor.name}</span>
+                        <span className="text-xs text-amber-500 font-normal">({tutor.campusName})</span>
+                      </div>
+                      <div className="text-xs text-slate-400">
+                        Teaches: <strong>{tutor.subjects?.join(', ') || 'Academics'}</strong>
+                      </div>
+                    </div>
+                  </div>
+
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-500/10 text-amber-600 border border-amber-500/20 flex items-center gap-1">
+                    <Check className="w-3 h-3" /> Certified Active
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 3: YOUTH WORKER APPROVALS */}
       {adminTab === 'workers' && (
         <div className="space-y-4">
           <div className={`p-4 rounded-2xl border text-xs leading-relaxed ${
@@ -628,63 +744,35 @@ export const AdminPortal = () => {
               )}
             </div>
           </div>
-        </div>
-      )}
 
-      {/* TAB 3: TUTOR VERIFICATION */}
-      {adminTab === 'tutors' && (
-        <div className="space-y-3">
-          {tutors.map((tutor) => {
-            const isVerified = verifiedTutorIds.includes(tutor.id);
-            return (
-              <div
-                key={tutor.id}
-                className={`p-4 sm:p-5 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
-                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-                }`}
-              >
-                <div className="flex items-center gap-3.5">
-                  <img src={tutor.avatar} alt={tutor.name} className="w-12 h-12 rounded-2xl object-cover ring-2 ring-indigo-500/20" />
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                        {tutor.name}
-                      </span>
-                      {isVerified ? (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/30 flex items-center gap-1">
-                          <Check className="w-3 h-3" /> Verified Tutor
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300">
-                          Pending Review
-                        </span>
-                      )}
-                    </div>
-                    <div className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                      {tutor.role} • <span className="font-bold">{tutor.campusName}</span>
-                    </div>
-                    <div className="text-xs text-indigo-600 dark:text-indigo-400 font-bold mt-1">
-                      Teaches: {tutor.subjects.join(', ')}
-                    </div>
-                  </div>
-                </div>
+          <div className="pt-4">
+            <h3 className={`text-sm font-black uppercase tracking-wider mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Active Youth Workers ({activeWorkers.length})
+            </h3>
 
-                <button
-                  onClick={() => handleToggleVerifyTutor(tutor.id, tutor.name)}
-                  className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
-                    isVerified
-                      ? isDark
-                        ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 hover:bg-rose-950/40 hover:text-rose-300 hover:border-rose-500/40'
-                        : 'bg-emerald-100 text-emerald-900 border border-emerald-300 hover:bg-rose-100 hover:text-rose-900'
-                      : 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
+            <div className="space-y-3">
+              {activeWorkers.map((worker) => (
+                <div
+                  key={worker.id}
+                  className={`p-4 rounded-2xl border flex items-center justify-between gap-4 ${
+                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
                   }`}
                 >
-                  <Award className="w-3.5 h-3.5" />
-                  <span>{isVerified ? '✓ Certified (Click to Revoke)' : 'Approve & Certify Tutor'}</span>
-                </button>
-              </div>
-            );
-          })}
+                  <div className="flex items-center gap-3">
+                    <img src={worker.avatar} alt={worker.name} className="w-10 h-10 rounded-xl object-cover ring-2 ring-emerald-500/20" />
+                    <div>
+                      <div className="font-extrabold text-sm">{worker.name}</div>
+                      <div className="text-xs text-slate-400">{worker.email} • {worker.campusName}</div>
+                    </div>
+                  </div>
+
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 flex items-center gap-1">
+                    <Check className="w-3 h-3" /> Active Staff
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 

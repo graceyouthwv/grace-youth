@@ -20,6 +20,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [campusId, setCampusId] = useState('upv');
   const [program, setProgram] = useState('');
   const [yearLevel, setYearLevel] = useState('1st Year');
+  const [subjects, setSubjects] = useState('');
   const [bioNote, setBioNote] = useState('');
 
   const isDark = theme === 'dark';
@@ -60,6 +61,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
       campusName: campusObj?.name || 'UP Visayas',
       program,
       yearLevel,
+      subjects,
       bioNote
     });
 
@@ -98,42 +100,42 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            Create Account
+            Create Account / Apply
           </button>
         </div>
 
         {/* 1. Sign In Form */}
         {mode === 'login' ? (
           <div className="space-y-3.5">
-            {/* Demo Accounts Quick Filler */}
+            {/* Quick Test Demo Account Fillers */}
             <div className={`p-3 rounded-2xl border ${isDark ? 'bg-slate-900/70 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
               <div className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
-                <span>⚡ Test Accounts (1-Tap Fill & Test):</span>
+                <span>⚡ Test Accounts:</span>
               </div>
-              <div className="grid grid-cols-2 gap-1.5">
+              <div className="grid grid-cols-3 gap-1.5">
                 <button
                   type="button"
                   onClick={() => handleFillDemo('bea@upv.edu.ph', 'password123')}
-                  className="px-2 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 rounded-xl text-[11px] font-bold text-left cursor-pointer flex items-center gap-1.5"
+                  className="px-2 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
                 >
-                  <GraduationCap className="w-3.5 h-3.5 shrink-0" />
-                  <span className="truncate">🎓 Student (Bea)</span>
+                  <GraduationCap className="w-3.5 h-3.5" />
+                  <span className="truncate text-[10px] mt-0.5">Student</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleFillDemo('joshua@graceyouth.ph', 'password123')}
-                  className="px-2 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-[11px] font-bold text-left cursor-pointer flex items-center gap-1.5"
+                  className="px-2 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
                 >
-                  <BookOpen className="w-3.5 h-3.5 shrink-0" />
-                  <span className="truncate">👨‍🏫 Tutor (Joshua)</span>
+                  <BookOpen className="w-3.5 h-3.5" />
+                  <span className="truncate text-[10px] mt-0.5">Tutor</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleFillDemo('worker@graceyouth.ph', 'password123')}
-                  className="px-2 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-xl text-[11px] font-bold text-left cursor-pointer flex items-center gap-1.5"
+                  className="px-2 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
                 >
-                  <HeartHandshake className="w-3.5 h-3.5 shrink-0" />
-                  <span className="truncate">✝️ Youth Worker</span>
+                  <HeartHandshake className="w-3.5 h-3.5" />
+                  <span className="truncate text-[10px] mt-0.5">Youth Worker</span>
                 </button>
               </div>
             </div>
@@ -187,7 +189,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
             </form>
           </div>
         ) : (
-          /* 2. Public Self-Registration */
+          /* 2. Registration / Staff Application */
           <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
             <div>
               <label className={`block text-xs font-black uppercase tracking-wider mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -217,7 +219,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   }`}
                 >
                   <BookOpen className="w-4 h-4" />
-                  <span className="text-[11px] font-black">Peer Tutor</span>
+                  <span className="text-[11px] font-black">Apply as Tutor</span>
                 </button>
 
                 <button
@@ -235,14 +237,16 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               </div>
             </div>
 
-            {/* Note for Youth Workers */}
-            {role === 'worker' && (
+            {/* Note for Tutors & Youth Workers requiring verification */}
+            {(role === 'tutor' || role === 'worker') && (
               <div className={`p-3 rounded-xl border text-[11px] leading-relaxed flex items-start gap-2 ${
-                isDark ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-200' : 'bg-emerald-50 border-emerald-200 text-emerald-950'
+                role === 'tutor'
+                  ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-500/30 text-amber-950 dark:text-amber-200'
+                  : 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-500/30 text-emerald-950 dark:text-emerald-200'
               }`}>
-                <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
                 <div>
-                  <strong>Admin Approval Required:</strong> Youth Worker accounts are granted access to student discipleship consoles once verified and approved by an Administrator.
+                  <strong>Admin Verification Required:</strong> {role === 'tutor' ? 'Tutor applications undergo subject & safeguarding review in the Admin Command Center before account activation.' : 'Youth Worker accounts require leadership review in the Admin Portal before activation.'}
                 </div>
               </div>
             )}
@@ -316,11 +320,11 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
               <div>
                 <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Degree / Role Status
+                  Degree / Major
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. BS Fisheries, Nursing"
+                  placeholder="e.g. BS Mathematics, Nursing"
                   value={program}
                   onChange={(e) => setProgram(e.target.value)}
                   className={`w-full px-3 py-2 rounded-xl border text-xs ${
@@ -330,15 +334,37 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               </div>
             </div>
 
+            {role === 'tutor' && (
+              <div>
+                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Subjects You Wish to Tutor (comma-separated) *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Math 53 Calculus 1, Chem 16, Physics 71"
+                  value={subjects}
+                  onChange={(e) => setSubjects(e.target.value)}
+                  className={`w-full px-3 py-2 rounded-xl border text-xs ${
+                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  }`}
+                />
+              </div>
+            )}
+
             <button
               type="submit"
               className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-indigo-500/25 transition-all cursor-pointer mt-2"
             >
-              {role === 'worker' ? 'Submit Youth Worker Application' : 'Create Account & Open Dashboard'}
+              {role === 'worker'
+                ? 'Submit Youth Worker Application'
+                : role === 'tutor'
+                ? 'Submit Peer Tutor Application'
+                : 'Create Student Account & Enter'}
             </button>
 
             <div className="text-center pt-1">
-              <span className="text-slate-400 text-xs">Already registered? </span>
+              <span className="text-slate-400 text-xs">Already have an account? </span>
               <button
                 type="button"
                 onClick={() => setMode('login')}
