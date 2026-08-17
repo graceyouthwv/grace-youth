@@ -34,8 +34,12 @@ import {
   GraduationCap,
   ListChecks,
   FileCheck,
-  BadgeCheck,
-  Clock
+  Clock,
+  Plus,
+  Download,
+  FileText,
+  Trash,
+  Edit3
 } from 'lucide-react';
 import { CAMPUSES } from '../../data/campuses';
 import { AddUserModal } from './AddUserModal';
