@@ -3,6 +3,7 @@ import { useApp } from '../../context/AppContext';
 import { CampaignCard } from './CampaignCard';
 import { DonateModal } from './DonateModal';
 import { CreateCampaignModal } from './CreateCampaignModal';
+import { EditCampaignModal } from './EditCampaignModal';
 import { Heart, PlusCircle, Sparkles, Target, Users, ShieldCheck, HelpCircle, Tent } from 'lucide-react';
 import { CAMPUSES } from '../../data/campuses';
 import { getTranslation } from '../../data/translations';
@@ -12,6 +13,7 @@ export const FundraisingHub = () => {
   const [selectedCategory] = useState('All');
   const [activeCategoryFilter, setActiveCategoryFilter] = useState('All');
   const [activeCampaignForDonate, setActiveCampaignForDonate] = useState(null);
+  const [editingCampaign, setEditingCampaign] = useState(null);
   const [showCreateModal, setShowCreateModal] = useState(false);
 
   const isDark = theme === 'dark';
@@ -192,6 +194,7 @@ export const FundraisingHub = () => {
                 key={camp.id}
                 campaign={camp}
                 onDonate={(c) => setActiveCampaignForDonate(c)}
+                onEdit={(c) => setEditingCampaign(c)}
               />
             ))}
           </div>
@@ -213,6 +216,12 @@ export const FundraisingHub = () => {
         isOpen={!!activeCampaignForDonate}
         onClose={() => setActiveCampaignForDonate(null)}
         campaign={activeCampaignForDonate}
+      />
+
+      <EditCampaignModal
+        isOpen={!!editingCampaign}
+        onClose={() => setEditingCampaign(null)}
+        campaign={editingCampaign}
       />
 
       <CreateCampaignModal

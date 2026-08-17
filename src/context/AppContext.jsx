@@ -716,6 +716,13 @@ export const AppProvider = ({ children }) => {
     triggerConfetti();
   };
 
+  const updateCampaign = (campaignId, updatedFields) => {
+    setCampaigns((prev) =>
+      prev.map((c) => (c.id === campaignId ? { ...c, ...updatedFields } : c))
+    );
+    showToast('✓ Campaign fund amounts & details updated successfully!', 'success');
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -769,6 +776,7 @@ export const AppProvider = ({ children }) => {
         toggleEventRsvp,
         incrementReviewerDownload,
         donateToCampaign,
+        updateCampaign,
         dailyDevotionals: DAILY_DEVOTIONALS
       }}
     >

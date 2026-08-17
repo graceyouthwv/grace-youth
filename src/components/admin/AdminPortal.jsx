@@ -39,6 +39,7 @@ import {
 } from 'lucide-react';
 import { CAMPUSES } from '../../data/campuses';
 import { AddUserModal } from './AddUserModal';
+import { EditCampaignModal } from '../giving/EditCampaignModal';
 
 export const AdminPortal = () => {
   const {
@@ -67,6 +68,9 @@ export const AdminPortal = () => {
 
   const isDark = theme === 'dark';
   const isAdminLoggedIn = currentUser && (currentUser.role === 'leader' || currentUser.role === 'council');
+
+  // Campaign Edit State
+  const [editingCampaign, setEditingCampaign] = useState(null);
 
   // Admin Auth Form State (if not logged in as Admin / Council)
   const [adminPin, setAdminPin] = useState('graceyouth2026');
@@ -1390,29 +1394,48 @@ export const AdminPortal = () => {
                   isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
                 }`}
               >
-                <div className="flex items-start justify-between gap-4 mb-3">
-                  <div>
-                    <h3 className="font-extrabold text-base">{camp.title}</h3>
-                    <div className="text-xs text-slate-400 mt-0.5">Campaign Goal: ₱{camp.targetAmount.toLocaleString()} • Deadline: {camp.endDate}</div>
+                <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-3">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-extrabold text-base">{camp.title}</h3>
+                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-500 border border-pink-500/20">
+                        {camp.category}
+                      </span>
+                    </div>
+                    <div className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                      Campaign Goal: <strong>₱{camp.targetAmount.toLocaleString()}</strong> • Deadline: <strong>{camp.endDate}</strong>
+                    </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-lg font-black text-pink-500">₱{camp.raisedAmount.toLocaleString()}</div>
-                    <div className="text-[11px] text-slate-500">{camp.donorsCount} Donors</div>
+
+                  <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                    <div className="text-left sm:text-right">
+                      <div className="text-lg font-black text-pink-500">₱{camp.raisedAmount.toLocaleString()}</div>
+                      <div className="text-[11px] text-slate-500">{camp.donorsCount} Donors</div>
+                    </div>
+
+                    <button
+                      onClick={() => setEditingCampaign(camp)}
+                      className="px-3.5 py-2 rounded-xl bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 font-black text-xs border border-indigo-500/30 transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+                    >
+                      <span>✏️ Edit Fund & Goal</span>
+                    </button>
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-slate-800">
+                <div className={`pt-3 border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
                   <div className="text-xs font-bold text-slate-400 mb-2">Recent GCash / Maya Verified Donors:</div>
                   <div className="space-y-1.5">
                     {(camp.recentDonors || []).map((donor, idx) => (
-                      <div key={idx} className="p-2 rounded-xl bg-slate-950/40 border border-slate-800 flex items-center justify-between text-xs">
+                      <div key={idx} className={`p-2 rounded-xl border flex items-center justify-between text-xs ${
+                        isDark ? 'bg-slate-950/40 border-slate-800' : 'bg-slate-50 border-slate-200'
+                      }`}>
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-white">{donor.name}</span>
+                          <span className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>{donor.name}</span>
                           {donor.refNumber && (
-                            <span className="font-mono text-[10px] text-emerald-400">Ref: #{donor.refNumber}</span>
+                            <span className="font-mono text-[10px] text-emerald-500">Ref: #{donor.refNumber}</span>
                           )}
                         </div>
-                        <span className="font-black text-pink-400">+₱{donor.amount.toLocaleString()}</span>
+                        <span className="font-black text-pink-500">+₱{donor.amount.toLocaleString()}</span>
                       </div>
                     ))}
                   </div>
@@ -1691,6 +1714,13 @@ export const AdminPortal = () => {
       <AddUserModal
         isOpen={showAddUserModal}
         onClose={() => setShowAddUserModal(false)}
+      />
+
+      {/* Edit Campaign / Seed Fund Modal */}
+      <EditCampaignModal
+        isOpen={!!editingCampaign}
+        onClose={() => setEditingCampaign(null)}
+        campaign={editingCampaign}
       />
     </div>
   );

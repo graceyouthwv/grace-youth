@@ -2,10 +2,11 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { Heart, Users, Target, Calendar, ArrowRight, Sparkles } from 'lucide-react';
 
-export const CampaignCard = ({ campaign, onDonateClick, onDonate }) => {
-  const { theme } = useApp();
+export const CampaignCard = ({ campaign, onDonateClick, onDonate, onEdit }) => {
+  const { theme, currentUser } = useApp();
   const isDark = theme === 'dark';
   const handleDonate = onDonateClick || onDonate;
+  const canEdit = currentUser && (currentUser.role === 'leader' || currentUser.role === 'worker' || currentUser.role === 'council');
 
   const percentage = Math.min(100, Math.round((campaign.raisedAmount / campaign.targetAmount) * 100));
 
@@ -28,6 +29,21 @@ export const CampaignCard = ({ campaign, onDonateClick, onDonate }) => {
             <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-900/80 text-indigo-200 border border-indigo-500/30">
               {campaign.campusName}
             </span>
+          </div>
+
+          <div className="absolute top-3 right-3">
+            {canEdit && onEdit && (
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onEdit(campaign);
+                }}
+                className="px-2.5 py-1 rounded-full text-[10px] font-black bg-black/70 hover:bg-black/90 backdrop-blur-md text-amber-300 border border-amber-500/40 shadow-md cursor-pointer flex items-center gap-1 transition-all"
+              >
+                <span>✏️ Edit Fund</span>
+              </button>
+            )}
           </div>
 
           <div className="absolute bottom-3 left-3 right-3 text-white">
