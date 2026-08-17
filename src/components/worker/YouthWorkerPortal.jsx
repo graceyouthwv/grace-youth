@@ -29,13 +29,15 @@ import {
   CheckSquare,
   Square,
   Edit3,
-  PlusCircle
+  PlusCircle,
+  Eye
 } from 'lucide-react';
 import { EditProfileModal } from '../profile/EditProfileModal';
 import { Modal } from '../common/Modal';
 import { triggerConfetti } from '../../utils/helpers';
 import { AddLessonModal } from './AddLessonModal';
 import { EditLessonModal } from './EditLessonModal';
+import { ViewLessonModal } from './ViewLessonModal';
 import { AddSeriesModal } from '../admin/AddSeriesModal';
 import { FileUp, UploadCloud, Trash, Trash2 } from 'lucide-react';
 
@@ -63,6 +65,7 @@ export const YouthWorkerPortal = () => {
   const [showAddLessonModal, setShowAddLessonModal] = useState(false);
   const [showAddSeriesModal, setShowAddSeriesModal] = useState(false);
   const [editingLessonData, setEditingLessonData] = useState(null); // { seriesId, lesson }
+  const [viewingLessonData, setViewingLessonData] = useState(null); // { lesson, seriesTitle }
   const [editingNoteStudentId, setEditingNoteStudentId] = useState(null);
   const [noteText, setNoteText] = useState('');
   const [targetSeriesForLesson, setTargetSeriesForLesson] = useState(null);
@@ -883,20 +886,21 @@ export const YouthWorkerPortal = () => {
                         <div className="flex items-center gap-1.5 shrink-0">
                           <button
                             type="button"
+                            onClick={() => setViewingLessonData({ lesson, seriesTitle: series.title })}
+                            className="p-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500 text-emerald-400 hover:text-white border border-emerald-500/30 transition-all cursor-pointer flex items-center gap-1 text-[11px] font-bold"
+                            title="View Lesson Guide & Scriptures"
+                          >
+                            <Eye className="w-3.5 h-3.5" />
+                            <span>View</span>
+                          </button>
+
+                          <button
+                            type="button"
                             onClick={() => setEditingLessonData({ seriesId: series.id, lesson })}
                             className="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-slate-950 border border-amber-500/30 transition-all cursor-pointer"
                             title="Edit Lesson & PDF File"
                           >
                             <Edit3 className="w-3.5 h-3.5" />
-                          </button>
-
-                          <button
-                            type="button"
-                            onClick={() => showToast(`📥 Downloaded ${lesson.fileName || lesson.title + '_Guide.pdf'}!`, 'success')}
-                            className="p-1.5 rounded-lg bg-indigo-600/10 hover:bg-indigo-600 text-indigo-400 hover:text-white border border-indigo-500/30 transition-all cursor-pointer"
-                            title="Download Lesson PDF Guide"
-                          >
-                            <Download className="w-3.5 h-3.5" />
                           </button>
 
                           <button
@@ -1113,6 +1117,14 @@ export const YouthWorkerPortal = () => {
         onClose={() => setEditingLessonData(null)}
         seriesId={editingLessonData?.seriesId}
         lesson={editingLessonData?.lesson}
+      />
+
+      {/* View Lesson Modal */}
+      <ViewLessonModal
+        isOpen={!!viewingLessonData}
+        onClose={() => setViewingLessonData(null)}
+        lesson={viewingLessonData?.lesson}
+        seriesTitle={viewingLessonData?.seriesTitle}
       />
     </div>
   );

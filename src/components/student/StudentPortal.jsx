@@ -22,12 +22,14 @@ import {
 import { DailyDevotional } from '../dashboard/DailyDevotional';
 import { VolunteerModal } from '../common/VolunteerModal';
 import { UploadSongModal } from './UploadSongModal';
-import { UploadCloud, FileUp } from 'lucide-react';
+import { ViewSongModal } from './ViewSongModal';
+import { UploadCloud, FileUp, Eye } from 'lucide-react';
 
 export const StudentPortal = () => {
   const { currentUser, myBookings, myGroups, bibleStudies, prayers, cancelBooking, setActiveTab, showToast, theme } = useApp();
   const [showVolunteerModal, setShowVolunteerModal] = useState(false);
   const [showUploadSongModal, setShowUploadSongModal] = useState(false);
+  const [selectedSongForView, setSelectedSongForView] = useState(null);
   const isDark = theme === 'dark';
 
   const [musicSetlist, setMusicSetlist] = useState([
@@ -267,7 +269,11 @@ export const StudentPortal = () => {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                   {musicSetlist.map((item) => (
-                    <div key={item.id} className="p-3 rounded-2xl bg-slate-950/70 border border-slate-800 text-xs flex items-center justify-between gap-2 group hover:border-slate-700 transition-all">
+                    <div
+                      key={item.id}
+                      onClick={() => setSelectedSongForView(item)}
+                      className="p-3 rounded-2xl bg-slate-950/70 border border-slate-800 text-xs flex items-center justify-between gap-2 group hover:border-pink-500/50 transition-all cursor-pointer"
+                    >
                       <div className="min-w-0 flex-1">
                         <div className="font-bold text-white truncate flex items-center gap-1.5">
                           <span>{item.song}</span>
@@ -278,11 +284,16 @@ export const StudentPortal = () => {
                       </div>
 
                       <button
-                        onClick={() => showToast(`📥 Downloaded ${item.fileName || item.song + '_Chords.pdf'}!`, 'success')}
-                        className="p-2 rounded-xl bg-slate-900 hover:bg-indigo-600/30 text-indigo-400 hover:text-white border border-slate-800 hover:border-indigo-500/40 transition-all cursor-pointer shrink-0"
-                        title="Download PDF Chord Sheet"
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedSongForView(item);
+                        }}
+                        className="px-3 py-1.5 rounded-xl bg-pink-600/20 hover:bg-pink-600 text-pink-300 hover:text-white border border-pink-500/30 transition-all cursor-pointer shrink-0 flex items-center gap-1 font-bold text-[11px]"
+                        title="View PDF / Chords"
                       >
-                        <Download className="w-3.5 h-3.5" />
+                        <Eye className="w-3.5 h-3.5" />
+                        <span>View</span>
                       </button>
                     </div>
                   ))}
@@ -408,6 +419,13 @@ export const StudentPortal = () => {
         isOpen={showUploadSongModal}
         onClose={() => setShowUploadSongModal(false)}
         onAddSong={(newSong) => setMusicSetlist((prev) => [newSong, ...prev])}
+      />
+
+      <ViewSongModal
+        isOpen={!!selectedSongForView}
+        onClose={() => setSelectedSongForView(null)}
+        song={selectedSongForView}
+        onDeleteSong={(songId) => setMusicSetlist((prev) => prev.filter((s) => s.id !== songId))}
       />
     </div>
   );

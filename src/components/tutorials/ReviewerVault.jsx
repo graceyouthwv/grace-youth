@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { FileText, Download, Sparkles, Search, FileUp, Plus, Edit3 } from 'lucide-react';
+import { FileText, Download, Sparkles, Search, FileUp, Plus, Edit3, Eye } from 'lucide-react';
 import { SUBJECT_CATEGORIES } from '../../data/campuses';
 import { UploadReviewerModal } from './UploadReviewerModal';
 import { EditReviewerModal } from './EditReviewerModal';
+import { ViewReviewerModal } from './ViewReviewerModal';
 
 export const ReviewerVault = () => {
   const { reviewers, incrementReviewerDownload, selectedCampus, theme } = useApp();
@@ -11,6 +12,7 @@ export const ReviewerVault = () => {
   const [selectedCategory, setSelectedCategory] = useState('All Subjects');
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [editingReviewer, setEditingReviewer] = useState(null);
+  const [selectedReviewerForView, setSelectedReviewerForView] = useState(null);
   const isDark = theme === 'dark';
 
   const filteredReviewers = reviewers.filter((rev) => {
@@ -155,18 +157,21 @@ export const ReviewerVault = () => {
               </div>
 
               {/* Action Footer */}
-              <div className={`pt-3 border-t flex items-center justify-between ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                <span className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              <div className={`pt-3 border-t flex items-center justify-between gap-2 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                <span className={`text-xs truncate ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                   Shared by <strong className={isDark ? 'text-white' : 'text-slate-900'}>{rev.contributor}</strong>
                 </span>
 
-                <button
-                  onClick={() => incrementReviewerDownload(rev.id)}
-                  className="flex items-center gap-1.5 px-4 py-2 rounded-2xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
-                >
-                  <Download className="w-3.5 h-3.5 text-slate-950" />
-                  <span className="text-slate-950 font-black">Download PDF</span>
-                </button>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setSelectedReviewerForView(rev)}
+                    className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-sky-500 hover:bg-sky-400 text-slate-950 font-black text-xs shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer"
+                  >
+                    <Eye className="w-3.5 h-3.5 text-slate-950" />
+                    <span className="text-slate-950 font-black">View Reviewer</span>
+                  </button>
+                </div>
               </div>
             </div>
           ))
@@ -197,6 +202,12 @@ export const ReviewerVault = () => {
         isOpen={!!editingReviewer}
         onClose={() => setEditingReviewer(null)}
         reviewer={editingReviewer}
+      />
+
+      <ViewReviewerModal
+        isOpen={!!selectedReviewerForView}
+        onClose={() => setSelectedReviewerForView(null)}
+        reviewer={selectedReviewerForView}
       />
     </div>
   );
