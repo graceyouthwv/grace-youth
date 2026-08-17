@@ -7,11 +7,14 @@ import { INITIAL_EVENTS } from '../data/events';
 import { DAILY_DEVOTIONALS } from '../data/devotionals';
 import { INITIAL_REVIEWERS } from '../data/reviewers';
 import { INITIAL_CAMPAIGNS } from '../data/campaigns';
+import { DEMO_ACCOUNTS } from '../data/demoAccounts';
 import { triggerConfetti } from '../utils/helpers';
+
+export { DEMO_ACCOUNTS };
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v7_tutors_restored';
+const STORAGE_VERSION = 'gy_clean_v8_prod_sync';
 
 const GUEST_USER = {
   id: 'guest',
@@ -26,143 +29,49 @@ const GUEST_USER = {
   bio: 'Exploring Grace Youth campus tutorials and community.'
 };
 
-export const DEMO_ACCOUNTS = [
+const DEFAULT_BOOKINGS = [
   {
-    id: 'usr-student-1',
-    name: 'Bea Claridad',
-    email: 'bea@upv.edu.ph',
-    password: 'password123',
-    role: 'student',
-    roleLabel: 'Student (BS Biology, 2nd Year)',
-    campusId: 'upv',
-    campusName: 'UP Visayas (Miagao)',
-    yearLevel: '2nd Year',
-    isApproved: true,
-    status: 'Active',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-    bio: 'UPV Bio sophomore. Seeking God in the midst of lab practicals and organic chemistry!'
-  },
-  {
-    id: 'usr-tutor-1',
-    name: 'Joshua Alcantara',
-    email: 'joshua@graceyouth.ph',
-    password: 'password123',
-    role: 'tutor',
-    roleLabel: 'Volunteer Peer Tutor (BS Math, 4th Year)',
-    campusId: 'upv',
-    campusName: 'UP Visayas (Miagao)',
-    yearLevel: '4th Year',
-    subjects: ['Calculus 1 & 2', 'Algebra', 'Trigonometry', 'General Physics'],
-    preferredMode: 'Hybrid',
-    isApproved: true,
-    status: 'Active',
-    verificationSteps: { applicationReview: true, backgroundCheck: true, certified: true },
-    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
-    bio: 'Calculus and physics peer tutor. Ready to help students ace their exams!'
-  },
-  {
-    id: 'usr-worker-1',
-    name: 'Hannah Grace Dela Cruz',
-    email: 'worker@graceyouth.ph',
-    password: 'password123',
-    role: 'worker',
-    roleLabel: 'Campus Youth Worker / Missionary',
-    campusId: 'isufst',
-    campusName: 'ISUFST & Iloilo Campuses',
-    yearLevel: 'Staff',
-    isApproved: true,
-    status: 'Active',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-    bio: 'Full-time campus youth missionary leading discipleship and pastoral care across Iloilo schools.'
-  },
-  {
-    id: 'usr-volunteer-music',
-    name: 'Dave Gabriel Cruz',
-    email: 'music@graceyouth.ph',
-    password: 'password123',
-    role: 'student',
-    roleLabel: 'Worship Volunteer (Acoustic & Vocals)',
-    campusId: 'upv',
-    campusName: 'UP Visayas (Miagao)',
-    yearLevel: '3rd Year',
-    volunteerTrack: '🎸 Campus Worship & Music Team',
-    volunteerRole: 'Acoustic Guitar & Backing Vocals',
-    isApproved: true,
-    status: 'Active',
-    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
-    bio: 'Serving in the campus worship team for weekly fellowships and youth camps!'
-  },
-  {
-    id: 'usr-volunteer-hosp',
-    name: 'Chloe Anne Santos',
-    email: 'hospitality@graceyouth.ph',
-    password: 'password123',
-    role: 'student',
-    roleLabel: 'Outreach & Hospitality Volunteer',
-    campusId: 'wvsu',
-    campusName: 'WVSU La Paz',
-    yearLevel: '2nd Year',
-    volunteerTrack: '☕ Exam Outreach & Care Team',
-    volunteerRole: 'Midterm Coffee Station & Welcoming',
-    isApproved: true,
-    status: 'Active',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    bio: 'Serving free coffee, snacks, and encouragement cards to students during finals week.'
-  },
-  {
-    id: 'usr-council-1',
-    name: 'Keziah Marie Reyes',
-    email: 'council@graceyouth.ph',
-    password: 'password123',
-    role: 'council',
-    roleLabel: 'Youth Council Trustee / Treasurer',
-    campusId: 'cpu',
-    campusName: 'CPU Jaro & Regional Council',
-    yearLevel: '4th Year / Student Council',
-    isApproved: true,
-    status: 'Active',
-    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
-    bio: 'Serving on the Grace Youth Council overseeing financial transparency, event budgets, and campus strategy.'
-  },
-  {
-    id: 'usr-admin-1',
-    name: 'Pastor Tim',
-    email: 'graceyouth.wv@proton.me',
-    password: 'password123',
-    role: 'leader',
-    roleLabel: 'Ministry Admin / Coordinator',
-    campusId: 'wvsu',
-    campusName: 'WVSU & Regional Network',
-    yearLevel: 'Staff',
-    isApproved: true,
-    status: 'Active',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-    bio: 'Regional coordinator supervising peer tutorials, discipleship staff, and campus outreach in Iloilo.'
+    id: 'bk-default-1',
+    tutorId: 'tutor-1',
+    tutorName: 'Joshua Alcantara',
+    studentName: 'Bea Claridad',
+    studentContact: 'bea.claridad@upv.edu.ph',
+    subject: 'Calculus 1 (Derivatives & Chain Rule)',
+    day: 'Tuesday',
+    time: '4:00 PM - 5:30 PM',
+    mode: 'In-Person (CAS Gazebo, UPV)',
+    meetingNote: 'Bring your Math 17 syllabus and previous quiz papers.',
+    status: 'Confirmed'
   }
 ];
 
-export const AppProvider = ({ children }) => {
-  // Check and run storage clean migration if old version exists
-  useEffect(() => {
+const checkVersionAndGet = (key, fallback) => {
+  try {
     const currentVersion = localStorage.getItem('gy_version');
     if (currentVersion !== STORAGE_VERSION) {
-      localStorage.removeItem('gy_tutors');
-      localStorage.removeItem('gy_bible_studies');
-      localStorage.removeItem('gy_requests');
-      localStorage.removeItem('gy_my_bookings');
-      localStorage.removeItem('gy_my_groups');
-      localStorage.removeItem('gy_campaigns');
-      localStorage.removeItem('gy_prayers');
-      localStorage.removeItem('gy_lg_requests');
-      localStorage.removeItem('gy_volunteer_apps');
-      localStorage.setItem('gy_version', STORAGE_VERSION);
+      return fallback;
     }
+    const saved = localStorage.getItem(key);
+    if (!saved) return fallback;
+    const parsed = JSON.parse(saved);
+    if (Array.isArray(fallback)) {
+      return Array.isArray(parsed) && parsed.length > 0 ? parsed : fallback;
+    }
+    return parsed || fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+
+export const AppProvider = ({ children }) => {
+  // Sync storage version
+  useEffect(() => {
+    localStorage.setItem('gy_version', STORAGE_VERSION);
   }, []);
 
-  const [registeredUsers, setRegisteredUsers] = useState(() => {
-    const saved = localStorage.getItem('gy_registered_users');
-    return saved ? JSON.parse(saved) : DEMO_ACCOUNTS;
-  });
+  const [registeredUsers, setRegisteredUsers] = useState(() =>
+    checkVersionAndGet('gy_registered_users', DEMO_ACCOUNTS)
+  );
 
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('gy_active_session');
@@ -198,89 +107,53 @@ export const AppProvider = ({ children }) => {
     return () => window.removeEventListener('appinstalled', handleAppInstalled);
   }, []);
 
-  const [tutors, setTutors] = useState(() => {
-    const saved = localStorage.getItem('gy_tutors');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_TUTORS;
-  });
+  const [tutors, setTutors] = useState(() =>
+    checkVersionAndGet('gy_tutors', INITIAL_TUTORS)
+  );
 
-  const [requests, setRequests] = useState(() => {
-    const saved = localStorage.getItem('gy_requests');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_REQUESTS;
-  });
+  const [requests, setRequests] = useState(() =>
+    checkVersionAndGet('gy_requests', INITIAL_REQUESTS)
+  );
 
-  const [bibleStudies, setBibleStudies] = useState(() => {
-    const saved = localStorage.getItem('gy_bible_studies');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_BIBLE_STUDIES;
-  });
+  const [bibleStudies, setBibleStudies] = useState(() =>
+    checkVersionAndGet('gy_bible_studies', INITIAL_BIBLE_STUDIES)
+  );
 
-  const [lifeGroupRequests, setLifeGroupRequests] = useState(() => {
-    const saved = localStorage.getItem('gy_lg_requests');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [volunteerApps, setVolunteerApps] = useState(() =>
+    checkVersionAndGet('gy_volunteer_apps', [])
+  );
 
-  const [prayers, setPrayers] = useState(() => {
-    const saved = localStorage.getItem('gy_prayers');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_PRAYERS;
-  });
+  const [lifeGroupRequests, setLifeGroupRequests] = useState(() =>
+    checkVersionAndGet('gy_lg_requests', [])
+  );
 
-  const [events, setEvents] = useState(() => {
-    const saved = localStorage.getItem('gy_events');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_EVENTS;
-  });
+  const [prayers, setPrayers] = useState(() =>
+    checkVersionAndGet('gy_prayers', INITIAL_PRAYERS)
+  );
 
-  const [reviewers, setReviewers] = useState(() => {
-    const saved = localStorage.getItem('gy_reviewers');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_REVIEWERS;
-  });
+  const [events, setEvents] = useState(() =>
+    checkVersionAndGet('gy_events', INITIAL_EVENTS)
+  );
 
-  const [campaigns, setCampaigns] = useState(() => {
-    const saved = localStorage.getItem('gy_campaigns');
-    return saved ? JSON.parse(saved) : INITIAL_CAMPAIGNS;
-  });
+  const [reviewers, setReviewers] = useState(() =>
+    checkVersionAndGet('gy_reviewers', INITIAL_REVIEWERS)
+  );
 
-  const [pastoralRequests, setPastoralRequests] = useState(() => {
-    const saved = localStorage.getItem('gy_pastoral_requests');
-    return saved ? JSON.parse(saved) : [
-      {
-        id: 'pr-demo-1',
-        studentName: 'Bea Claridad',
-        studentContact: '0917-882-9471 (Messenger: Bea Claridad)',
-        workerId: 'w-1',
-        workerName: 'Hannah Grace Dela Cruz',
-        connectType: 'coffee',
-        notes: 'Midterm thesis burnout and seeking prayer for peace of mind.',
-        campusName: 'UP Visayas',
-        createdAt: '10 mins ago',
-        status: 'Pending Contact'
-      }
-    ];
-  });
+  const [campaigns, setCampaigns] = useState(() =>
+    checkVersionAndGet('gy_campaigns', INITIAL_CAMPAIGNS)
+  );
 
-  const DEFAULT_BOOKINGS = [
-    {
-      id: 'bk-default-1',
-      tutorId: 'tutor-1',
-      tutorName: 'Joshua Alcantara',
-      studentName: 'Bea Claridad',
-      studentContact: 'bea.claridad@upv.edu.ph',
-      subject: 'Calculus 1 (Derivatives & Chain Rule)',
-      day: 'Tuesday',
-      time: '4:00 PM - 5:30 PM',
-      mode: 'In-Person (CAS Gazebo, UPV)',
-      meetingNote: 'Bring your Math 17 syllabus and previous quiz papers.',
-      status: 'Confirmed'
-    }
-  ];
+  const [workerConnectRequests, setWorkerConnectRequests] = useState(() =>
+    checkVersionAndGet('gy_worker_connect_requests', [])
+  );
 
-  const [myBookings, setMyBookings] = useState(() => {
-    const saved = localStorage.getItem('gy_my_bookings');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : DEFAULT_BOOKINGS;
-  });
+  const [myBookings, setMyBookings] = useState(() =>
+    checkVersionAndGet('gy_my_bookings', DEFAULT_BOOKINGS)
+  );
 
-  const [myGroups, setMyGroups] = useState(() => {
-    const saved = localStorage.getItem('gy_my_groups');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [myGroups, setMyGroups] = useState(() =>
+    checkVersionAndGet('gy_my_groups', ['bs-1'])
+  );
 
   const [toasts, setToasts] = useState([]);
 
