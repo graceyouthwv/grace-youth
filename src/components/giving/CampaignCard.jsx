@@ -6,7 +6,8 @@ export const CampaignCard = ({ campaign, onDonateClick, onDonate, onEdit }) => {
   const { theme, currentUser } = useApp();
   const isDark = theme === 'dark';
   const handleDonate = onDonateClick || onDonate;
-  const canEdit = !!onEdit;
+  const isAdmin = currentUser && (currentUser.role === 'leader' || currentUser.role === 'council' || currentUser.isAdmin === true);
+  const canEdit = isAdmin && !!onEdit;
 
   const percentage = Math.min(100, Math.round((campaign.raisedAmount / campaign.targetAmount) * 100));
 
@@ -32,7 +33,7 @@ export const CampaignCard = ({ campaign, onDonateClick, onDonate, onEdit }) => {
           </div>
 
           <div className="absolute top-3 right-3">
-            {canEdit && onEdit && (
+            {canEdit && (
               <button
                 type="button"
                 onClick={(e) => {
