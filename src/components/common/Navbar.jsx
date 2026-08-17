@@ -79,6 +79,13 @@ export const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  useEffect(() => {
+    window.__openAdminLoginModal = () => setShowAdminLoginModal(true);
+    return () => {
+      window.__openAdminLoginModal = null;
+    };
+  }, []);
+
   const handleOpenAuth = (mode) => {
     setAuthMode(mode);
     setShowAuthModal(true);

@@ -179,51 +179,27 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
         {/* 1. SIGN IN FORM */}
         {mode === 'login' && (
           <div className="space-y-3.5">
-            {/* Quick Test Demo Account Fillers */}
+            {/* Quick Test Demo Account Fillers (Student & Peer Tutor) */}
             <div className={`p-3 rounded-2xl border ${isDark ? 'bg-slate-900/70 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
               <div className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
-                <span>⚡ Test Demo Accounts:</span>
+                <span>⚡ Test Accounts (Students & Tutors):</span>
               </div>
-              <div className="grid grid-cols-5 gap-1">
+              <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
                   onClick={() => handleFillDemo('bea@upv.edu.ph', 'password123')}
-                  className="px-1 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 rounded-xl text-[10px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
+                  className="px-2.5 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 rounded-xl text-xs font-bold text-center cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  <GraduationCap className="w-3.5 h-3.5" />
-                  <span className="truncate text-[9px] mt-0.5">Student</span>
+                  <GraduationCap className="w-4 h-4 text-indigo-400" />
+                  <span>🎓 Student (UPV)</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleFillDemo('joshua@graceyouth.ph', 'password123')}
-                  className="px-1 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-[10px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
+                  className="px-2.5 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-xs font-bold text-center cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  <BookOpen className="w-3.5 h-3.5" />
-                  <span className="truncate text-[9px] mt-0.5">Tutor</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleFillDemo('council@graceyouth.ph', 'password123')}
-                  className="px-1 py-1.5 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 border border-pink-500/20 rounded-xl text-[10px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
-                >
-                  <Users className="w-3.5 h-3.5" />
-                  <span className="truncate text-[9px] mt-0.5">Council</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleFillDemo('worker@graceyouth.ph', 'password123')}
-                  className="px-1 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-xl text-[10px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
-                >
-                  <HeartHandshake className="w-3.5 h-3.5" />
-                  <span className="truncate text-[9px] mt-0.5">Worker</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleFillDemo('graceyouth.wv@proton.me', 'graceyouth2026')}
-                  className="px-1 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-xl text-[10px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
-                >
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span className="truncate text-[9px] mt-0.5">Admin</span>
+                  <BookOpen className="w-4 h-4 text-amber-400" />
+                  <span>👨‍🏫 Peer Tutor</span>
                 </button>
               </div>
             </div>
@@ -284,10 +260,35 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 type="submit"
                 className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-indigo-500/25 transition-all cursor-pointer flex items-center justify-center gap-2"
               >
-                <span>Sign In</span>
+                <span>Sign In as Student / Tutor</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
+
+            {/* Dedicated Leadership, Council & Staff Gateway Link */}
+            <div className={`p-3.5 rounded-2xl border text-center space-y-1.5 ${
+              isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-100 border-slate-200'
+            }`}>
+              <div className="text-xs font-bold text-slate-400">
+                🏛️ Ministry Leadership, Youth Council, Worker or Volunteer?
+              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  onClose();
+                  if (window.__openAdminLoginModal) {
+                    window.__openAdminLoginModal();
+                  } else {
+                    const adminBtn = document.querySelector('[data-action="open-admin"]');
+                    if (adminBtn) adminBtn.click();
+                  }
+                }}
+                className="w-full py-2 bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <ShieldCheck className="w-3.5 h-3.5" />
+                <span>Open Leadership & Staff Gateway &rarr;</span>
+              </button>
+            </div>
           </div>
         )}
 
