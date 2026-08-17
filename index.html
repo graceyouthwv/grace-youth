@@ -24,9 +24,17 @@
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
     <script>
+      // Clear legacy service worker caches and force immediate live reload
       if ('serviceWorker' in navigator) {
-        window.addEventListener('load', () => {
-          navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW reg error:', err));
+        caches.keys().then((keys) => {
+          keys.forEach((key) => {
+            if (key !== 'grace-youth-v4') caches.delete(key);
+          });
+        });
+        navigator.serviceWorker.getRegistrations().then((registrations) => {
+          for (const registration of registrations) {
+            registration.update();
+          }
         });
       }
     </script>
