@@ -74,7 +74,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={mode === 'login' ? '🔐 Sign In to Grace Youth' : '✨ Register / Apply for Access'}
+      title={mode === 'login' ? '🔐 Sign In to Grace Youth' : '✨ Create Student Account / Apply'}
       maxWidth="max-w-md"
     >
       <div className="space-y-4 text-xs sm:text-sm">
@@ -100,7 +100,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
-            Create Account / Apply
+            Create Account
           </button>
         </div>
 
@@ -207,6 +207,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 >
                   <GraduationCap className="w-4 h-4" />
                   <span className="text-[11px] font-black">Student</span>
+                  <span className="text-[9px] opacity-80 font-medium">Instant Entry</span>
                 </button>
 
                 <button
@@ -219,7 +220,8 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   }`}
                 >
                   <BookOpen className="w-4 h-4" />
-                  <span className="text-[11px] font-black">Apply as Tutor</span>
+                  <span className="text-[11px] font-black">Peer Tutor</span>
+                  <span className="text-[9px] opacity-80 font-medium">Needs Admin</span>
                 </button>
 
                 <button
@@ -233,12 +235,20 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 >
                   <HeartHandshake className="w-4 h-4" />
                   <span className="text-[11px] font-black">Youth Worker</span>
+                  <span className="text-[9px] opacity-80 font-medium">Staff Review</span>
                 </button>
               </div>
             </div>
 
-            {/* Note for Tutors & Youth Workers requiring verification */}
-            {(role === 'tutor' || role === 'worker') && (
+            {/* Note for Students vs Staff */}
+            {role === 'student' ? (
+              <div className={`p-2.5 rounded-xl border text-[11px] leading-relaxed flex items-center gap-2 ${
+                isDark ? 'bg-indigo-950/40 border-indigo-500/30 text-indigo-200' : 'bg-indigo-50 border-indigo-200 text-indigo-950'
+              }`}>
+                <Sparkles className="w-3.5 h-3.5 text-pink-500 shrink-0" />
+                <span><strong>Instant Student Access:</strong> Create your account to immediately book peer tutors, join Life Groups, and download reviewers. No admin approval needed.</span>
+              </div>
+            ) : (
               <div className={`p-3 rounded-xl border text-[11px] leading-relaxed flex items-start gap-2 ${
                 role === 'tutor'
                   ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-500/30 text-amber-950 dark:text-amber-200'
@@ -246,7 +256,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               }`}>
                 <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
                 <div>
-                  <strong>Admin Verification Required:</strong> {role === 'tutor' ? 'Tutor applications undergo subject & safeguarding review in the Admin Command Center before account activation.' : 'Youth Worker accounts require leadership review in the Admin Portal before activation.'}
+                  <strong>Admin Verification Required:</strong> {role === 'tutor' ? 'Tutor applicants are verified by leadership in the Admin Command Center before their tutor account is activated.' : 'Youth Worker accounts require leadership authorization in the Admin Portal.'}
                 </div>
               </div>
             )}
