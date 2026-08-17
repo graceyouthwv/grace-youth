@@ -933,18 +933,18 @@ export const AdminPortal = () => {
                             onClick={() => handleToggleTutorCheck(tutor.id, 'step1_acads')}
                             className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
                               checks.step1_acads
-                                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20'
+                                ? isDark ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20' : 'bg-emerald-50 border-emerald-300 text-emerald-900 ring-1 ring-emerald-400/30'
                                 : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
                             }`}
                           >
                             <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
-                              checks.step1_acads ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-black' : 'border-slate-600'
+                              checks.step1_acads ? 'bg-emerald-500 border-emerald-500 text-white font-black' : isDark ? 'border-slate-600' : 'border-slate-400'
                             }`}>
                               {checks.step1_acads && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                             </div>
                             <div className="text-xs">
-                              <div className="font-bold text-white">1. Academic Competency</div>
-                              <div className="text-[11px] opacity-75 mt-0.5">Verified syllabus mastery & grades $\ge$ 85% in subjects.</div>
+                              <div className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>1. Academic Competency</div>
+                              <div className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>Verified syllabus mastery & grades ≥ 85% in subjects.</div>
                             </div>
                           </div>
 
@@ -953,18 +953,18 @@ export const AdminPortal = () => {
                             onClick={() => handleToggleTutorCheck(tutor.id, 'step2_conduct')}
                             className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
                               checks.step2_conduct
-                                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20'
+                                ? isDark ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20' : 'bg-emerald-50 border-emerald-300 text-emerald-900 ring-1 ring-emerald-400/30'
                                 : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
                             }`}
                           >
                             <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
-                              checks.step2_conduct ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-black' : 'border-slate-600'
+                              checks.step2_conduct ? 'bg-emerald-500 border-emerald-500 text-white font-black' : isDark ? 'border-slate-600' : 'border-slate-400'
                             }`}>
                               {checks.step2_conduct && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                             </div>
                             <div className="text-xs">
-                              <div className="font-bold text-white">2. Campus ID & Conduct</div>
-                              <div className="text-[11px] opacity-75 mt-0.5">Enrolled student standing & student safeguarding verified.</div>
+                              <div className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>2. Campus ID & Conduct</div>
+                              <div className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>Enrolled student standing & student safeguarding verified.</div>
                             </div>
                           </div>
 
@@ -973,18 +973,18 @@ export const AdminPortal = () => {
                             onClick={() => handleToggleTutorCheck(tutor.id, 'step3_honor')}
                             className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
                               checks.step3_honor
-                                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20'
+                                ? isDark ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20' : 'bg-emerald-50 border-emerald-300 text-emerald-900 ring-1 ring-emerald-400/30'
                                 : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
                             }`}
                           >
                             <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
-                              checks.step3_honor ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-black' : 'border-slate-600'
+                              checks.step3_honor ? 'bg-emerald-500 border-emerald-500 text-white font-black' : isDark ? 'border-slate-600' : 'border-slate-400'
                             }`}>
                               {checks.step3_honor && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                             </div>
                             <div className="text-xs">
-                              <div className="font-bold text-white">3. Peer Honor Code</div>
-                              <div className="text-[11px] opacity-75 mt-0.5">Committed to 100% free peer service & punctuality.</div>
+                              <div className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>3. Peer Honor Code</div>
+                              <div className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>Committed to 100% free peer service & punctuality.</div>
                             </div>
                           </div>
                         </div>
@@ -992,9 +992,9 @@ export const AdminPortal = () => {
 
                       {/* Final Certification Action */}
                       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                        <div className="text-xs text-slate-400">
+                        <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                           {progress.isComplete ? (
-                            <span className="text-emerald-400 font-bold flex items-center gap-1">
+                            <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
                               <CheckCircle2 className="w-4 h-4" /> All 3 verification steps passed! Ready to activate.
                             </span>
                           ) : (
@@ -1012,8 +1012,8 @@ export const AdminPortal = () => {
                           }}
                           className={`w-full sm:w-auto px-6 py-3 rounded-2xl font-black text-xs shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 ${
                             progress.isComplete
-                              ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 hover:scale-105 shadow-amber-500/25'
-                              : 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed'
+                              ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-white hover:scale-105 shadow-amber-500/25'
+                              : isDark ? 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed' : 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed'
                           }`}
                         >
                           <Award className="w-4 h-4" />
@@ -1153,18 +1153,18 @@ export const AdminPortal = () => {
                             onClick={() => handleToggleWorkerCheck(worker.id, 'step1_calling')}
                             className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
                               checks.step1_calling
-                                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20'
+                                ? isDark ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20' : 'bg-emerald-50 border-emerald-300 text-emerald-900 ring-1 ring-emerald-400/30'
                                 : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
                             }`}
                           >
                             <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
-                              checks.step1_calling ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-black' : 'border-slate-600'
+                              checks.step1_calling ? 'bg-emerald-500 border-emerald-500 text-white font-black' : isDark ? 'border-slate-600' : 'border-slate-400'
                             }`}>
                               {checks.step1_calling && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                             </div>
                             <div className="text-xs">
-                              <div className="font-bold text-white">1. Calling & Interview</div>
-                              <div className="text-[11px] opacity-75 mt-0.5">Faith testimony & campus discipleship vision interview passed.</div>
+                              <div className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>1. Calling & Interview</div>
+                              <div className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>Faith testimony & campus discipleship vision interview passed.</div>
                             </div>
                           </div>
 
@@ -1173,18 +1173,18 @@ export const AdminPortal = () => {
                             onClick={() => handleToggleWorkerCheck(worker.id, 'step2_reference')}
                             className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
                               checks.step2_reference
-                                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20'
+                                ? isDark ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20' : 'bg-emerald-50 border-emerald-300 text-emerald-900 ring-1 ring-emerald-400/30'
                                 : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
                             }`}
                           >
                             <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
-                              checks.step2_reference ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-black' : 'border-slate-600'
+                              checks.step2_reference ? 'bg-emerald-500 border-emerald-500 text-white font-black' : isDark ? 'border-slate-600' : 'border-slate-400'
                             }`}>
                               {checks.step2_reference && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                             </div>
                             <div className="text-xs">
-                              <div className="font-bold text-white">2. Church Endorsement</div>
-                              <div className="text-[11px] opacity-75 mt-0.5">Pastoral reference letter & spiritual maturity verified.</div>
+                              <div className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>2. Church Endorsement</div>
+                              <div className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>Pastoral reference letter & spiritual maturity verified.</div>
                             </div>
                           </div>
 
@@ -1193,18 +1193,18 @@ export const AdminPortal = () => {
                             onClick={() => handleToggleWorkerCheck(worker.id, 'step3_safeguarding')}
                             className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
                               checks.step3_safeguarding
-                                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20'
+                                ? isDark ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20' : 'bg-emerald-50 border-emerald-300 text-emerald-900 ring-1 ring-emerald-400/30'
                                 : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
                             }`}
                           >
                             <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
-                              checks.step3_safeguarding ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-black' : 'border-slate-600'
+                              checks.step3_safeguarding ? 'bg-emerald-500 border-emerald-500 text-white font-black' : isDark ? 'border-slate-600' : 'border-slate-400'
                             }`}>
                               {checks.step3_safeguarding && <Check className="w-3.5 h-3.5 stroke-[3]" />}
                             </div>
                             <div className="text-xs">
-                              <div className="font-bold text-white">3. Safeguarding Covenant</div>
-                              <div className="text-[11px] opacity-75 mt-0.5">Signed pastoral code of ethics & assigned campus station.</div>
+                              <div className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>3. Safeguarding Covenant</div>
+                              <div className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>Signed pastoral code of ethics & assigned campus station.</div>
                             </div>
                           </div>
                         </div>
@@ -1212,9 +1212,9 @@ export const AdminPortal = () => {
 
                       {/* Final Approval Action */}
                       <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
-                        <div className="text-xs text-slate-400">
+                        <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                           {progress.isComplete ? (
-                            <span className="text-emerald-400 font-bold flex items-center gap-1">
+                            <span className="text-emerald-600 dark:text-emerald-400 font-bold flex items-center gap-1">
                               <CheckCircle2 className="w-4 h-4" /> All 3 review requirements met! Ready to commission.
                             </span>
                           ) : (
@@ -1233,7 +1233,7 @@ export const AdminPortal = () => {
                           className={`w-full sm:w-auto px-6 py-3 rounded-2xl font-black text-xs shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 ${
                             progress.isComplete
                               ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white hover:scale-105 shadow-emerald-500/25'
-                              : 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed'
+                              : isDark ? 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed' : 'bg-slate-200 text-slate-400 border border-slate-300 cursor-not-allowed'
                           }`}
                         >
                           <CheckCircle2 className="w-4 h-4" />
