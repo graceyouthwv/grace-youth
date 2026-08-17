@@ -72,6 +72,10 @@ export const RequestBoard = () => {
         {filteredRequests.map((req) => {
           const isUrgent = req.urgency.toLowerCase().includes('high');
           const isClaimed = req.status.includes('Claimed');
+          const isOwnRequest = currentUser && (
+            (currentUser.name && req.author && currentUser.name.toLowerCase() === req.author.toLowerCase()) ||
+            (currentUser.email && req.authorEmail && currentUser.email.toLowerCase() === req.authorEmail.toLowerCase())
+          );
 
           return (
             <div
@@ -123,6 +127,10 @@ export const RequestBoard = () => {
                   <span className="inline-flex items-center gap-1 text-xs font-black text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-xl border border-emerald-500/30">
                     <CheckCircle className="w-3.5 h-3.5" />
                     <span>{req.status}</span>
+                  </span>
+                ) : isOwnRequest ? (
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-700">
+                    <span>👤 Posted by You</span>
                   </span>
                 ) : (
                   <button

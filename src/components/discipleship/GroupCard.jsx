@@ -4,9 +4,12 @@ import { Users, MapPin, Clock, CheckCircle2 } from 'lucide-react';
 import { JoinLifeGroupModal } from './JoinLifeGroupModal';
 
 export const GroupCard = ({ group }) => {
-  const { myGroups, joinLifeGroup, theme } = useApp();
+  const { currentUser, myGroups, joinLifeGroup, theme } = useApp();
   const [showJoinModal, setShowJoinModal] = useState(false);
   const isJoined = myGroups.includes(group.id);
+  const isFacilitator = currentUser && (
+    (currentUser.name && group.facilitator && currentUser.name.toLowerCase() === group.facilitator.toLowerCase())
+  );
   const isDark = theme === 'dark';
 
   return (
@@ -41,10 +44,10 @@ export const GroupCard = ({ group }) => {
           {/* Content Body */}
           <div className="p-5 space-y-3">
             <div className="text-xs text-slate-500 flex items-center justify-between">
-              <span>Facilitator: <strong className={isDark ? 'text-slate-200' : 'text-slate-900'}>{group.facilitator}</strong></span>
+              <span>Facilitator: <strong className={isDark ? 'text-slate-200' : 'text-slate-900'}>{group.facilitator} {isFacilitator && '(You)'}</strong></span>
               <span className="flex items-center gap-1 font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/30 px-2.5 py-0.5 rounded-full text-[10px]">
                 <Users className="w-3 h-3" />
-                <span>{group.currentMembers + (isJoined ? 1 : 0)} / {group.maxCapacity}</span>
+                <span>{group.currentMembers + (isJoined && !isFacilitator ? 1 : 0)} / {group.maxCapacity}</span>
               </span>
             </div>
 
@@ -82,12 +85,19 @@ export const GroupCard = ({ group }) => {
           <button
             onClick={() => setShowJoinModal(true)}
             className={`w-full py-3 rounded-2xl font-black text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 ${
-              isJoined
+              isFacilitator
+                ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-500/40'
+                : isJoined
                 ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/40'
                 : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-500/20 hover:scale-[1.01]'
             }`}
           >
-            {isJoined ? (
+            {isFacilitator ? (
+              <>
+                <CheckCircle2 className="w-4 h-4 text-amber-500" />
+                <span>👑 You Facilitate this Group</span>
+              </>
+            ) : isJoined ? (
               <>
                 <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
                 <span>Joined (View Circle)</span>

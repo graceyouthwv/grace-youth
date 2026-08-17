@@ -9,6 +9,12 @@ export const TutorCard = ({ tutor }) => {
   const isDark = theme === 'dark';
   const isHlg = language === 'hlg' || language === 'hil';
 
+  const isOwnListing = currentUser && (
+    (currentUser.id && tutor.id && currentUser.id === tutor.id) ||
+    (currentUser.name && tutor.name && currentUser.name.toLowerCase() === tutor.name.toLowerCase()) ||
+    (currentUser.email && tutor.email && currentUser.email.toLowerCase() === tutor.email.toLowerCase())
+  );
+
   return (
     <>
       <div className={`genz-card p-5 sm:p-6 border flex flex-col justify-between overflow-hidden group transition-all ${
@@ -49,8 +55,15 @@ export const TutorCard = ({ tutor }) => {
           </div>
 
           {/* Ministry Badge */}
-          <div className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/20 mb-3">
-            ✨ {tutor.badge}
+          <div className="flex items-center gap-2 mb-3">
+            <div className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/20">
+              ✨ {tutor.badge}
+            </div>
+            {isOwnListing && (
+              <div className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                👑 Your Listing
+              </div>
+            )}
           </div>
 
           {/* Bio */}
@@ -89,12 +102,18 @@ export const TutorCard = ({ tutor }) => {
             </span>
           </div>
 
-          <button
-            onClick={() => setShowBooking(true)}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs shadow-md hover:scale-105 transition-all cursor-pointer"
-          >
-            {isHlg ? 'Mag-Book sang Libreng Session →' : 'Book Free Session →'}
-          </button>
+          {isOwnListing ? (
+            <span className="px-3.5 py-2 rounded-xl bg-slate-800 text-amber-300 font-bold text-xs border border-amber-500/30">
+              👑 Your Tutor Profile
+            </span>
+          ) : (
+            <button
+              onClick={() => setShowBooking(true)}
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs shadow-md hover:scale-105 transition-all cursor-pointer"
+            >
+              {isHlg ? 'Mag-Book sang Libreng Session →' : 'Book Free Session →'}
+            </button>
+          )}
         </div>
       </div>
 

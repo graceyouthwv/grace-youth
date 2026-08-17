@@ -4,7 +4,7 @@ import { useApp } from '../../context/AppContext';
 import { Calendar, Clock, MapPin, CheckCircle2 } from 'lucide-react';
 
 export const BookingModal = ({ isOpen, onClose, tutor }) => {
-  const { currentUser, bookSession } = useApp();
+  const { currentUser, bookSession, showToast } = useApp();
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState('');
   const [studentNote, setStudentNote] = useState('');
@@ -12,8 +12,18 @@ export const BookingModal = ({ isOpen, onClose, tutor }) => {
 
   if (!tutor) return null;
 
+  const isOwnListing = currentUser && (
+    (currentUser.id && tutor.id && currentUser.id === tutor.id) ||
+    (currentUser.name && tutor.name && currentUser.name.toLowerCase() === tutor.name.toLowerCase()) ||
+    (currentUser.email && tutor.email && currentUser.email.toLowerCase() === tutor.email.toLowerCase())
+  );
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    if (isOwnListing) {
+      showToast('⚠️ You cannot book yourself for peer tutoring.', 'error');
+      return;
+    }
     if (!selectedSlot) return;
 
     bookSession(
@@ -36,6 +46,12 @@ export const BookingModal = ({ isOpen, onClose, tutor }) => {
       maxWidth="max-w-lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
+        {isOwnListing && (
+          <div className="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs">
+            👑 <strong>Your Own Listing:</strong> You cannot book yourself for a peer tutorial session.
+          </div>
+        )}
+
         {/* Tutor Header */}
         <div className="flex items-center gap-3 p-3 bg-slate-900 rounded-2xl border border-slate-800">
           <img
@@ -140,14 +156,14 @@ export const BookingModal = ({ isOpen, onClose, tutor }) => {
 
         <button
           type="submit"
-          disabled={!selectedSlot}
+          disabled={!selectedSlot || isOwnListing}
           className={`w-full py-3.5 rounded-2xl font-black text-xs sm:text-sm transition-all shadow-lg cursor-pointer ${
-            selectedSlot
+            selectedSlot && !isOwnListing
               ? 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-indigo-500/25 hover:scale-[1.01]'
               : 'bg-slate-800 text-slate-500 cursor-not-allowed'
           }`}
         >
-          Confirm Free Tutorial Booking
+          {isOwnListing ? 'Cannot Book Your Own Listing' : 'Confirm Free Tutorial Booking'}
         </button>
       </form>
     </Modal>
