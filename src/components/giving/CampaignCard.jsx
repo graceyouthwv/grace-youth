@@ -6,7 +6,7 @@ export const CampaignCard = ({ campaign, onDonateClick, onDonate, onEdit }) => {
   const { theme, currentUser } = useApp();
   const isDark = theme === 'dark';
   const handleDonate = onDonateClick || onDonate;
-  const canEdit = currentUser && (currentUser.role === 'leader' || currentUser.role === 'worker' || currentUser.role === 'council');
+  const canEdit = !!onEdit;
 
   const percentage = Math.min(100, Math.round((campaign.raisedAmount / campaign.targetAmount) * 100));
 

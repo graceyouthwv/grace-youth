@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Users, MapPin, Clock, CheckCircle2 } from 'lucide-react';
+import { Users, MapPin, Clock, CheckCircle2, Edit3 } from 'lucide-react';
 import { JoinLifeGroupModal } from './JoinLifeGroupModal';
+import { EditGroupModal } from './EditGroupModal';
 
 export const GroupCard = ({ group }) => {
   const { currentUser, myGroups, joinLifeGroup, theme } = useApp();
   const [showJoinModal, setShowJoinModal] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const isJoined = myGroups.includes(group.id);
   const isFacilitator = currentUser && (
     (currentUser.name && group.facilitator && currentUser.name.toLowerCase() === group.facilitator.toLowerCase())
@@ -30,6 +32,16 @@ export const GroupCard = ({ group }) => {
                 {group.campusName}
               </span>
             </div>
+
+            {/* Edit Group Trigger */}
+            <button
+              type="button"
+              onClick={() => setShowEditModal(true)}
+              className="absolute top-3 right-3 p-2 rounded-xl bg-black/60 backdrop-blur-md hover:bg-white hover:text-slate-900 text-white transition-all cursor-pointer shadow-md"
+              title="Edit / Delete Group"
+            >
+              <Edit3 className="w-3.5 h-3.5" />
+            </button>
 
             <div className="absolute bottom-3 left-3 right-3 text-white">
               <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 block mb-0.5 drop-shadow-sm">
@@ -68,7 +80,7 @@ export const GroupCard = ({ group }) => {
 
             {/* Tags */}
             <div className="flex flex-wrap gap-1.5 pt-1">
-              {group.tags.map((tag, idx) => (
+              {group.tags?.map((tag, idx) => (
                 <span
                   key={idx}
                   className="text-[10px] font-bold px-2 py-0.5 rounded-lg border bg-slate-100 dark:bg-slate-900 border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-400"
@@ -115,6 +127,12 @@ export const GroupCard = ({ group }) => {
       <JoinLifeGroupModal
         isOpen={showJoinModal}
         onClose={() => setShowJoinModal(false)}
+        group={group}
+      />
+
+      <EditGroupModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
         group={group}
       />
     </>

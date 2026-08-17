@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Calendar, Clock, MapPin, Users, Ticket, CheckCircle2, Gift } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Ticket, CheckCircle2, Gift, Edit3 } from 'lucide-react';
 import { generateCalendarICS } from '../../utils/helpers';
+import { EditEventModal } from './EditEventModal';
 
 export const EventCard = ({ event }) => {
   const { toggleEventRsvp } = useApp();
+  const [showEditModal, setShowEditModal] = useState(false);
 
   return (
     <div className="genz-card border border-slate-800 overflow-hidden flex flex-col justify-between group">
@@ -26,6 +28,16 @@ export const EventCard = ({ event }) => {
               {event.category}
             </span>
           </div>
+
+          {/* Edit Event Icon */}
+          <button
+            type="button"
+            onClick={() => setShowEditModal(true)}
+            className="absolute top-3 right-3 p-2 rounded-xl bg-black/60 backdrop-blur-md hover:bg-white hover:text-slate-900 text-white transition-all cursor-pointer shadow-md"
+            title="Edit / Delete Event"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+          </button>
 
           <div className="absolute bottom-3 left-3 right-3 text-white">
             <div className="text-xs text-amber-300 font-black flex items-center gap-1 mb-1 font-heading">
@@ -115,6 +127,12 @@ export const EventCard = ({ event }) => {
           </button>
         </div>
       </div>
+
+      <EditEventModal
+        isOpen={showEditModal}
+        onClose={() => setShowEditModal(false)}
+        event={event}
+      />
     </div>
   );
 };

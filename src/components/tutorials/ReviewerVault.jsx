@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { FileText, Download, Sparkles, Search, FileUp, Plus } from 'lucide-react';
+import { FileText, Download, Sparkles, Search, FileUp, Plus, Edit3 } from 'lucide-react';
 import { SUBJECT_CATEGORIES } from '../../data/campuses';
 import { UploadReviewerModal } from './UploadReviewerModal';
+import { EditReviewerModal } from './EditReviewerModal';
 
 export const ReviewerVault = () => {
   const { reviewers, incrementReviewerDownload, selectedCampus, theme } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Subjects');
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [editingReviewer, setEditingReviewer] = useState(null);
   const isDark = theme === 'dark';
 
   const filteredReviewers = reviewers.filter((rev) => {
@@ -71,15 +73,18 @@ export const ReviewerVault = () => {
           />
         </div>
 
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 scrollbar-none">
-          {SUBJECT_CATEGORIES.slice(0, 5).map((cat, idx) => (
+        {/* Categories */}
+        <div className="flex items-center gap-2 overflow-x-auto w-full pb-1 custom-scrollbar">
+          {SUBJECT_CATEGORIES.map((cat, i) => (
             <button
-              key={idx}
+              key={i}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
                 selectedCategory === cat
                   ? 'bg-sky-500 text-slate-950 shadow-md font-black'
-                  : isDark ? 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white' : 'bg-slate-100 text-slate-700 border border-slate-200 hover:bg-slate-200'
+                  : isDark
+                  ? 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
+                  : 'bg-white text-slate-600 hover:text-slate-900 border border-slate-200'
               }`}
             >
               {cat}
@@ -89,35 +94,42 @@ export const ReviewerVault = () => {
       </div>
 
       {/* Reviewer Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
         {filteredReviewers.length > 0 ? (
           filteredReviewers.map((rev) => (
             <div
               key={rev.id}
-              className={`p-5 rounded-3xl border flex flex-col justify-between transition-all ${
-                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+              className={`p-5 sm:p-6 rounded-3xl border flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 ${
+                isDark
+                  ? 'bg-slate-900 border-slate-800 hover:border-slate-700'
+                  : 'bg-white border-slate-200 hover:border-slate-300 shadow-xs hover:shadow-md'
               }`}
             >
               <div>
-                <div className="flex items-start justify-between gap-2 mb-3">
-                  <div className={`p-2.5 rounded-2xl border ${
-                    isDark ? 'bg-sky-500/10 text-sky-400 border-sky-500/20' : 'bg-sky-50 text-sky-600 border-sky-200'
-                  }`}>
-                    <FileText className="w-5 h-5" />
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-1 rounded-xl text-xs font-black bg-sky-500/10 text-sky-400 border border-sky-500/20">
+                      {rev.course}
+                    </span>
+                    <span className={`text-xs font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                      {rev.campusName}
+                    </span>
                   </div>
-                  <div className="text-right">
-                    <span className="text-[10px] font-black text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/30 px-2 py-0.5 rounded-full">
+
+                  <div className="flex items-center gap-1.5">
+                    <span className={`text-[11px] font-mono font-bold px-2 py-0.5 rounded-lg ${isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-600'}`}>
                       {rev.fileSize}
                     </span>
-                    <div className={`text-[10px] mt-1 font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                      {rev.downloads} downloads
-                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setEditingReviewer(rev)}
+                      className="p-1.5 rounded-lg border border-slate-700 hover:bg-white hover:text-slate-900 text-slate-400 transition-all cursor-pointer"
+                      title="Edit / Delete Reviewer"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                    </button>
                   </div>
                 </div>
-
-                <span className={`text-[10px] font-black uppercase tracking-widest block mb-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  {rev.course} • {rev.campusName}
-                </span>
 
                 <h3 className={`font-extrabold text-base mb-2 leading-snug font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   {rev.title}
@@ -179,6 +191,12 @@ export const ReviewerVault = () => {
       <UploadReviewerModal
         isOpen={showUploadModal}
         onClose={() => setShowUploadModal(false)}
+      />
+
+      <EditReviewerModal
+        isOpen={!!editingReviewer}
+        onClose={() => setEditingReviewer(null)}
+        reviewer={editingReviewer}
       />
     </div>
   );

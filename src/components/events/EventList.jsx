@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { EventCard } from './EventCard';
-import { Sparkles, Calendar } from 'lucide-react';
+import { Sparkles, Calendar, Plus, PlusCircle } from 'lucide-react';
+import { AddEventModal } from './AddEventModal';
 
 export const EventList = () => {
   const { events, selectedCampus } = useApp();
+  const [showAddEventModal, setShowAddEventModal] = useState(false);
 
   const filteredEvents = events.filter((ev) => {
     return selectedCampus === 'all' || ev.campusId === selectedCampus || ev.campusId === 'all';
@@ -26,6 +28,14 @@ export const EventList = () => {
             Midterm de-stress chillouts, beach prayer walks, and regional college conferences.
           </p>
         </div>
+
+        <button
+          onClick={() => setShowAddEventModal(true)}
+          className="px-5 py-3 rounded-2xl bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-500 hover:to-pink-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-purple-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2 shrink-0"
+        >
+          <PlusCircle className="w-4 h-4" />
+          <span>+ Create Campus Event</span>
+        </button>
       </div>
 
       {/* Grid */}
@@ -34,6 +44,11 @@ export const EventList = () => {
           <EventCard key={event.id} event={event} />
         ))}
       </div>
+
+      <AddEventModal
+        isOpen={showAddEventModal}
+        onClose={() => setShowAddEventModal(false)}
+      />
     </div>
   );
 };

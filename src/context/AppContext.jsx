@@ -667,6 +667,99 @@ export const AppProvider = ({ children }) => {
     showToast('📥 Reviewer downloaded! God bless your studies.', 'success');
   };
 
+  const addReviewer = (reviewerData) => {
+    const newRev = {
+      id: `rev-${Date.now()}`,
+      downloads: 1,
+      ...reviewerData
+    };
+    setReviewers((prev) => [newRev, ...prev]);
+    showToast(`📚 "${newRev.title}" added to Reviewer Vault!`, 'success');
+    triggerConfetti();
+  };
+
+  const updateReviewer = (revId, updatedData) => {
+    setReviewers((prev) =>
+      prev.map((r) => (r.id === revId ? { ...r, ...updatedData } : r))
+    );
+    showToast('✓ Reviewer details updated!', 'success');
+  };
+
+  const deleteReviewer = (revId) => {
+    setReviewers((prev) => prev.filter((r) => r.id !== revId));
+    showToast('Reviewer removed from vault.', 'info');
+  };
+
+  const addEvent = (eventData) => {
+    const newEv = {
+      id: `ev-${Date.now()}`,
+      attendeesCount: 1,
+      isRsvp: true,
+      ...eventData
+    };
+    setEvents((prev) => [newEv, ...prev]);
+    showToast(`🎉 Campus Event "${newEv.title}" published!`, 'success');
+    triggerConfetti();
+  };
+
+  const updateEvent = (eventId, updatedData) => {
+    setEvents((prev) =>
+      prev.map((ev) => (ev.id === eventId ? { ...ev, ...updatedData } : ev))
+    );
+    showToast('✓ Campus event updated successfully!', 'success');
+  };
+
+  const deleteEvent = (eventId) => {
+    setEvents((prev) => prev.filter((ev) => ev.id !== eventId));
+    showToast('Event removed.', 'info');
+  };
+
+  const addCampaign = (campaignData) => {
+    const newCamp = {
+      id: `camp-${Date.now()}`,
+      raisedAmount: 0,
+      donorsCount: 0,
+      recentDonors: [],
+      ...campaignData
+    };
+    setCampaigns((prev) => [newCamp, ...prev]);
+    showToast(`🌱 Seed Campaign "${newCamp.title}" launched!`, 'success');
+    triggerConfetti();
+  };
+
+  const deleteCampaign = (campaignId) => {
+    setCampaigns((prev) => prev.filter((c) => c.id !== campaignId));
+    showToast('Campaign removed.', 'info');
+  };
+
+  const addBibleStudy = (groupData) => {
+    const newGroup = {
+      id: `bs-${Date.now()}`,
+      currentMembers: 1,
+      ...groupData
+    };
+    setBibleStudies((prev) => [newGroup, ...prev]);
+    showToast(`👥 Life Group "${newGroup.title}" created!`, 'success');
+    triggerConfetti();
+  };
+
+  const updateBibleStudy = (groupId, updatedData) => {
+    setBibleStudies((prev) =>
+      prev.map((g) => (g.id === groupId ? { ...g, ...updatedData } : g))
+    );
+    showToast('✓ Life Group details updated!', 'success');
+  };
+
+  const deleteBibleStudy = (groupId) => {
+    setBibleStudies((prev) => prev.filter((g) => g.id !== groupId));
+    showToast('Life Group removed.', 'info');
+  };
+
+  const deletePrayer = (prayerId) => {
+    setPrayers((prev) => prev.filter((p) => p.id !== prayerId));
+    showToast('Prayer request removed.', 'info');
+  };
+
   useEffect(() => {
     localStorage.setItem('gy_pastoral_requests', JSON.stringify(pastoralRequests));
   }, [pastoralRequests]);
@@ -894,11 +987,22 @@ export const AppProvider = ({ children }) => {
         addPrayerRequest,
         joinLifeGroup,
         requestLifeGroup,
-        approveLifeGroupRequest,
         toggleEventRsvp,
+        addEvent,
+        updateEvent,
+        deleteEvent,
         incrementReviewerDownload,
+        addReviewer,
+        updateReviewer,
+        deleteReviewer,
         donateToCampaign,
+        addCampaign,
         updateCampaign,
+        deleteCampaign,
+        addBibleStudy,
+        updateBibleStudy,
+        deleteBibleStudy,
+        deletePrayer,
         curriculumSeries,
         setCurriculumSeries,
         studentProgress,

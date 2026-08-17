@@ -64,17 +64,15 @@ export const FundraisingHub = () => {
           </p>
         </div>
 
-        {canCreate && (
-          <div className="shrink-0 w-full md:w-auto">
-            <button
-              onClick={() => setShowCreateModal(true)}
-              className="w-full md:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-indigo-500/25 transition-all cursor-pointer"
-            >
-              <PlusCircle className="w-4 h-4" />
-              <span>{isHlg ? 'Mag-umpisa sang Bag-ong Fundraiser' : 'Launch New Fundraiser'}</span>
-            </button>
-          </div>
-        )}
+        <div className="shrink-0 w-full md:w-auto">
+          <button
+            onClick={() => setShowCreateModal(true)}
+            className="w-full md:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-pink-600 via-rose-600 to-indigo-600 hover:from-pink-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-pink-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          >
+            <PlusCircle className="w-4 h-4" />
+            <span>{isHlg ? 'Mag-umpisa sang Bag-ong Fundraiser' : '+ Launch New Seed Campaign'}</span>
+          </button>
+        </div>
       </div>
 
       {/* Metric Counters (Clean 3-Column Grid on Mobile & Desktop) */}
