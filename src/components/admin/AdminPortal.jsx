@@ -31,7 +31,11 @@ import {
   EyeOff,
   LogOut,
   Settings,
-  GraduationCap
+  GraduationCap,
+  ListChecks,
+  FileCheck,
+  BadgeCheck,
+  Clock
 } from 'lucide-react';
 import { CAMPUSES } from '../../data/campuses';
 import { AddUserModal } from './AddUserModal';
@@ -82,6 +86,59 @@ export const AdminPortal = () => {
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [selectedCampusFilter, setSelectedCampusFilter] = useState('all');
   const [showAddUserModal, setShowAddUserModal] = useState(false);
+
+  // Verification Checklist Interactive State
+  const [tutorChecklists, setTutorChecklists] = useState(() => {
+    const saved = localStorage.getItem('gy_tutor_checklists');
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  const [workerChecklists, setWorkerChecklists] = useState(() => {
+    const saved = localStorage.getItem('gy_worker_checklists');
+    return saved ? JSON.parse(saved) : {};
+  });
+
+  const handleToggleTutorCheck = (tutorId, stepKey) => {
+    setTutorChecklists((prev) => {
+      const current = prev[tutorId] || { step1_acads: false, step2_conduct: false, step3_honor: false };
+      const updated = {
+        ...prev,
+        [tutorId]: {
+          ...current,
+          [stepKey]: !current[stepKey]
+        }
+      };
+      localStorage.setItem('gy_tutor_checklists', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const handleToggleWorkerCheck = (workerId, stepKey) => {
+    setWorkerChecklists((prev) => {
+      const current = prev[workerId] || { step1_calling: false, step2_reference: false, step3_safeguarding: false };
+      const updated = {
+        ...prev,
+        [workerId]: {
+          ...current,
+          [stepKey]: !current[stepKey]
+        }
+      };
+      localStorage.setItem('gy_worker_checklists', JSON.stringify(updated));
+      return updated;
+    });
+  };
+
+  const getTutorProgress = (tutorId) => {
+    const checks = tutorChecklists[tutorId] || { step1_acads: false, step2_conduct: false, step3_honor: false };
+    const count = (checks.step1_acads ? 1 : 0) + (checks.step2_conduct ? 1 : 0) + (checks.step3_honor ? 1 : 0);
+    return { count, total: 3, percent: Math.round((count / 3) * 100), isComplete: count === 3 };
+  };
+
+  const getWorkerProgress = (workerId) => {
+    const checks = workerChecklists[workerId] || { step1_calling: false, step2_reference: false, step3_safeguarding: false };
+    const count = (checks.step1_calling ? 1 : 0) + (checks.step2_reference ? 1 : 0) + (checks.step3_safeguarding ? 1 : 0);
+    return { count, total: 3, percent: Math.round((count / 3) * 100), isComplete: count === 3 };
+  };
 
   // Handle In-Portal Admin Sign-In
   const handleAdminSignIn = (e) => {
@@ -564,13 +621,13 @@ export const AdminPortal = () => {
         </div>
       )}
 
-      {/* TAB 2: TUTOR MULTI-STEP VERIFICATION & CERTIFICATION */}
+      {/* TAB 2: TUTOR MULTI-STEP VERIFICATION & CHECKLIST PROGRESS */}
       {adminTab === 'tutors' && (
         <div className="space-y-4">
           <div className={`p-4 rounded-2xl border text-xs leading-relaxed ${
             isDark ? 'bg-amber-950/30 border-amber-500/30 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-950'
           }`}>
-            👨‍🏫 <strong>Peer Tutor Multi-Step Verification:</strong> Tutors cannot self-register directly. Review applicant subjects and confirm campus identity before certifying. Once verified here, their tutor account is activated!
+            👨‍🏫 <strong>Peer Tutor Multi-Step Verification:</strong> Review the applicant's academic competency, verify their campus enrollment, and confirm their commitment to free peer tutoring. All 3 verification steps must pass before account certification!
           </div>
 
           {/* Pending Tutor Applications */}
@@ -579,61 +636,165 @@ export const AdminPortal = () => {
               Pending Tutor Applicants ({pendingTutors.length})
             </h3>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {pendingTutors.length > 0 ? (
-                pendingTutors.map((tutor) => (
-                  <div
-                    key={tutor.id}
-                    className={`p-5 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
-                      isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-                    }`}
-                  >
-                    <div className="flex items-start gap-3.5 flex-1">
-                      <img src={tutor.avatar} alt={tutor.name} className="w-12 h-12 rounded-2xl object-cover ring-2 ring-amber-500/30 shrink-0" />
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                            {tutor.name}
-                          </span>
-                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-600 border border-amber-500/30">
-                            Awaiting Certification
-                          </span>
+                pendingTutors.map((tutor) => {
+                  const progress = getTutorProgress(tutor.id);
+                  const checks = tutorChecklists[tutor.id] || { step1_acads: false, step2_conduct: false, step3_honor: false };
+
+                  return (
+                    <div
+                      key={tutor.id}
+                      className={`p-6 rounded-3xl border space-y-4 transition-all ${
+                        isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+                      }`}
+                    >
+                      {/* Tutor Profile Header */}
+                      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div className="flex items-start gap-3.5">
+                          <img src={tutor.avatar} alt={tutor.name} className="w-14 h-14 rounded-2xl object-cover ring-2 ring-amber-500/30 shrink-0" />
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className={`text-base sm:text-lg font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                                {tutor.name}
+                              </span>
+                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-600 border border-amber-500/30">
+                                Applicant
+                              </span>
+                            </div>
+                            <div className={`text-xs mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                              Email: <strong>{tutor.email}</strong> • Campus: <strong>{tutor.campusName}</strong> • {tutor.program} ({tutor.yearLevel})
+                            </div>
+                            <div className="text-xs text-amber-600 dark:text-amber-400 font-bold mt-1">
+                              Teachable Subjects: {tutor.subjects?.join(', ') || 'General Academics'}
+                            </div>
+                          </div>
                         </div>
 
-                        <div className={`text-xs ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                          Email: <strong>{tutor.email}</strong> • Campus: <strong>{tutor.campusName}</strong> • Program: {tutor.program} ({tutor.yearLevel})
-                        </div>
-
-                        <div className="text-xs text-amber-600 dark:text-amber-400 font-bold">
-                          Subjects: {tutor.subjects?.join(', ') || 'General Academics'}
-                        </div>
-
-                        {/* Multi-Step Verification Checklist */}
-                        <div className="flex items-center gap-3 pt-1 text-[11px] text-slate-400">
-                          <span className="flex items-center gap-1 text-emerald-500 font-bold">
-                            <CheckCircle2 className="w-3.5 h-3.5" /> 1. Application Submitted
-                          </span>
-                          <span>•</span>
-                          <span className="flex items-center gap-1 text-emerald-500 font-bold">
-                            <CheckCircle2 className="w-3.5 h-3.5" /> 2. Campus Identity Checked
-                          </span>
-                          <span>•</span>
-                          <span className="flex items-center gap-1 text-amber-500 font-bold">
-                            <ShieldCheck className="w-3.5 h-3.5" /> 3. Ready for Admin Certification
-                          </span>
+                        {/* Progress Meter Badge */}
+                        <div className="text-right w-full md:w-auto">
+                          <div className="flex items-center justify-between md:justify-end gap-2 mb-1">
+                            <span className="text-[11px] font-bold text-slate-400">Verification Progress:</span>
+                            <span className={`font-mono text-xs font-black ${progress.isComplete ? 'text-emerald-500' : 'text-amber-500'}`}>
+                              {progress.count}/3 ({progress.percent}%)
+                            </span>
+                          </div>
+                          <div className="w-full md:w-48 h-2.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                            <div
+                              className={`h-full transition-all duration-300 ${
+                                progress.isComplete ? 'bg-emerald-500' : 'bg-gradient-to-r from-amber-500 to-orange-500'
+                              }`}
+                              style={{ width: `${progress.percent}%` }}
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <button
-                      onClick={() => approveTutor(tutor.id)}
-                      className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs shadow-lg hover:scale-105 transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
-                    >
-                      <Award className="w-4 h-4 text-slate-950" />
-                      <span>✓ Certify & Activate Tutor Account</span>
-                    </button>
-                  </div>
-                ))
+                      {/* Interactive 3-Step Verification Checklist */}
+                      <div className={`p-4 rounded-2xl border space-y-3 ${
+                        isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+                      }`}>
+                        <div className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                          <ListChecks className="w-4 h-4 text-amber-500" />
+                          <span>Required Verification Steps (Click to Pass):</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                          {/* Step 1: Academic Competency */}
+                          <div
+                            onClick={() => handleToggleTutorCheck(tutor.id, 'step1_acads')}
+                            className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
+                              checks.step1_acads
+                                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20'
+                                : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                            }`}
+                          >
+                            <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
+                              checks.step1_acads ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-black' : 'border-slate-600'
+                            }`}>
+                              {checks.step1_acads && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                            </div>
+                            <div className="text-xs">
+                              <div className="font-bold text-white">1. Academic Competency</div>
+                              <div className="text-[11px] opacity-75 mt-0.5">Verified syllabus mastery & grades $\ge$ 85% in subjects.</div>
+                            </div>
+                          </div>
+
+                          {/* Step 2: Student Conduct & Identity */}
+                          <div
+                            onClick={() => handleToggleTutorCheck(tutor.id, 'step2_conduct')}
+                            className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
+                              checks.step2_conduct
+                                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20'
+                                : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                            }`}
+                          >
+                            <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
+                              checks.step2_conduct ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-black' : 'border-slate-600'
+                            }`}>
+                              {checks.step2_conduct && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                            </div>
+                            <div className="text-xs">
+                              <div className="font-bold text-white">2. Campus ID & Conduct</div>
+                              <div className="text-[11px] opacity-75 mt-0.5">Enrolled student standing & student safeguarding verified.</div>
+                            </div>
+                          </div>
+
+                          {/* Step 3: Free Peer Tutoring Honor Code */}
+                          <div
+                            onClick={() => handleToggleTutorCheck(tutor.id, 'step3_honor')}
+                            className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
+                              checks.step3_honor
+                                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20'
+                                : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                            }`}
+                          >
+                            <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
+                              checks.step3_honor ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-black' : 'border-slate-600'
+                            }`}>
+                              {checks.step3_honor && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                            </div>
+                            <div className="text-xs">
+                              <div className="font-bold text-white">3. Peer Honor Code</div>
+                              <div className="text-[11px] opacity-75 mt-0.5">Committed to 100% free peer service & punctuality.</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Final Certification Action */}
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                        <div className="text-xs text-slate-400">
+                          {progress.isComplete ? (
+                            <span className="text-emerald-400 font-bold flex items-center gap-1">
+                              <CheckCircle2 className="w-4 h-4" /> All 3 verification steps passed! Ready to activate.
+                            </span>
+                          ) : (
+                            <span>⚠️ Complete all 3 checklist items above to certify this tutor.</span>
+                          )}
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            if (!progress.isComplete) {
+                              showToast('Please check off all 3 verification steps before certifying.', 'error');
+                              return;
+                            }
+                            approveTutor(tutor.id);
+                          }}
+                          className={`w-full sm:w-auto px-6 py-3 rounded-2xl font-black text-xs shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                            progress.isComplete
+                              ? 'bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 hover:scale-105 shadow-amber-500/25'
+                              : 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed'
+                          }`}
+                        >
+                          <Award className="w-4 h-4" />
+                          <span>✓ Certify & Activate Tutor Account</span>
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
               ) : (
                 <div className={`p-6 text-center rounded-2xl border border-dashed text-xs ${
                   isDark ? 'bg-slate-900/40 border-slate-800 text-slate-500' : 'bg-white border-slate-200 text-slate-500'
@@ -681,60 +842,179 @@ export const AdminPortal = () => {
         </div>
       )}
 
-      {/* TAB 3: YOUTH WORKER APPROVALS */}
+      {/* TAB 3: YOUTH WORKER VERIFICATION CHECKLIST & APPROVALS */}
       {adminTab === 'workers' && (
         <div className="space-y-4">
           <div className={`p-4 rounded-2xl border text-xs leading-relaxed ${
             isDark ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-200' : 'bg-emerald-50 border-emerald-200 text-emerald-950'
           }`}>
-            ✝️ <strong>Campus Youth Worker Governance:</strong> Youth Workers lead discipleship, facilitate Life Groups, and provide confidential pastoral counseling. Anyone applying as a Youth Worker from the client app must be approved here before they can log in!
+            ✝️ <strong>Campus Youth Worker Multi-Step Verification:</strong> Youth Workers lead discipleship, facilitate Life Groups, and provide pastoral counseling. Verify ministry calling, pastoral character reference, and campus placement before approval.
           </div>
 
           <div>
             <h3 className={`text-sm font-black uppercase tracking-wider mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Pending Applications ({pendingWorkers.length})
+              Pending Youth Worker Applicants ({pendingWorkers.length})
             </h3>
 
-            <div className="space-y-3">
+            <div className="space-y-4">
               {pendingWorkers.length > 0 ? (
-                pendingWorkers.map((worker) => (
-                  <div
-                    key={worker.id}
-                    className={`p-5 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
-                      isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3.5">
-                      <img src={worker.avatar} alt={worker.name} className="w-12 h-12 rounded-2xl object-cover ring-2 ring-emerald-500/30" />
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                            {worker.name}
-                          </span>
-                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-600 border border-amber-500/30">
-                            Awaiting Approval
-                          </span>
+                pendingWorkers.map((worker) => {
+                  const progress = getWorkerProgress(worker.id);
+                  const checks = workerChecklists[worker.id] || { step1_calling: false, step2_reference: false, step3_safeguarding: false };
+
+                  return (
+                    <div
+                      key={worker.id}
+                      className={`p-6 rounded-3xl border space-y-4 transition-all ${
+                        isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+                      }`}
+                    >
+                      {/* Worker Profile Header */}
+                      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                        <div className="flex items-start gap-3.5">
+                          <img src={worker.avatar} alt={worker.name} className="w-14 h-14 rounded-2xl object-cover ring-2 ring-emerald-500/30 shrink-0" />
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className={`text-base sm:text-lg font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                                {worker.name}
+                              </span>
+                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-600 border border-amber-500/30">
+                                Applicant
+                              </span>
+                            </div>
+                            <div className={`text-xs mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                              Email: <strong>{worker.email}</strong> • Assigned Campus: <strong>{worker.campusName}</strong>
+                            </div>
+                            <div className={`text-xs italic mt-1 text-slate-400`}>
+                              "{worker.bioNote || 'Applying as campus youth missionary and life group facilitator.'}"
+                            </div>
+                          </div>
                         </div>
-                        <div className={`text-xs mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                          Email: <strong>{worker.email}</strong> • Campus: <strong>{worker.campusName}</strong>
-                        </div>
-                        <div className={`text-xs italic mt-1 text-slate-400`}>
-                          "{worker.bioNote || 'Applying as campus youth missionary and life group facilitator.'}"
+
+                        {/* Progress Meter Badge */}
+                        <div className="text-right w-full md:w-auto">
+                          <div className="flex items-center justify-between md:justify-end gap-2 mb-1">
+                            <span className="text-[11px] font-bold text-slate-400">Approval Progress:</span>
+                            <span className={`font-mono text-xs font-black ${progress.isComplete ? 'text-emerald-500' : 'text-amber-500'}`}>
+                              {progress.count}/3 ({progress.percent}%)
+                            </span>
+                          </div>
+                          <div className="w-full md:w-48 h-2.5 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+                            <div
+                              className={`h-full transition-all duration-300 ${
+                                progress.isComplete ? 'bg-emerald-500' : 'bg-gradient-to-r from-emerald-500 to-teal-500'
+                              }`}
+                              style={{ width: `${progress.percent}%` }}
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
-                      <button
-                        onClick={() => approveYouthWorker(worker.id)}
-                        className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs shadow-lg hover:scale-105 transition-all cursor-pointer flex items-center gap-1.5"
-                      >
-                        <CheckCircle2 className="w-4 h-4" />
-                        <span>✓ Approve & Activate Account</span>
-                      </button>
+                      {/* Interactive 3-Step Worker Verification Checklist */}
+                      <div className={`p-4 rounded-2xl border space-y-3 ${
+                        isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+                      }`}>
+                        <div className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                          <ListChecks className="w-4 h-4 text-emerald-500" />
+                          <span>Youth Worker Review Steps (Click to Pass):</span>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5">
+                          {/* Step 1: Ministry Calling Interview */}
+                          <div
+                            onClick={() => handleToggleWorkerCheck(worker.id, 'step1_calling')}
+                            className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
+                              checks.step1_calling
+                                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20'
+                                : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                            }`}
+                          >
+                            <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
+                              checks.step1_calling ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-black' : 'border-slate-600'
+                            }`}>
+                              {checks.step1_calling && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                            </div>
+                            <div className="text-xs">
+                              <div className="font-bold text-white">1. Calling & Interview</div>
+                              <div className="text-[11px] opacity-75 mt-0.5">Faith testimony & campus discipleship vision interview passed.</div>
+                            </div>
+                          </div>
+
+                          {/* Step 2: Pastoral Character Endorsement */}
+                          <div
+                            onClick={() => handleToggleWorkerCheck(worker.id, 'step2_reference')}
+                            className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
+                              checks.step2_reference
+                                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20'
+                                : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                            }`}
+                          >
+                            <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
+                              checks.step2_reference ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-black' : 'border-slate-600'
+                            }`}>
+                              {checks.step2_reference && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                            </div>
+                            <div className="text-xs">
+                              <div className="font-bold text-white">2. Church Endorsement</div>
+                              <div className="text-[11px] opacity-75 mt-0.5">Pastoral reference letter & spiritual maturity verified.</div>
+                            </div>
+                          </div>
+
+                          {/* Step 3: Safeguarding & Campus Placement */}
+                          <div
+                            onClick={() => handleToggleWorkerCheck(worker.id, 'step3_safeguarding')}
+                            className={`p-3 rounded-xl border cursor-pointer transition-all flex items-start gap-2.5 ${
+                              checks.step3_safeguarding
+                                ? 'bg-emerald-500/10 border-emerald-500/40 text-emerald-400 ring-1 ring-emerald-500/20'
+                                : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:border-slate-700' : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                            }`}
+                          >
+                            <div className={`w-5 h-5 rounded-lg border flex items-center justify-center shrink-0 mt-0.5 ${
+                              checks.step3_safeguarding ? 'bg-emerald-500 border-emerald-500 text-slate-950 font-black' : 'border-slate-600'
+                            }`}>
+                              {checks.step3_safeguarding && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+                            </div>
+                            <div className="text-xs">
+                              <div className="font-bold text-white">3. Safeguarding Covenant</div>
+                              <div className="text-[11px] opacity-75 mt-0.5">Signed pastoral code of ethics & assigned campus station.</div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Final Approval Action */}
+                      <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
+                        <div className="text-xs text-slate-400">
+                          {progress.isComplete ? (
+                            <span className="text-emerald-400 font-bold flex items-center gap-1">
+                              <CheckCircle2 className="w-4 h-4" /> All 3 review requirements met! Ready to commission.
+                            </span>
+                          ) : (
+                            <span>⚠️ Complete all 3 checklist items above to approve this Youth Worker.</span>
+                          )}
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            if (!progress.isComplete) {
+                              showToast('Please check off all 3 review steps before approving.', 'error');
+                              return;
+                            }
+                            approveYouthWorker(worker.id);
+                          }}
+                          className={`w-full sm:w-auto px-6 py-3 rounded-2xl font-black text-xs shadow-lg transition-all cursor-pointer flex items-center justify-center gap-2 ${
+                            progress.isComplete
+                              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white hover:scale-105 shadow-emerald-500/25'
+                              : 'bg-slate-800 text-slate-500 border border-slate-700 cursor-not-allowed'
+                          }`}
+                        >
+                          <CheckCircle2 className="w-4 h-4" />
+                          <span>✓ Approve & Activate Account</span>
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                ))
+                  );
+                })
               ) : (
                 <div className={`p-6 text-center rounded-2xl border border-dashed text-xs ${
                   isDark ? 'bg-slate-900/40 border-slate-800 text-slate-500' : 'bg-white border-slate-200 text-slate-500'
