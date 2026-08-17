@@ -11,7 +11,7 @@ import { triggerConfetti } from '../utils/helpers';
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v6_roles_council';
+const STORAGE_VERSION = 'gy_clean_v7_tutors_restored';
 
 const GUEST_USER = {
   id: 'guest',
@@ -256,9 +256,25 @@ export const AppProvider = ({ children }) => {
     ];
   });
 
+  const DEFAULT_BOOKINGS = [
+    {
+      id: 'bk-default-1',
+      tutorId: 'tutor-1',
+      tutorName: 'Joshua Alcantara',
+      studentName: 'Bea Claridad',
+      studentContact: 'bea.claridad@upv.edu.ph',
+      subject: 'Calculus 1 (Derivatives & Chain Rule)',
+      day: 'Tuesday',
+      time: '4:00 PM - 5:30 PM',
+      mode: 'In-Person (CAS Gazebo, UPV)',
+      meetingNote: 'Bring your Math 17 syllabus and previous quiz papers.',
+      status: 'Confirmed'
+    }
+  ];
+
   const [myBookings, setMyBookings] = useState(() => {
     const saved = localStorage.getItem('gy_my_bookings');
-    return saved ? JSON.parse(saved) : [];
+    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : DEFAULT_BOOKINGS;
   });
 
   const [myGroups, setMyGroups] = useState(() => {
