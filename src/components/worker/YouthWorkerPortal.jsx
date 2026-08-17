@@ -34,6 +34,9 @@ import {
 import { EditProfileModal } from '../profile/EditProfileModal';
 import { Modal } from '../common/Modal';
 import { triggerConfetti } from '../../utils/helpers';
+import { AddLessonModal } from './AddLessonModal';
+import { AddSeriesModal } from '../admin/AddSeriesModal';
+import { FileUp, UploadCloud, Trash } from 'lucide-react';
 
 export const YouthWorkerPortal = () => {
   const {
@@ -41,6 +44,12 @@ export const YouthWorkerPortal = () => {
     bibleStudies,
     pastoralRequests,
     resolvePastoralRequest,
+    curriculumSeries,
+    studentProgress,
+    toggleStudentLessonCompletion,
+    updateStudentProgressNote,
+    addLessonToSeries,
+    deleteLesson,
     showToast,
     theme
   } = useApp();
@@ -49,111 +58,11 @@ export const YouthWorkerPortal = () => {
   const [activeWorkerTab, setActiveWorkerTab] = useState('tracker'); // 'tracker' | 'classes' | 'curriculum' | 'pastoral_queue' | 'care_notes'
   const [showEditProfile, setShowEditProfile] = useState(false);
   const [showAddLessonModal, setShowAddLessonModal] = useState(false);
+  const [showAddSeriesModal, setShowAddSeriesModal] = useState(false);
+  const [targetSeriesForLesson, setTargetSeriesForLesson] = useState(null);
   const [selectedClassForRoster, setSelectedClassForRoster] = useState(bibleStudies[0] || null);
 
-  // Curriculum Series Master Data
-  const [curriculumSeries, setCurriculumSeries] = useState([
-    {
-      id: 'ser-1',
-      title: 'Foundations of Faith',
-      subtitle: '4-Week Discipleship & Rootedness Track',
-      level: 'Level 1: New Believer',
-      color: 'from-emerald-600 to-teal-600',
-      lessons: [
-        { id: 'l-1', number: 1, title: 'Assurance of Salvation', passage: '1 John 5:11-13', keyTakeaway: 'Knowing you belong to Christ unconditionally.' },
-        { id: 'l-2', number: 2, title: 'Daily Walk & Secret Place Prayer', passage: 'Matthew 6:6', keyTakeaway: 'Building quiet time amidst busy campus deadlines.' },
-        { id: 'l-3', number: 3, title: 'Overcoming Campus Pressures', passage: '1 Corinthians 10:13', keyTakeaway: 'Victory over cheating, party culture & compromise.' },
-        { id: 'l-4', number: 4, title: 'Great Commission & Campus Witness', passage: 'Matthew 28:19-20', keyTakeaway: 'Sharing Christ naturally with classmates.' }
-      ]
-    },
-    {
-      id: 'ser-2',
-      title: 'Grace, Identity & Academics',
-      subtitle: '4-Week College Mindset & Peace Series',
-      level: 'Level 2: Grounded Student',
-      color: 'from-violet-600 to-indigo-600',
-      lessons: [
-        { id: 'l-5', number: 1, title: 'Created for Glory, Not Just Grades', passage: 'Genesis 1:27', keyTakeaway: 'Your worth is not your GPA or ranking.' },
-        { id: 'l-6', number: 2, title: 'Grace vs Academic Performance', passage: 'Ephesians 2:8-10', keyTakeaway: 'Freedom from burnout and fear of failure.' },
-        { id: 'l-7', number: 3, title: 'Peace During Midterms & Finals', passage: 'Philippians 4:6-7', keyTakeaway: 'Replacing anxiety with prayer and supplication.' },
-        { id: 'l-8', number: 4, title: 'Academic Diligence as Worship', passage: 'Colossians 3:23-24', keyTakeaway: 'Studying excellently as an offering to God.' }
-      ]
-    },
-    {
-      id: 'ser-3',
-      title: 'Campus Leadership & Multiplication',
-      subtitle: '4-Week Peer Mentor & Small Group Facilitator',
-      level: 'Level 3: Campus Multiplier',
-      color: 'from-amber-500 to-orange-500',
-      lessons: [
-        { id: 'l-9', number: 1, title: 'Heart of a Servant Leader', passage: 'Philippians 2:3-5', keyTakeaway: 'Humility and placing others ahead of oneself.' },
-        { id: 'l-10', number: 2, title: 'How to Facilitate a Bible Study', passage: '2 Timothy 2:2', keyTakeaway: 'Leading engaging inductive discussions.' },
-        { id: 'l-11', number: 3, title: 'Pastoral Care for Struggling Peers', passage: 'Galatians 6:2', keyTakeaway: 'Walking with batchmates in grief and mental struggle.' },
-        { id: 'l-12', number: 4, title: 'Multiplying & Planting Life Groups', passage: 'Acts 2:42-47', keyTakeaway: 'Launching new circles in dorms and faculties.' }
-      ]
-    }
-  ]);
-
-  const [selectedSeriesId, setSelectedSeriesId] = useState('ser-1');
-
-  // Student-by-Student Lesson Progress State
-  const [studentProgress, setStudentProgress] = useState([
-    {
-      id: 'sp-1',
-      studentName: 'Bea Claridad',
-      campus: 'UP Visayas (Miagao)',
-      program: 'BS Biology, 2nd Year',
-      seriesId: 'ser-1',
-      completedLessonIds: ['l-1', 'l-2', 'l-3'],
-      notes: 'Completed Lesson 3 on overcoming campus pressures. Ready for Lesson 4 Great Commission next Tuesday!',
-      lastSessionDate: 'Aug 14, 2026',
-      badgeAwarded: null
-    },
-    {
-      id: 'sp-2',
-      studentName: 'Kenzo Ramirez',
-      campus: 'CPU (Jaro)',
-      program: 'BS Civil Engg, 3rd Year',
-      seriesId: 'ser-1',
-      completedLessonIds: ['l-1', 'l-2'],
-      notes: 'Consistent daily quiet time. Seeking prayer regarding family financial constraints and midterm math.',
-      lastSessionDate: 'Aug 12, 2026',
-      badgeAwarded: null
-    },
-    {
-      id: 'sp-3',
-      studentName: 'Althea Marie',
-      campus: 'WVSU (La Paz)',
-      program: 'BS Nursing, 2nd Year',
-      seriesId: 'ser-1',
-      completedLessonIds: ['l-1'],
-      notes: 'Understands assurance of salvation. Scheduled for Lesson 2 Secret Place Prayer this Thursday.',
-      lastSessionDate: 'Aug 08, 2026',
-      badgeAwarded: null
-    },
-    {
-      id: 'sp-4',
-      studentName: 'John Paul Villar',
-      campus: 'ISUFST (Barotac Nuevo)',
-      program: 'BS Fisheries, 4th Year',
-      seriesId: 'ser-2',
-      completedLessonIds: ['l-5', 'l-6', 'l-7', 'l-8'],
-      notes: 'Completed all 4 lessons of Grace & Academic Diligence. Facilitating dorm study table!',
-      lastSessionDate: 'Aug 16, 2026',
-      badgeAwarded: '🎓 Level 2 Graduate'
-    },
-    {
-      id: 'sp-5',
-      studentName: 'Joshua Dizon',
-      campus: 'ISAT-U (La Paz)',
-      program: 'BS IT, 3rd Year',
-      seriesId: 'ser-3',
-      completedLessonIds: ['l-9', 'l-10'],
-      notes: 'Undergoing campus multiplier training. Shadowing Kuya Daniel in Thursday evening study group.',
-      lastSessionDate: 'Aug 15, 2026',
-      badgeAwarded: null
-    }
-  ]);
+  const [selectedSeriesId, setSelectedSeriesId] = useState(curriculumSeries[0]?.id || 'ser-1');
 
   // Class Rosters with Attendance
   const [classAttendance, setClassAttendance] = useState({
@@ -765,16 +674,39 @@ export const YouthWorkerPortal = () => {
           TAB 3: CURRICULUM SERIES OUTLINES
           ==================================================================== */}
       {activeWorkerTab === 'curriculum' && (
-        <div className="space-y-4">
-          <div className={`p-4 rounded-2xl border text-xs leading-relaxed flex items-start gap-3 ${
+        <div className="space-y-6">
+          <div className={`p-4 sm:p-5 rounded-3xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
             isDark ? 'bg-indigo-950/40 border-indigo-500/30 text-indigo-200' : 'bg-indigo-50 border-indigo-200 text-indigo-950'
           }`}>
-            <BookOpen className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
-            <div>
-              <div className="font-extrabold">Official Discipleship Series & Curriculum Blueprints</div>
-              <div className="text-[11px] opacity-90 mt-0.5">
-                Multi-week tracks designed for new believers, college mindsets, and campus leadership multiplication.
+            <div className="flex items-start gap-3">
+              <BookOpen className="w-6 h-6 text-indigo-500 shrink-0 mt-0.5" />
+              <div>
+                <div className="font-extrabold text-sm sm:text-base">Official Discipleship Series & Curriculum Blueprints</div>
+                <div className="text-xs opacity-90 mt-0.5">
+                  Multi-week tracks (Required Core & Optional Electives) with downloadable PDF study guides, teacher notes, and custom lesson uploads.
+                </div>
               </div>
+            </div>
+
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => {
+                  setTargetSeriesForLesson(curriculumSeries[0]?.id);
+                  setShowAddLessonModal(true);
+                }}
+                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>+ Create Lesson & PDF</span>
+              </button>
+
+              <button
+                onClick={() => setShowAddSeriesModal(true)}
+                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>+ New Series Track</span>
+              </button>
             </div>
           </div>
 
@@ -782,48 +714,112 @@ export const YouthWorkerPortal = () => {
             {curriculumSeries.map((series) => (
               <div
                 key={series.id}
-                className={`p-6 rounded-3xl border space-y-4 ${
+                className={`p-5 sm:p-6 rounded-3xl border space-y-4 ${
                   isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
                 }`}
               >
-                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-slate-800 pb-4">
                   <div>
-                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-950/60 px-2.5 py-0.5 rounded-full border border-emerald-500/30">
-                      {series.level}
-                    </span>
-                    <h4 className={`text-lg font-extrabold mt-1 font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                        series.isOptional
+                          ? 'bg-sky-500/10 text-sky-400 border-sky-500/30'
+                          : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                      }`}>
+                        {series.isOptional ? '✨ Optional Elective Series' : '🌟 Core Required Series'}
+                      </span>
+                      <span className="text-xs text-slate-400 font-bold">{series.level}</span>
+                    </div>
+
+                    <h4 className={`text-lg sm:text-xl font-extrabold mt-1 font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
                       {series.title}
                     </h4>
-                    <p className="text-xs text-slate-400">{series.subtitle}</p>
+                    <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{series.subtitle || series.description}</p>
                   </div>
 
-                  <button
-                    onClick={() => showToast(`📥 ${series.title} Series PDF downloaded!`, 'success')}
-                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shrink-0"
-                  >
-                    <Download className="w-3.5 h-3.5" />
-                    <span>Download Full Track PDF</span>
-                  </button>
+                  <div className="flex items-center gap-2 w-full sm:w-auto justify-between sm:justify-end">
+                    <button
+                      onClick={() => {
+                        setTargetSeriesForLesson(series.id);
+                        setShowAddLessonModal(true);
+                      }}
+                      className="px-3 py-1.5 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 font-black text-xs border border-emerald-500/30 transition-all cursor-pointer flex items-center gap-1 shrink-0"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Add Lesson</span>
+                    </button>
+
+                    <button
+                      onClick={() => showToast(`📥 ${series.title} complete series packet downloaded!`, 'success')}
+                      className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shrink-0 shadow-xs"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download All PDFs</span>
+                    </button>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
                   {series.lessons.map((lesson) => (
                     <div
                       key={lesson.id}
-                      className={`p-4 rounded-2xl border ${
-                        isDark ? 'bg-slate-950/70 border-slate-800' : 'bg-slate-50 border-slate-200'
+                      className={`p-4 rounded-2xl border flex flex-col justify-between group transition-all ${
+                        isDark ? 'bg-slate-950/70 border-slate-800 hover:border-slate-700' : 'bg-slate-50 border-slate-200 hover:border-slate-300'
                       }`}
                     >
-                      <div className="flex items-center justify-between text-xs font-bold mb-1">
-                        <span className="text-emerald-500">Lesson {lesson.number}</span>
-                        <span className="text-amber-400 font-mono text-[11px]">{lesson.passage}</span>
+                      <div>
+                        <div className="flex items-center justify-between text-xs font-bold mb-1.5">
+                          <span className="text-emerald-500 font-black">Lesson {lesson.number}</span>
+                          <span className="text-amber-500 font-mono text-[11px] font-bold bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
+                            {lesson.passage}
+                          </span>
+                        </div>
+                        <h5 className={`font-extrabold text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                          {lesson.title}
+                        </h5>
+                        <p className={`text-xs mt-1.5 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                          {lesson.keyTakeaway}
+                        </p>
+
+                        {lesson.questions && (
+                          <div className={`mt-2 p-2 rounded-xl text-[11px] italic border ${
+                            isDark ? 'bg-slate-900/60 border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-600'
+                          }`}>
+                            <strong>Discussion:</strong> {lesson.questions}
+                          </div>
+                        )}
                       </div>
-                      <h5 className={`font-extrabold text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                        {lesson.title}
-                      </h5>
-                      <p className="text-xs text-slate-400 mt-1">
-                        {lesson.keyTakeaway}
-                      </p>
+
+                      {/* File attachment & Actions */}
+                      <div className={`mt-3 pt-2.5 border-t flex items-center justify-between gap-2 ${
+                        isDark ? 'border-slate-800' : 'border-slate-200'
+                      }`}>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <FileText className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                          <span className={`text-[11px] font-mono truncate font-medium ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                            {lesson.fileName || `${lesson.title.replace(/\s+/g, '_')}_Guide.pdf`}
+                          </span>
+                          <span className="text-[10px] text-slate-500 shrink-0">({lesson.fileSize || '1.2 MB'})</span>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <button
+                            onClick={() => showToast(`📥 Downloaded ${lesson.fileName || lesson.title + '_Guide.pdf'}!`, 'success')}
+                            className="p-1.5 rounded-lg bg-indigo-600/10 hover:bg-indigo-600 text-indigo-400 hover:text-white border border-indigo-500/30 transition-all cursor-pointer"
+                            title="Download Lesson PDF Guide"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                          </button>
+
+                          <button
+                            onClick={() => deleteLesson(series.id, lesson.id)}
+                            className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/30 transition-all cursor-pointer"
+                            title="Remove Lesson"
+                          >
+                            <Trash className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -1009,80 +1005,18 @@ export const YouthWorkerPortal = () => {
         onClose={() => setShowEditProfile(false)}
       />
 
-      {/* Add Custom Lesson Modal */}
-      <Modal
+      {/* Add Lesson Modal */}
+      <AddLessonModal
         isOpen={showAddLessonModal}
         onClose={() => setShowAddLessonModal(false)}
-        title={`➕ Add Custom Lesson to ${currentSeries.title}`}
-        maxWidth="max-w-lg"
-      >
-        <form onSubmit={handleAddCustomLesson} className="space-y-4 text-xs sm:text-sm">
-          <div>
-            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Lesson Title *
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. Overcoming Academic Comparison in College"
-              value={newLessonTitle}
-              onChange={(e) => setNewLessonTitle(e.target.value)}
-              className={`w-full px-3 py-2.5 rounded-xl border ${
-                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-              }`}
-            />
-          </div>
+        defaultSeriesId={targetSeriesForLesson}
+      />
 
-          <div>
-            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Scripture Passage *
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. Galatians 1:10 & 2 Corinthians 10:12"
-              value={newLessonPassage}
-              onChange={(e) => setNewLessonPassage(e.target.value)}
-              className={`w-full px-3 py-2.5 rounded-xl border ${
-                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-              }`}
-            />
-          </div>
-
-          <div>
-            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Key Takeaway / Discussion Focus
-            </label>
-            <textarea
-              rows={3}
-              placeholder="Main truth and discussion questions for students to apply this week..."
-              value={newLessonTakeaway}
-              onChange={(e) => setNewLessonTakeaway(e.target.value)}
-              className={`w-full px-3 py-2.5 rounded-xl border ${
-                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-              }`}
-            />
-          </div>
-
-          <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-800">
-            <button
-              type="button"
-              onClick={() => setShowAddLessonModal(false)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold cursor-pointer ${
-                isDark ? 'bg-slate-800 text-slate-300' : 'bg-slate-100 text-slate-700'
-              }`}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-md transition-all cursor-pointer"
-            >
-              Save Custom Lesson
-            </button>
-          </div>
-        </form>
-      </Modal>
+      {/* Add Discipleship Series Modal */}
+      <AddSeriesModal
+        isOpen={showAddSeriesModal}
+        onClose={() => setShowAddSeriesModal(false)}
+      />
     </div>
   );
 };

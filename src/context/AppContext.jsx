@@ -7,6 +7,7 @@ import { INITIAL_EVENTS } from '../data/events';
 import { DAILY_DEVOTIONALS } from '../data/devotionals';
 import { INITIAL_REVIEWERS } from '../data/reviewers';
 import { INITIAL_CAMPAIGNS } from '../data/campaigns';
+import { INITIAL_CURRICULUM_SERIES, INITIAL_STUDENT_PROGRESS } from '../data/curriculum';
 import { DEMO_ACCOUNTS } from '../data/demoAccounts';
 import { triggerConfetti } from '../utils/helpers';
 
@@ -166,6 +167,14 @@ export const AppProvider = ({ children }) => {
 
   const [myGroups, setMyGroups] = useState(() =>
     checkVersionAndGet('gy_my_groups', ['bs-1'])
+  );
+
+  const [curriculumSeries, setCurriculumSeries] = useState(() =>
+    checkVersionAndGet('gy_curriculum_series', INITIAL_CURRICULUM_SERIES)
+  );
+
+  const [studentProgress, setStudentProgress] = useState(() =>
+    checkVersionAndGet('gy_student_progress', INITIAL_STUDENT_PROGRESS)
   );
 
   const [toasts, setToasts] = useState([]);
@@ -723,6 +732,119 @@ export const AppProvider = ({ children }) => {
     showToast('✓ Campaign fund amounts & details updated successfully!', 'success');
   };
 
+  const addCurriculumSeries = (seriesData) => {
+    const newSeries = {
+      id: `ser-${Date.now()}`,
+      title: seriesData.title,
+      subtitle: seriesData.subtitle || 'Campus Discipleship Series',
+      level: seriesData.level || 'Optional Elective',
+      type: seriesData.type || 'Optional Elective',
+      isOptional: seriesData.isOptional !== false,
+      color: seriesData.color || 'from-indigo-600 to-violet-600',
+      description: seriesData.description || '',
+      lessons: seriesData.lessons || []
+    };
+    setCurriculumSeries((prev) => [newSeries, ...prev]);
+    showToast(`✓ Created new discipleship series: "${seriesData.title}"!`, 'success');
+  };
+
+  const updateCurriculumSeries = (seriesId, updatedData) => {
+    setCurriculumSeries((prev) =>
+      prev.map((s) => (s.id === seriesId ? { ...s, ...updatedData } : s))
+    );
+    showToast('✓ Discipleship series updated!', 'success');
+  };
+
+  const toggleSeriesOptional = (seriesId) => {
+    setCurriculumSeries((prev) =>
+      prev.map((s) => {
+        if (s.id === seriesId) {
+          const newIsOptional = !s.isOptional;
+          return {
+            ...s,
+            isOptional: newIsOptional,
+            type: newIsOptional ? 'Optional Elective' : 'Core Required'
+          };
+        }
+        return s;
+      })
+    );
+    showToast('✓ Series requirement status toggled!', 'info');
+  };
+
+  const addLessonToSeries = (seriesId, lessonData) => {
+    setCurriculumSeries((prev) =>
+      prev.map((s) => {
+        if (s.id === seriesId) {
+          const newLesson = {
+            id: `l-${Date.now()}`,
+            number: s.lessons.length + 1,
+            title: lessonData.title,
+            passage: lessonData.passage || 'Scripture Reference',
+            keyTakeaway: lessonData.keyTakeaway || '',
+            questions: lessonData.questions || '',
+            fileName: lessonData.fileName || `${lessonData.title.replace(/\s+/g, '_')}_Guide.pdf`,
+            fileSize: lessonData.fileSize || '1.5 MB'
+          };
+          return { ...s, lessons: [...s.lessons, newLesson] };
+        }
+        return s;
+      })
+    );
+    showToast(`✓ Added lesson "${lessonData.title}" with downloadable PDF guide!`, 'success');
+  };
+
+  const updateLesson = (seriesId, lessonId, updatedLesson) => {
+    setCurriculumSeries((prev) =>
+      prev.map((s) => {
+        if (s.id === seriesId) {
+          return {
+            ...s,
+            lessons: s.lessons.map((l) => (l.id === lessonId ? { ...l, ...updatedLesson } : l))
+          };
+        }
+        return s;
+      })
+    );
+    showToast('✓ Lesson & attached PDF updated!', 'success');
+  };
+
+  const deleteLesson = (seriesId, lessonId) => {
+    setCurriculumSeries((prev) =>
+      prev.map((s) => {
+        if (s.id === seriesId) {
+          return {
+            ...s,
+            lessons: s.lessons.filter((l) => l.id !== lessonId)
+          };
+        }
+        return s;
+      })
+    );
+    showToast('✓ Lesson removed from series.', 'info');
+  };
+
+  const toggleStudentLessonCompletion = (studentId, lessonId) => {
+    setStudentProgress((prev) =>
+      prev.map((sp) => {
+        if (sp.id === studentId) {
+          const completed = sp.completedLessonIds.includes(lessonId)
+            ? sp.completedLessonIds.filter((id) => id !== lessonId)
+            : [...sp.completedLessonIds, lessonId];
+          return { ...sp, completedLessonIds: completed };
+        }
+        return sp;
+      })
+    );
+  };
+
+  const updateStudentProgressNote = (studentId, notes) => {
+    setStudentProgress((prev) =>
+      prev.map((sp) => (sp.id === studentId ? { ...sp, notes } : sp))
+    );
+    showToast('✓ Milestone note saved!', 'success');
+  };
+
   return (
     <AppContext.Provider
       value={{
@@ -777,6 +899,18 @@ export const AppProvider = ({ children }) => {
         incrementReviewerDownload,
         donateToCampaign,
         updateCampaign,
+        curriculumSeries,
+        setCurriculumSeries,
+        studentProgress,
+        setStudentProgress,
+        addCurriculumSeries,
+        updateCurriculumSeries,
+        toggleSeriesOptional,
+        addLessonToSeries,
+        updateLesson,
+        deleteLesson,
+        toggleStudentLessonCompletion,
+        updateStudentProgressNote,
         dailyDevotionals: DAILY_DEVOTIONALS
       }}
     >

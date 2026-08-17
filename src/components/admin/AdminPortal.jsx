@@ -40,6 +40,8 @@ import {
 import { CAMPUSES } from '../../data/campuses';
 import { AddUserModal } from './AddUserModal';
 import { EditCampaignModal } from '../giving/EditCampaignModal';
+import { AddSeriesModal } from './AddSeriesModal';
+import { AddLessonModal } from '../worker/AddLessonModal';
 
 export const AdminPortal = () => {
   const {
@@ -61,6 +63,9 @@ export const AdminPortal = () => {
     claimRequest,
     cancelBooking,
     campaigns,
+    curriculumSeries,
+    toggleSeriesOptional,
+    deleteLesson,
     showToast,
     logout,
     theme
@@ -69,8 +74,11 @@ export const AdminPortal = () => {
   const isDark = theme === 'dark';
   const isAdminLoggedIn = currentUser && (currentUser.role === 'leader' || currentUser.role === 'council');
 
-  // Campaign Edit State
+  // Campaign & Curriculum Modal States
   const [editingCampaign, setEditingCampaign] = useState(null);
+  const [showAddSeriesModal, setShowAddSeriesModal] = useState(false);
+  const [showAddLessonModal, setShowAddLessonModal] = useState(false);
+  const [targetSeriesForLesson, setTargetSeriesForLesson] = useState(null);
 
   // Admin Auth Form State (if not logged in as Admin / Council)
   const [adminPin, setAdminPin] = useState('graceyouth2026');
@@ -680,6 +688,20 @@ export const AdminPortal = () => {
           <span>🌱 Life Group Proposals</span>
           <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${adminTab === 'lg_requests' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300'}`}>
             {lifeGroupRequests?.length || 0}
+          </span>
+        </button>
+
+        <button
+          onClick={() => setAdminTab('curriculum')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+            adminTab === 'curriculum'
+              ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
+              : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-950 hover:bg-white font-bold'
+          }`}
+        >
+          <span>📖 Curriculum & Series Tracks</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${adminTab === 'curriculum' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300'}`}>
+            {curriculumSeries?.length || 4}
           </span>
         </button>
 
@@ -1638,6 +1660,164 @@ export const AdminPortal = () => {
         </div>
       )}
 
+      {/* TAB: CURRICULUM & DISCIPLESHIP SERIES GOVERNANCE */}
+      {adminTab === 'curriculum' && (
+        <div className="space-y-6">
+          <div className={`p-5 sm:p-6 rounded-3xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+            isDark ? 'bg-gradient-to-r from-indigo-950/60 via-purple-950/40 to-slate-900 border-indigo-500/30 text-white' : 'bg-white border-indigo-200 text-slate-900 shadow-xs'
+          }`}>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+                  Global Curriculum Master
+                </span>
+                <h3 className="text-lg sm:text-xl font-black font-heading">
+                  Discipleship Series & Requirement Governance
+                </h3>
+              </div>
+              <p className={`text-xs mt-1 max-w-2xl leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                Set discipleship curriculum series across all university youth workers in Iloilo. Mark tracks as <strong>Core Required</strong> (mandatory for all freshmen/students) or <strong>Optional Elective</strong> (custom tracks for specialized mentoring).
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 w-full sm:w-auto">
+              <button
+                onClick={() => {
+                  setTargetSeriesForLesson(curriculumSeries[0]?.id);
+                  setShowAddLessonModal(true);
+                }}
+                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>+ Add Lesson & PDF</span>
+              </button>
+
+              <button
+                onClick={() => setShowAddSeriesModal(true)}
+                className="flex-1 sm:flex-initial px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-pink-600 hover:from-indigo-500 hover:to-pink-500 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>+ Create Series Track</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            {(curriculumSeries || []).map((series) => (
+              <div
+                key={series.id}
+                className={`p-6 rounded-3xl border space-y-4 ${
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+                }`}
+              >
+                <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3 border-b border-slate-800 pb-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => toggleSeriesOptional(series.id)}
+                        className={`px-3 py-1 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 shadow-xs ${
+                          series.isOptional
+                            ? 'bg-sky-500/20 text-sky-400 hover:bg-sky-500/30 border border-sky-500/40'
+                            : 'bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/40'
+                        }`}
+                        title="Click to toggle between Core Required and Optional Elective"
+                      >
+                        <span>{series.isOptional ? '✨ Optional Elective (Click to make Required)' : '🌟 Core Required (Click to make Optional)'}</span>
+                      </button>
+                      <span className="text-xs text-slate-400 font-bold">{series.level}</span>
+                    </div>
+
+                    <h4 className={`text-xl font-extrabold mt-1.5 font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                      {series.title}
+                    </h4>
+                    <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{series.subtitle || series.description}</p>
+                  </div>
+
+                  <div className="flex items-center gap-2 w-full md:w-auto justify-between md:justify-end">
+                    <button
+                      onClick={() => {
+                        setTargetSeriesForLesson(series.id);
+                        setShowAddLessonModal(true);
+                      }}
+                      className="px-3.5 py-2 rounded-xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-400 font-black text-xs border border-emerald-500/30 transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <Plus className="w-3.5 h-3.5" />
+                      <span>Add Master Lesson</span>
+                    </button>
+
+                    <button
+                      onClick={() => showToast(`📥 ${series.title} complete curriculum syllabus downloaded!`, 'success')}
+                      className="px-3.5 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1.5 cursor-pointer shadow-xs"
+                    >
+                      <Download className="w-3.5 h-3.5" />
+                      <span>Download Track PDF</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Lessons Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                  {series.lessons.map((lesson) => (
+                    <div
+                      key={lesson.id}
+                      className={`p-4 rounded-2xl border flex flex-col justify-between ${
+                        isDark ? 'bg-slate-950/70 border-slate-800' : 'bg-slate-50 border-slate-200'
+                      }`}
+                    >
+                      <div>
+                        <div className="flex items-center justify-between text-xs font-bold mb-1.5">
+                          <span className="text-emerald-500 font-black">Lesson {lesson.number}</span>
+                          <span className="text-amber-500 font-mono text-[11px] font-bold bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">
+                            {lesson.passage}
+                          </span>
+                        </div>
+                        <h5 className={`font-extrabold text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                          {lesson.title}
+                        </h5>
+                        <p className={`text-xs mt-1.5 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                          {lesson.keyTakeaway}
+                        </p>
+                      </div>
+
+                      {/* File attachment & Actions */}
+                      <div className={`mt-3 pt-2.5 border-t flex items-center justify-between gap-2 ${
+                        isDark ? 'border-slate-800' : 'border-slate-200'
+                      }`}>
+                        <div className="flex items-center gap-1.5 min-w-0">
+                          <FileText className="w-3.5 h-3.5 text-indigo-400 shrink-0" />
+                          <span className={`text-[11px] font-mono truncate font-medium ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                            {lesson.fileName || `${lesson.title.replace(/\s+/g, '_')}_Guide.pdf`}
+                          </span>
+                          <span className="text-[10px] text-slate-500 shrink-0">({lesson.fileSize || '1.2 MB'})</span>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 shrink-0">
+                          <button
+                            onClick={() => showToast(`📥 Downloaded ${lesson.fileName || lesson.title + '_Guide.pdf'}!`, 'success')}
+                            className="p-1.5 rounded-lg bg-indigo-600/10 hover:bg-indigo-600 text-indigo-400 hover:text-white border border-indigo-500/30 transition-all cursor-pointer"
+                            title="Download Teacher PDF Guide"
+                          >
+                            <Download className="w-3.5 h-3.5" />
+                          </button>
+
+                          <button
+                            onClick={() => deleteLesson(series.id, lesson.id)}
+                            className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/30 transition-all cursor-pointer"
+                            title="Remove Lesson"
+                          >
+                            <Trash className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* TAB 9: SECURITY & MASTER KEY SETTINGS */}
       {adminTab === 'security' && (
         <div className="max-w-xl space-y-4">
@@ -1721,6 +1901,19 @@ export const AdminPortal = () => {
         isOpen={!!editingCampaign}
         onClose={() => setEditingCampaign(null)}
         campaign={editingCampaign}
+      />
+
+      {/* Add Series Modal */}
+      <AddSeriesModal
+        isOpen={showAddSeriesModal}
+        onClose={() => setShowAddSeriesModal(false)}
+      />
+
+      {/* Add Lesson Modal */}
+      <AddLessonModal
+        isOpen={showAddLessonModal}
+        onClose={() => setShowAddLessonModal(false)}
+        defaultSeriesId={targetSeriesForLesson}
       />
     </div>
   );
