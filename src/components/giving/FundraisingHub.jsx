@@ -147,8 +147,8 @@ export const FundraisingHub = () => {
             </p>
           </div>
 
-          {/* Category Tabs */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+          {/* Category Tabs (Flex-wrap for instant desktop clickability) */}
+          <div className="flex flex-wrap items-center gap-1.5 pb-1">
             {['All', 'Youth Camp', 'Youth Fellowship', 'Campus Outreach'].map((cat) => (
               <button
                 key={cat}
@@ -167,8 +167,8 @@ export const FundraisingHub = () => {
           </div>
         </div>
 
-        {/* Campus Filter Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+        {/* Campus Filter Pills (Flex-wrap for instant desktop clickability) */}
+        <div className="flex flex-wrap items-center gap-1.5 pb-1">
           {CAMPUSES.slice(0, 6).map((c) => (
             <button
               key={c.id}

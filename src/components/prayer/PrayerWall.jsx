@@ -78,13 +78,13 @@ export const PrayerWall = () => {
           />
         </div>
 
-        {/* Category Pills */}
-        <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 scrollbar-none">
+        {/* Category Pills (Flex-wrap for instant desktop clickability) */}
+        <div className="flex flex-wrap items-center gap-1.5 w-full sm:w-auto pb-1">
           {['All Requests', 'Praise & Answered Prayers', ...PRAYER_CATEGORIES.slice(0, 3)].map((cat) => (
             <button
               key={cat}
               onClick={() => setSelectedCategory(cat)}
-              className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition-all cursor-pointer ${
+              className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 selectedCategory === cat
                   ? 'bg-rose-600 text-white shadow-md font-black'
                   : isDark

@@ -450,27 +450,30 @@ export const AdminPortal = () => {
         </div>
       </div>
 
-      {/* Admin Navigation Tabs */}
-      <div className={`flex items-center gap-1.5 p-1 rounded-2xl border overflow-x-auto scrollbar-none ${
+      {/* Admin Navigation Tabs (Responsive Flex-Wrap so all tabs are visible and clickable without sliding) */}
+      <div className={`flex flex-wrap items-center gap-2 p-2 rounded-3xl border transition-all ${
         isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-slate-100 border-slate-200'
       }`}>
         <button
           onClick={() => setAdminTab('roles')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
             adminTab === 'roles'
               ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
-              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+              : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-950 hover:bg-white font-bold'
           }`}
         >
-          👥 People & Roles ({registeredUsers.length})
+          <span>👥 People & Roles</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${adminTab === 'roles' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300'}`}>
+            {registeredUsers.length}
+          </span>
         </button>
 
         <button
           onClick={() => setAdminTab('tutors')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
             adminTab === 'tutors'
               ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
-              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+              : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-950 hover:bg-white font-bold'
           }`}
         >
           <span>👨‍🏫 Verify Peer Tutors</span>
@@ -483,10 +486,10 @@ export const AdminPortal = () => {
 
         <button
           onClick={() => setAdminTab('workers')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
             adminTab === 'workers'
               ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
-              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+              : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-950 hover:bg-white font-bold'
           }`}
         >
           <span>✝️ Youth Worker Approvals</span>
@@ -499,54 +502,66 @@ export const AdminPortal = () => {
 
         <button
           onClick={() => setAdminTab('triage')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
             adminTab === 'triage'
               ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
-              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+              : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-950 hover:bg-white font-bold'
           }`}
         >
-          📢 Acads Triage ({requests.length})
+          <span>📢 Acads Triage</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${adminTab === 'triage' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300'}`}>
+            {requests.length}
+          </span>
         </button>
 
         <button
           onClick={() => setAdminTab('lg_requests')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
             adminTab === 'lg_requests'
               ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
-              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+              : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-950 hover:bg-white font-bold'
           }`}
         >
-          🌱 Life Group Proposals ({lifeGroupRequests?.length || 0})
+          <span>🌱 Life Group Proposals</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${adminTab === 'lg_requests' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300'}`}>
+            {lifeGroupRequests?.length || 0}
+          </span>
         </button>
 
         <button
           onClick={() => setAdminTab('campaigns')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
             adminTab === 'campaigns'
               ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
-              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+              : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-950 hover:bg-white font-bold'
           }`}
         >
-          🏕️ Camps & Sponsorship ({campaigns.length})
+          <span>🏕️ Camps & Sponsorship</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${adminTab === 'campaigns' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300'}`}>
+            {campaigns.length}
+          </span>
         </button>
 
         <button
           onClick={() => setAdminTab('prayers')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
             adminTab === 'prayers'
               ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
-              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+              : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-950 hover:bg-white font-bold'
           }`}
         >
-          🙏 Prayers ({prayers.length})
+          <span>🙏 Prayers</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${adminTab === 'prayers' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300'}`}>
+            {prayers.length}
+          </span>
         </button>
 
         <button
           onClick={() => setAdminTab('security')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
             adminTab === 'security'
               ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
-              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+              : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-950 hover:bg-white font-bold'
           }`}
         >
           <Lock className="w-3.5 h-3.5" />
