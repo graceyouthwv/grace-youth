@@ -652,6 +652,22 @@ export const AdminPortal = () => {
                   </div>
 
                   <button
+                    onClick={() => {
+                      const newPass = prompt(`Enter new password for ${user.name} (${user.email}):`, 'password123');
+                      if (newPass && newPass.trim()) {
+                        resetUserPassword(user.email, newPass.trim());
+                      }
+                    }}
+                    className={`px-3 py-1.5 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1 ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-pink-400 hover:bg-pink-950/40' : 'bg-pink-50 border-pink-200 text-pink-700 hover:bg-pink-100'
+                    }`}
+                    title="Reset User Password"
+                  >
+                    <KeyRound className="w-3.5 h-3.5" />
+                    <span>Reset Pass</span>
+                  </button>
+
+                  <button
                     onClick={() => handleDeleteUser(user.id, user.name)}
                     className={`p-2 rounded-xl border transition-colors cursor-pointer ${
                       isDark ? 'bg-slate-800 border-slate-700 text-rose-400 hover:bg-rose-950/60' : 'bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100'

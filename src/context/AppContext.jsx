@@ -452,6 +452,37 @@ export const AppProvider = ({ children }) => {
     triggerConfetti();
   };
 
+  const resetUserPassword = (email, newPassword) => {
+    const cleanEmail = email.trim().toLowerCase();
+    const userIndex = registeredUsers.findIndex((u) => u.email.toLowerCase() === cleanEmail);
+
+    if (userIndex === -1) {
+      showToast('Account with this email not found.', 'error');
+      return false;
+    }
+
+    const updatedUser = {
+      ...registeredUsers[userIndex],
+      password: newPassword
+    };
+
+    setRegisteredUsers((prev) => {
+      const updatedList = [...prev];
+      updatedList[userIndex] = updatedUser;
+      localStorage.setItem('gy_registered_users', JSON.stringify(updatedList));
+      return updatedList;
+    });
+
+    // If currently logged in as this user, sync session
+    if (currentUser && currentUser.email.toLowerCase() === cleanEmail) {
+      setCurrentUser(updatedUser);
+      localStorage.setItem('gy_active_session', JSON.stringify(updatedUser));
+    }
+
+    showToast(`🔐 Password reset successful for ${updatedUser.name}!`, 'success');
+    return true;
+  };
+
   const logout = () => {
     setCurrentUser(GUEST_USER);
     localStorage.removeItem('gy_active_session');
@@ -741,6 +772,7 @@ export const AppProvider = ({ children }) => {
         registeredUsers,
         setRegisteredUsers,
         updateUserRole,
+        resetUserPassword,
         approveYouthWorker,
         approveTutor,
         login,

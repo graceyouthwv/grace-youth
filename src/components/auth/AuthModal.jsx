@@ -2,15 +2,36 @@ import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
-import { Lock, Mail, User, School, ArrowRight, BookOpen, GraduationCap, ShieldCheck, HeartHandshake, AlertCircle, Sparkles } from 'lucide-react';
+import {
+  Lock,
+  Mail,
+  User,
+  School,
+  ArrowRight,
+  BookOpen,
+  GraduationCap,
+  ShieldCheck,
+  HeartHandshake,
+  AlertCircle,
+  Sparkles,
+  KeyRound,
+  CheckCircle2,
+  ChevronLeft
+} from 'lucide-react';
 
 export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
-  const { login, register, showToast, theme } = useApp();
-  const [mode, setMode] = useState(initialMode); // 'login' | 'register'
+  const { login, register, resetUserPassword, registeredUsers, showToast, theme } = useApp();
+  const [mode, setMode] = useState(initialMode); // 'login' | 'register' | 'forgot'
 
   // Sign In Form State
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
+
+  // Forgot Password State
+  const [forgotEmail, setForgotEmail] = useState('');
+  const [forgotNewPassword, setForgotNewPassword] = useState('');
+  const [forgotConfirmPassword, setForgotConfirmPassword] = useState('');
+  const [forgotStep, setForgotStep] = useState(1); // 1: Enter email | 2: Enter new password
 
   // Register Form State (Student | Tutor | Youth Worker)
   const [name, setName] = useState('');
@@ -40,6 +61,49 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     const success = login(loginEmail, loginPassword);
     if (success) {
       onClose();
+    }
+  };
+
+  const handleVerifyForgotEmail = (e) => {
+    e.preventDefault();
+    const cleanEmail = forgotEmail.trim().toLowerCase();
+    const user = registeredUsers.find((u) => u.email.toLowerCase() === cleanEmail);
+
+    if (!user) {
+      showToast('No account found with this email. Please check spelling.', 'error');
+      return;
+    }
+
+    setForgotStep(2);
+    showToast(`Account verified for ${user.name}! Please enter your new password.`, 'success');
+  };
+
+  const handleResetPasswordSubmit = (e) => {
+    e.preventDefault();
+    if (!forgotNewPassword.trim()) {
+      showToast('Please enter a new password.', 'error');
+      return;
+    }
+
+    if (forgotNewPassword.length < 6) {
+      showToast('Password must be at least 6 characters.', 'error');
+      return;
+    }
+
+    if (forgotNewPassword !== forgotConfirmPassword) {
+      showToast('Passwords do not match.', 'error');
+      return;
+    }
+
+    const success = resetUserPassword(forgotEmail, forgotNewPassword);
+    if (success) {
+      login(forgotEmail, forgotNewPassword);
+      onClose();
+      setMode('login');
+      setForgotStep(1);
+      setForgotEmail('');
+      setForgotNewPassword('');
+      setForgotConfirmPassword('');
     }
   };
 
@@ -74,38 +138,46 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={mode === 'login' ? '🔐 Sign In to Grace Youth' : '✨ Create Student Account / Apply'}
+      title={
+        mode === 'forgot'
+          ? '🔑 Reset Forgotten Password'
+          : mode === 'login'
+          ? '🔐 Sign In to Grace Youth'
+          : '✨ Create Student Account / Apply'
+      }
       maxWidth="max-w-md"
     >
       <div className="space-y-4 text-xs sm:text-sm">
-        {/* Toggle Mode Tabs */}
-        <div className={`flex items-center p-1 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
-          <button
-            type="button"
-            onClick={() => setMode('login')}
-            className={`flex-1 py-2 text-xs font-black rounded-xl transition-all cursor-pointer ${
-              mode === 'login'
-                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
-                : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Sign In
-          </button>
-          <button
-            type="button"
-            onClick={() => setMode('register')}
-            className={`flex-1 py-2 text-xs font-black rounded-xl transition-all cursor-pointer ${
-              mode === 'register'
-                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
-                : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
-            }`}
-          >
-            Create Account
-          </button>
-        </div>
+        {/* Toggle Mode Tabs (Only shown when not in Forgot Password) */}
+        {mode !== 'forgot' && (
+          <div className={`flex items-center p-1 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
+            <button
+              type="button"
+              onClick={() => setMode('login')}
+              className={`flex-1 py-2 text-xs font-black rounded-xl transition-all cursor-pointer ${
+                mode === 'login'
+                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
+                  : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Sign In
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode('register')}
+              className={`flex-1 py-2 text-xs font-black rounded-xl transition-all cursor-pointer ${
+                mode === 'register'
+                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
+                  : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              Create Account
+            </button>
+          </div>
+        )}
 
-        {/* 1. Sign In Form */}
-        {mode === 'login' ? (
+        {/* 1. SIGN IN FORM */}
+        {mode === 'login' && (
           <div className="space-y-3.5">
             {/* Quick Test Demo Account Fillers */}
             <div className={`p-3 rounded-2xl border ${isDark ? 'bg-slate-900/70 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
@@ -169,9 +241,22 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               </div>
 
               <div>
-                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Password
-                </label>
+                <div className="flex items-center justify-between mb-1">
+                  <label className={`block text-xs font-black uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    Password
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setForgotEmail(loginEmail);
+                      setMode('forgot');
+                      setForgotStep(1);
+                    }}
+                    className="text-[11px] font-bold text-pink-500 hover:underline cursor-pointer"
+                  >
+                    Forgot Password?
+                  </button>
+                </div>
                 <div className="relative">
                   <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
@@ -196,8 +281,114 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               </button>
             </form>
           </div>
-        ) : (
-          /* 2. Registration / Staff Application */
+        )}
+
+        {/* 2. FORGOT PASSWORD SELF-SERVICE RESET */}
+        {mode === 'forgot' && (
+          <div className="space-y-4">
+            <div className={`p-3.5 rounded-2xl border text-xs leading-relaxed flex items-start gap-2.5 ${
+              isDark ? 'bg-slate-900 border-slate-800 text-slate-300' : 'bg-indigo-50 border-indigo-200 text-indigo-950'
+            }`}>
+              <KeyRound className="w-4 h-4 text-pink-500 shrink-0 mt-0.5" />
+              <div>
+                <strong>Self-Service Password Recovery:</strong> Enter your registered school or staff email to reset your account password instantly.
+              </div>
+            </div>
+
+            {forgotStep === 1 ? (
+              <form onSubmit={handleVerifyForgotEmail} className="space-y-3">
+                <div>
+                  <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    Enter Registered Account Email
+                  </label>
+                  <div className="relative">
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="email"
+                      required
+                      placeholder="e.g. bea@upv.edu.ph or joshua@graceyouth.ph"
+                      value={forgotEmail}
+                      onChange={(e) => setForgotEmail(e.target.value)}
+                      className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border text-xs sm:text-sm ${
+                        isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                      }`}
+                    />
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-pink-600 to-rose-600 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <span>Verify Email & Continue</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              </form>
+            ) : (
+              <form onSubmit={handleResetPasswordSubmit} className="space-y-3">
+                <div className={`p-2.5 rounded-xl border text-xs font-bold ${
+                  isDark ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                }`}>
+                  ✓ Email Verified: {forgotEmail}
+                </div>
+
+                <div>
+                  <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    New Password (min 6 chars)
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="Enter new password..."
+                    value={forgotNewPassword}
+                    onChange={(e) => setForgotNewPassword(e.target.value)}
+                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                      isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                    }`}
+                  />
+                </div>
+
+                <div>
+                  <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    Confirm New Password
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    placeholder="Re-enter new password..."
+                    value={forgotConfirmPassword}
+                    onChange={(e) => setForgotConfirmPassword(e.target.value)}
+                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                      isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                    }`}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                >
+                  <CheckCircle2 className="w-4 h-4" />
+                  <span>Save New Password & Sign In</span>
+                </button>
+              </form>
+            )}
+
+            <div className="text-center pt-2">
+              <button
+                type="button"
+                onClick={() => setMode('login')}
+                className="text-xs font-bold text-slate-400 hover:text-white flex items-center justify-center gap-1 mx-auto cursor-pointer"
+              >
+                <ChevronLeft className="w-3.5 h-3.5" />
+                <span>Back to Sign In</span>
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* 3. REGISTRATION / APPLICATION FORM */}
+        {mode === 'register' && (
           <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
             <div>
               <label className={`block text-xs font-black uppercase tracking-wider mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>

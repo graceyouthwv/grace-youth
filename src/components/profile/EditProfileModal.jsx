@@ -14,7 +14,7 @@ const AVATAR_OPTIONS = [
 ];
 
 export const EditProfileModal = ({ isOpen, onClose }) => {
-  const { currentUser, setCurrentUser, setRegisteredUsers, tutors, setTutors, showToast, theme } = useApp();
+  const { currentUser, setCurrentUser, setRegisteredUsers, resetUserPassword, tutors, setTutors, showToast, theme } = useApp();
   const isDark = theme === 'dark';
 
   const isTutor = currentUser.role === 'tutor';
@@ -28,6 +28,7 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
   const [yearLevel, setYearLevel] = useState(currentUser.yearLevel || '2nd Year');
   const [bio, setBio] = useState(currentUser.bio || '');
   const [avatar, setAvatar] = useState(currentUser.avatar || AVATAR_OPTIONS[0]);
+  const [newPasswordInput, setNewPasswordInput] = useState('');
 
   // Tutor Specific Fields
   const [subjectsInput, setSubjectsInput] = useState(
@@ -58,8 +59,13 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
       yearLevel,
       bio: bio.trim(),
       avatar,
+      ...(newPasswordInput.trim() && { password: newPasswordInput.trim() }),
       ...(isTutor && { subjects: subjectsArray, preferredMode })
     };
+
+    if (newPasswordInput.trim()) {
+      resetUserPassword(currentUser.email, newPasswordInput.trim());
+    }
 
     setCurrentUser(updatedUser);
     localStorage.setItem('gy_active_session', JSON.stringify(updatedUser));
@@ -254,7 +260,7 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
             </label>
             <input
               type="text"
-              placeholder="e.g. Ready to teach Calculus and encourage classmates!"
+              placeholder="e.g. Ready to teach and serve classmates!"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
@@ -262,6 +268,21 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
               }`}
             />
           </div>
+        </div>
+
+        <div className="p-3.5 rounded-2xl border bg-slate-500/5 dark:bg-slate-900/50 space-y-2">
+          <label className={`block text-xs font-black uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+            🔐 Change Account Password (Optional)
+          </label>
+          <input
+            type="password"
+            placeholder="Enter new password to change, or leave blank to keep current..."
+            value={newPasswordInput}
+            onChange={(e) => setNewPasswordInput(e.target.value)}
+            className={`w-full px-3 py-2 rounded-xl border text-xs ${
+              isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          />
         </div>
 
         <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
