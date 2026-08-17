@@ -98,6 +98,61 @@ export const AdminPortal = () => {
     return saved ? JSON.parse(saved) : {};
   });
 
+  const [councilMotions, setCouncilMotions] = useState([
+    {
+      id: 'mot-1',
+      title: 'Proposal #26-04: Midterm Coffee Outreach Budget Allocation',
+      requestedBy: 'Campus Youth Workers (ISUFST & UPV)',
+      amount: '₱15,000',
+      description: 'Funding for 600 cups of cold brew, study snacks, and encouragement prayer cards across CAS and SOT buildings during finals week.',
+      status: 'Active Vote',
+      yesVotes: 4,
+      noVotes: 0,
+      voted: false
+    },
+    {
+      id: 'mot-2',
+      title: 'Proposal #26-05: Subsidize 15 Freshmen for Summer Youth Camp 2026',
+      requestedBy: 'Camp Logistics Committee',
+      amount: '₱22,500',
+      description: 'Partial registration scholarships for freshmen from low-income dorms in Miagao and Jaro.',
+      status: 'Approved',
+      yesVotes: 5,
+      noVotes: 0,
+      voted: true
+    },
+    {
+      id: 'mot-3',
+      title: 'Proposal #26-06: Peer Tutor Printing & Review Material Budget',
+      requestedBy: 'Academic Head (Joshua Alcantara)',
+      amount: '₱8,000',
+      description: 'Printing physical mock exam sets and reviewer compilations for Calculus 1, Nursing Anatomy, and Organic Chemistry.',
+      status: 'Active Vote',
+      yesVotes: 3,
+      noVotes: 1,
+      voted: false
+    }
+  ]);
+
+  const handleVoteCouncilMotion = (motionId, isApprove) => {
+    setCouncilMotions((prev) =>
+      prev.map((m) => {
+        if (m.id === motionId) {
+          const updated = {
+            ...m,
+            voted: true,
+            yesVotes: isApprove ? m.yesVotes + 1 : m.yesVotes,
+            noVotes: !isApprove ? m.noVotes + 1 : m.noVotes,
+            status: isApprove && m.yesVotes + 1 >= 4 ? 'Approved' : m.status
+          };
+          showToast(isApprove ? `👍 Voted In Favor for ${m.title}!` : `⚠️ Voted against / requested revision for ${m.title}`, 'info');
+          return updated;
+        }
+        return m;
+      })
+    );
+  };
+
   const handleToggleTutorCheck = (tutorId, stepKey) => {
     setTutorChecklists((prev) => {
       const current = prev[tutorId] || { step1_acads: false, step2_conduct: false, step3_honor: false };
@@ -543,6 +598,20 @@ export const AdminPortal = () => {
         </button>
 
         <button
+          onClick={() => setAdminTab('council')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+            adminTab === 'council'
+              ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
+              : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-950 hover:bg-white font-bold'
+          }`}
+        >
+          <span>🏛️ Youth Council & Audit</span>
+          <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${adminTab === 'council' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300'}`}>
+            {councilMotions.length} Motions
+          </span>
+        </button>
+
+        <button
           onClick={() => setAdminTab('prayers')}
           className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
             adminTab === 'prayers'
@@ -646,6 +715,7 @@ export const AdminPortal = () => {
                     >
                       <option value="student">🎓 Student Member</option>
                       <option value="tutor">👨‍🏫 Volunteer Peer Tutor</option>
+                      <option value="council">🏛️ Youth Council Trustee</option>
                       <option value="worker">✝️ Youth Worker / Missionary</option>
                       <option value="leader">🛡️ Ministry Admin</option>
                     </select>
@@ -1288,7 +1358,168 @@ export const AdminPortal = () => {
         </div>
       )}
 
-      {/* TAB 8: SECURITY & MASTER KEY SETTINGS */}
+      {/* TAB 8: YOUTH COUNCIL TRANSPARENCY & DECISION HUB */}
+      {adminTab === 'council' && (
+        <div className="space-y-6">
+          {/* Header Banner */}
+          <div className={`p-6 rounded-3xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
+            isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+          }`}>
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+                  Leadership Governance & Transparency
+                </span>
+              </div>
+              <h3 className={`text-xl font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                🏛️ Grace Youth Council Decision & Financial Audit Hub
+              </h3>
+              <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                Direct oversight for student council trustees, treasurers, and campus reps. Track live faith seeds, vote on ministry motions, and audit disbursements.
+              </p>
+            </div>
+
+            <div className={`p-3 rounded-2xl border text-right shrink-0 ${
+              isDark ? 'bg-slate-800 border-slate-700' : 'bg-indigo-50 border-indigo-200'
+            }`}>
+              <div className="text-[10px] uppercase font-bold text-slate-400">Total Faith Seeds Audited</div>
+              <div className="text-xl font-black text-indigo-500 font-heading">
+                ₱{campaigns.reduce((acc, c) => acc + c.raisedAmount, 0).toLocaleString()}
+              </div>
+            </div>
+          </div>
+
+          {/* Section 1: Active Council Motions & Voting */}
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <span className={`text-xs font-black uppercase tracking-widest block ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                🗳️ Active Ministry Motions & Council Voting ({councilMotions.length}):
+              </span>
+              <span className="text-xs text-indigo-400 font-bold">Quorum: 4/5 Required</span>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {councilMotions.map((motion) => (
+                <div
+                  key={motion.id}
+                  className={`p-5 rounded-3xl border flex flex-col justify-between space-y-3 ${
+                    isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+                  }`}
+                >
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between">
+                      <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${
+                        motion.status === 'Approved'
+                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                          : 'bg-amber-500/20 text-amber-400 border border-amber-500/30 animate-pulse'
+                      }`}>
+                        {motion.status}
+                      </span>
+                      <span className="text-sm font-black text-pink-500 font-heading">{motion.amount}</span>
+                    </div>
+
+                    <h4 className={`text-sm font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                      {motion.title}
+                    </h4>
+
+                    <div className="text-[11px] text-slate-400">
+                      Requested by: <strong>{motion.requestedBy}</strong>
+                    </div>
+
+                    <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                      {motion.description}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-slate-800 space-y-2">
+                    <div className="flex items-center justify-between text-[11px] font-bold">
+                      <span className="text-emerald-400">👍 Yes: {motion.yesVotes}</span>
+                      <span className="text-rose-400">👎 Revisions: {motion.noVotes}</span>
+                    </div>
+
+                    {!motion.voted ? (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => handleVoteCouncilMotion(motion.id, true)}
+                          className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black transition-all cursor-pointer shadow-xs"
+                        >
+                          👍 In Favor
+                        </button>
+                        <button
+                          onClick={() => handleVoteCouncilMotion(motion.id, false)}
+                          className={`px-3 py-2 rounded-xl text-xs font-bold border transition-all cursor-pointer ${
+                            isDark ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white' : 'bg-slate-100 border-slate-300 text-slate-700'
+                          }`}
+                        >
+                          Amend
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="text-center py-1.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-xs font-bold">
+                        ✓ Vote Cast by Council
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Section 2: Real-Time Financial Transparency & GCash/Maya Audit Log */}
+          <div className={`p-6 rounded-3xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'}`}>
+            <div className="flex items-center justify-between pb-4 border-b border-slate-800 mb-4">
+              <div>
+                <h4 className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  💰 Live Campaign Disbursements & Verified Faith Seed Audit
+                </h4>
+                <p className="text-xs text-slate-400">
+                  Every peso donated via GCash / Maya is 100% transparent and audited by the student council.
+                </p>
+              </div>
+
+              <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-full text-xs font-black">
+                Public Ledger Active
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {campaigns.map((camp) => {
+                const percent = Math.min(Math.round((camp.raisedAmount / camp.targetAmount) * 100), 100);
+                return (
+                  <div
+                    key={camp.id}
+                    className={`p-4 rounded-2xl border ${
+                      isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+                    }`}
+                  >
+                    <div className="flex items-center justify-between text-xs mb-1">
+                      <span className="font-bold text-pink-500">{camp.category}</span>
+                      <span className="font-black text-emerald-400">{percent}% Funded</span>
+                    </div>
+                    <h5 className={`font-extrabold text-sm truncate font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                      {camp.title}
+                    </h5>
+
+                    <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden my-2.5">
+                      <div
+                        className="bg-gradient-to-r from-pink-500 to-indigo-500 h-full rounded-full transition-all"
+                        style={{ width: `${percent}%` }}
+                      />
+                    </div>
+
+                    <div className="flex items-center justify-between text-[11px] text-slate-400">
+                      <span>Raised: <strong>₱{camp.raisedAmount.toLocaleString()}</strong></span>
+                      <span>Goal: ₱{camp.targetAmount.toLocaleString()}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB 9: SECURITY & MASTER KEY SETTINGS */}
       {adminTab === 'security' && (
         <div className="max-w-xl space-y-4">
           <div className={`p-6 rounded-3xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'}`}>

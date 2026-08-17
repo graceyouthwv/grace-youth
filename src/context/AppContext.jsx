@@ -76,6 +76,21 @@ export const DEMO_ACCOUNTS = [
     bio: 'Full-time campus youth missionary leading discipleship and pastoral care across Iloilo schools.'
   },
   {
+    id: 'usr-council-1',
+    name: 'Keziah Marie Reyes',
+    email: 'council@graceyouth.ph',
+    password: 'password123',
+    role: 'council',
+    roleLabel: 'Youth Council Trustee / Treasurer',
+    campusId: 'cpu',
+    campusName: 'CPU Jaro & Regional Council',
+    yearLevel: '4th Year / Student Council',
+    isApproved: true,
+    status: 'Active',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80',
+    bio: 'Serving on the Grace Youth Council overseeing financial transparency, event budgets, and campus strategy.'
+  },
+  {
     id: 'usr-admin-1',
     name: 'Pastor Tim',
     email: 'graceyouth.wv@proton.me',
@@ -427,6 +442,7 @@ export const AppProvider = ({ children }) => {
   const updateUserRole = async (userId, newRole) => {
     let updatedRoleLabel = 'Student';
     if (newRole === 'leader') updatedRoleLabel = 'Ministry Admin / Coordinator';
+    else if (newRole === 'council') updatedRoleLabel = 'Youth Council Trustee / Officer';
     else if (newRole === 'worker') updatedRoleLabel = 'Campus Youth Worker / Missionary';
     else if (newRole === 'tutor') updatedRoleLabel = 'Volunteer Peer Tutor';
     else updatedRoleLabel = 'Student Member';

@@ -182,40 +182,48 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
             {/* Quick Test Demo Account Fillers */}
             <div className={`p-3 rounded-2xl border ${isDark ? 'bg-slate-900/70 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
               <div className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
-                <span>⚡ Test Accounts:</span>
+                <span>⚡ Test Demo Accounts:</span>
               </div>
-              <div className="grid grid-cols-4 gap-1.5">
+              <div className="grid grid-cols-5 gap-1">
                 <button
                   type="button"
                   onClick={() => handleFillDemo('bea@upv.edu.ph', 'password123')}
-                  className="px-1.5 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
+                  className="px-1 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 rounded-xl text-[10px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
                 >
                   <GraduationCap className="w-3.5 h-3.5" />
-                  <span className="truncate text-[10px] mt-0.5">Student</span>
+                  <span className="truncate text-[9px] mt-0.5">Student</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleFillDemo('joshua@graceyouth.ph', 'password123')}
-                  className="px-1.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
+                  className="px-1 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-[10px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
                 >
                   <BookOpen className="w-3.5 h-3.5" />
-                  <span className="truncate text-[10px] mt-0.5">Tutor</span>
+                  <span className="truncate text-[9px] mt-0.5">Tutor</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleFillDemo('council@graceyouth.ph', 'password123')}
+                  className="px-1 py-1.5 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 border border-pink-500/20 rounded-xl text-[10px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
+                >
+                  <Users className="w-3.5 h-3.5" />
+                  <span className="truncate text-[9px] mt-0.5">Council</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleFillDemo('worker@graceyouth.ph', 'password123')}
-                  className="px-1.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
+                  className="px-1 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-xl text-[10px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
                 >
                   <HeartHandshake className="w-3.5 h-3.5" />
-                  <span className="truncate text-[10px] mt-0.5">Worker</span>
+                  <span className="truncate text-[9px] mt-0.5">Worker</span>
                 </button>
                 <button
                   type="button"
                   onClick={() => handleFillDemo('graceyouth.wv@proton.me', 'graceyouth2026')}
-                  className="px-1.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
+                  className="px-1 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-xl text-[10px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
                 >
                   <ShieldCheck className="w-3.5 h-3.5" />
-                  <span className="truncate text-[10px] mt-0.5">Admin</span>
+                  <span className="truncate text-[9px] mt-0.5">Admin</span>
                 </button>
               </div>
             </div>
