@@ -177,6 +177,39 @@ export const AppProvider = ({ children }) => {
     checkVersionAndGet('gy_student_progress', INITIAL_STUDENT_PROGRESS)
   );
 
+  const [volunteerApplications, setVolunteerApplications] = useState(() =>
+    checkVersionAndGet('gy_volunteer_apps', [
+      {
+        id: 'vol-sample-1',
+        name: 'Hannah Grace',
+        email: 'hannah.grace@wvsu.edu.ph',
+        contact: '0918-334-1122 (FB: Hannah Grace)',
+        campusId: 'wvsu',
+        campusName: 'West Visayas State University (WVSU)',
+        roleArea: '🎸 Worship & Music Team',
+        yearLevel: '2nd Year',
+        availability: 'Thursdays 4:00 PM onwards & Saturdays',
+        bioNote: 'Played acoustic guitar in high school worship team and eager to serve freshmen in Iloilo!',
+        appliedAt: 'Yesterday',
+        status: 'Pending Admin Review'
+      },
+      {
+        id: 'vol-sample-2',
+        name: 'Kenzo Ramirez',
+        email: 'kenzo.ramirez@cpu.edu.ph',
+        contact: '0919-556-7788',
+        campusId: 'cpu',
+        campusName: 'Central Philippine University (CPU)',
+        roleArea: '☕ Exam Outreach & Care Team',
+        yearLevel: '3rd Year',
+        availability: 'Weekdays after 3:00 PM',
+        bioNote: 'Passionate about brewing coffee and sharing scriptures with classmates during finals week.',
+        appliedAt: '2 days ago',
+        status: 'Pending Admin Review'
+      }
+    ])
+  );
+
   const [toasts, setToasts] = useState([]);
 
   // Theme Sync
@@ -335,12 +368,12 @@ export const AppProvider = ({ children }) => {
     triggerConfetti();
   };
 
-  const approveTutor = (userId) => {
+  const approveTutor = (userIdOrTutorId) => {
     let approvedUserObj = null;
 
     setRegisteredUsers((prev) =>
       prev.map((u) => {
-        if (u.id === userId) {
+        if (u.id === userIdOrTutorId || u.name === userIdOrTutorId) {
           approvedUserObj = u;
           return {
             ...u,
@@ -355,20 +388,26 @@ export const AppProvider = ({ children }) => {
       })
     );
 
-    if (approvedUserObj) {
-      const existingListing = tutors.find((t) => t.name === approvedUserObj.name);
-      if (!existingListing) {
+    setTutors((prev) => {
+      const matchIndex = prev.findIndex((t) => t.id === userIdOrTutorId || t.name === userIdOrTutorId || (approvedUserObj && t.name === approvedUserObj.name));
+      if (matchIndex !== -1) {
+        return prev.map((t, idx) =>
+          idx === matchIndex ? { ...t, isApproved: true, status: 'Active', badge: 'Verified Peer Tutor' } : t
+        );
+      } else if (approvedUserObj) {
         const newTutorListing = {
           id: `tut-${Date.now()}`,
           name: approvedUserObj.name,
-          avatar: approvedUserObj.avatar,
+          avatar: approvedUserObj.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
           role: `Volunteer Peer Tutor (${approvedUserObj.program || 'Academics'})`,
           campusId: approvedUserObj.campusId,
           campusName: approvedUserObj.campusName,
-          subjects: approvedUserObj.subjects?.length ? approvedUserObj.subjects : ['General Academics', approvedUserObj.program],
+          subjects: approvedUserObj.subjects?.length ? approvedUserObj.subjects : ['General Academics', approvedUserObj.program || 'Calculus'],
           category: 'Academics',
           rating: 5.0,
           sessionsGiven: 0,
+          isApproved: true,
+          status: 'Active',
           badge: 'Verified Peer Tutor',
           bio: approvedUserObj.bio || 'Verified volunteer peer tutor ready to help batchmates succeed.',
           preferredMode: approvedUserObj.preferredMode || 'Hybrid',
@@ -377,11 +416,56 @@ export const AppProvider = ({ children }) => {
             { day: 'Thursday', time: '5:00 PM - 6:30 PM', mode: 'Online' }
           ]
         };
-        setTutors((prev) => [newTutorListing, ...prev]);
+        return [newTutorListing, ...prev];
       }
-      showToast(`🎉 ${approvedUserObj.name} has been certified and activated as a Peer Tutor!`, 'success');
-      triggerConfetti();
-    }
+      return prev;
+    });
+
+    showToast(`🎉 Peer Tutor has been verified and activated in the public directory!`, 'success');
+    triggerConfetti();
+  };
+
+  const addTutorListing = (tutorData) => {
+    const newTutor = {
+      id: `tut-${Date.now()}`,
+      name: currentUser.name || 'Volunteer Peer Tutor',
+      avatar: currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      role: `Volunteer Peer Tutor (${tutorData.category || 'Academics'})`,
+      rating: 5.0,
+      sessionsGiven: 0,
+      badge: 'Pending Admin Certification',
+      isApproved: false,
+      status: 'Pending Admin Review',
+      ...tutorData
+    };
+    setTutors((prev) => [newTutor, ...prev]);
+    showToast('🌟 Peer Tutor profile submitted! It will appear in the directory once verified by Admin.', 'success');
+    triggerConfetti();
+  };
+
+  const addVolunteerApplication = (appData) => {
+    const newApp = {
+      id: `vol-${Date.now()}`,
+      appliedAt: 'Just now',
+      status: 'Pending Admin Review',
+      ...appData
+    };
+    setVolunteerApplications((prev) => [newApp, ...prev]);
+    showToast(`🎉 Volunteer application submitted! Our ministry leadership will review your application.`, 'success');
+    triggerConfetti();
+  };
+
+  const approveVolunteerApplication = (appId) => {
+    setVolunteerApplications((prev) =>
+      prev.map((app) => (app.id === appId ? { ...app, status: 'Approved & Active' } : app))
+    );
+    showToast('✅ Volunteer application approved and activated!', 'success');
+    triggerConfetti();
+  };
+
+  const deleteVolunteerApplication = (appId) => {
+    setVolunteerApplications((prev) => prev.filter((app) => app.id !== appId));
+    showToast('Volunteer application removed.', 'info');
   };
 
   const updateUserRole = async (userId, newRole) => {
@@ -1003,6 +1087,11 @@ export const AppProvider = ({ children }) => {
         updateBibleStudy,
         deleteBibleStudy,
         deletePrayer,
+        volunteerApplications,
+        addVolunteerApplication,
+        approveVolunteerApplication,
+        deleteVolunteerApplication,
+        addTutorListing,
         curriculumSeries,
         setCurriculumSeries,
         studentProgress,

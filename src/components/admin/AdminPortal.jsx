@@ -69,6 +69,9 @@ export const AdminPortal = () => {
     claimRequest,
     cancelBooking,
     campaigns,
+    volunteerApplications,
+    approveVolunteerApplication,
+    deleteVolunteerApplication,
     curriculumSeries,
     toggleSeriesOptional,
     deleteLesson,
@@ -669,6 +672,22 @@ export const AdminPortal = () => {
           {pendingWorkers.length > 0 && (
             <span className="px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950 font-black text-[10px]">
               {pendingWorkers.length}
+            </span>
+          )}
+        </button>
+
+        <button
+          onClick={() => setAdminTab('volunteers')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+            adminTab === 'volunteers'
+              ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
+              : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-950 hover:bg-white font-bold'
+          }`}
+        >
+          <span>🤝 Volunteer Applications</span>
+          {volunteerApplications?.filter((v) => v.status === 'Pending Admin Review').length > 0 && (
+            <span className="px-1.5 py-0.2 rounded-full bg-pink-500 text-white font-black text-[10px]">
+              {volunteerApplications.filter((v) => v.status === 'Pending Admin Review').length}
             </span>
           )}
         </button>
@@ -1359,6 +1378,107 @@ export const AdminPortal = () => {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* TAB: VOLUNTEER & MINISTRY APPLICATIONS */}
+      {adminTab === 'volunteers' && (
+        <div className="space-y-4">
+          <div className={`p-4 rounded-2xl border text-xs leading-relaxed ${
+            isDark ? 'bg-pink-950/30 border-pink-500/30 text-pink-200' : 'bg-pink-50 border-pink-200 text-pink-950'
+          }`}>
+            🤝 <strong>Campus Ministry Volunteer Queue:</strong> College students applying to serve in Worship & Music, Youth Camps, Exam Care & Cold Brew Outreach, Life Groups, 24/7 Prayer, or Academic Tutoring. Review applications and approve them into active volunteer service!
+          </div>
+
+          <div className="space-y-3">
+            {volunteerApplications && volunteerApplications.length > 0 ? (
+              volunteerApplications.map((app) => (
+                <div
+                  key={app.id}
+                  className={`p-5 rounded-3xl border space-y-3 transition-all ${
+                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+                  }`}
+                >
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                          {app.name}
+                        </span>
+                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black border ${
+                          app.status === 'Approved & Active'
+                            ? 'bg-emerald-500/20 text-emerald-600 border-emerald-500/30'
+                            : 'bg-pink-500/20 text-pink-600 border-pink-500/30'
+                        }`}>
+                          {app.status}
+                        </span>
+                      </div>
+                      <div className={`text-xs mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                        {app.email} • Contact: <strong>{app.contact || 'No contact provided'}</strong> • <strong>{app.campusName}</strong> ({app.yearLevel})
+                      </div>
+                    </div>
+
+                    <span className="px-3 py-1 rounded-xl text-xs font-black bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20 shrink-0">
+                      {app.roleArea}
+                    </span>
+                  </div>
+
+                  <div className={`p-3 rounded-2xl border text-xs space-y-1 ${
+                    isDark ? 'bg-slate-950/60 border-slate-800 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700'
+                  }`}>
+                    <div>
+                      <strong className={isDark ? 'text-slate-200' : 'text-slate-900'}>Weekly Availability:</strong> {app.availability}
+                    </div>
+                    {app.bioNote && (
+                      <p className="italic pt-1 border-t border-slate-800/40">
+                        "{app.bioNote}"
+                      </p>
+                    )}
+                  </div>
+
+                  <div className={`pt-2 border-t flex items-center justify-between gap-2 ${
+                    isDark ? 'border-slate-800' : 'border-slate-200'
+                  }`}>
+                    <span className="text-[11px] text-slate-400">
+                      Applied: {app.appliedAt}
+                    </span>
+
+                    <div className="flex items-center gap-2">
+                      {app.status !== 'Approved & Active' ? (
+                        <button
+                          type="button"
+                          onClick={() => approveVolunteerApplication(app.id)}
+                          className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5"
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Approve & Activate Volunteer</span>
+                        </button>
+                      ) : (
+                        <span className="text-emerald-500 font-bold text-xs flex items-center gap-1">
+                          <Check className="w-3.5 h-3.5" /> Approved & Serving
+                        </span>
+                      )}
+
+                      <button
+                        type="button"
+                        onClick={() => deleteVolunteerApplication(app.id)}
+                        className="p-2 rounded-xl bg-rose-500/10 hover:bg-rose-500 text-rose-400 hover:text-white border border-rose-500/30 transition-all cursor-pointer"
+                        title="Remove Application"
+                      >
+                        <Trash className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className={`p-8 text-center rounded-3xl border border-dashed text-xs ${
+                isDark ? 'bg-slate-900/40 border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-500'
+              }`}>
+                No volunteer applications submitted yet.
+              </div>
+            )}
           </div>
         </div>
       )}

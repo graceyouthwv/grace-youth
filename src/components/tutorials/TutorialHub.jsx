@@ -20,15 +20,20 @@ export const TutorialHub = () => {
   const isHlg = language === 'hlg' || language === 'hil';
   const t = (key) => getTranslation(key, language);
 
+  const approvedTutorsCount = tutors.filter(
+    (t) => t.isApproved !== false && t.status !== 'Pending Admin Review' && t.status !== 'Pending Admin Approval'
+  ).length;
+
   const filteredTutors = tutors.filter((t) => {
+    const isApproved = t.isApproved !== false && t.status !== 'Pending Admin Review' && t.status !== 'Pending Admin Approval';
     const matchesCampus = selectedCampus === 'all' || t.campusId === selectedCampus;
     const matchesCategory = selectedCategory === 'All Subjects' || t.category === selectedCategory;
     const matchesSearch =
       t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      t.subjects.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      t.bio.toLowerCase().includes(searchQuery.toLowerCase());
+      t.subjects?.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      t.bio?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return matchesCampus && matchesCategory && matchesSearch;
+    return isApproved && matchesCampus && matchesCategory && matchesSearch;
   });
 
   return (
@@ -49,7 +54,7 @@ export const TutorialHub = () => {
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
-            <span>{isHlg ? `Tutors (${tutors.length})` : `Tutors (${tutors.length})`}</span>
+            <span>{isHlg ? `Tutors (${approvedTutorsCount})` : `Tutors (${approvedTutorsCount})`}</span>
           </button>
 
           <button

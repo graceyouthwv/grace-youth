@@ -5,7 +5,7 @@ import { CAMPUSES } from '../../data/campuses';
 import { HeartHandshake, Sparkles, Send, Music, Users, Coffee, Tent, Heart, BookOpen, ShieldCheck } from 'lucide-react';
 
 export const VolunteerModal = ({ isOpen, onClose }) => {
-  const { currentUser, showToast, theme } = useApp();
+  const { currentUser, showToast, theme, addVolunteerApplication } = useApp();
   const [name, setName] = useState(currentUser.name || '');
   const [email, setEmail] = useState(currentUser.email || '');
   const [contact, setContact] = useState('');
@@ -36,9 +36,7 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
     const selectedRoleObj = volunteerRoles.find((r) => r.id === roleArea);
     const campusObj = CAMPUSES.find((c) => c.id === campusId);
 
-    // Save to localStorage or state
-    const newVolunteerApp = {
-      id: `vol-${Date.now()}`,
+    addVolunteerApplication({
       name: name.trim(),
       email: email.trim(),
       contact: contact.trim(),
@@ -47,15 +45,9 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
       roleArea: selectedRoleObj?.title || 'Youth Worker Volunteer',
       yearLevel,
       availability,
-      bioNote: bioNote.trim() || 'Excited to serve college students for Christ!',
-      appliedAt: 'Just now',
-      status: 'Pending Admin Review'
-    };
+      bioNote: bioNote.trim() || 'Excited to serve college students for Christ!'
+    });
 
-    const existingApps = JSON.parse(localStorage.getItem('gy_volunteer_apps') || '[]');
-    localStorage.setItem('gy_volunteer_apps', JSON.stringify([newVolunteerApp, ...existingApps]));
-
-    showToast(`🎉 Volunteer application submitted! Our ministry leadership will reach out soon.`, 'success');
     onClose();
     setBioNote('');
   };
