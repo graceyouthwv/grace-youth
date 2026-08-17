@@ -109,21 +109,29 @@ export const StudentPortal = () => {
         {/* Left 2 Cols: Upcoming Sessions, Life Group, and Volunteer Roster */}
         <div className="lg:col-span-2 space-y-6">
           {/* Section 1: My Booked Peer Tutorials */}
-          <div className="genz-card p-6 border border-slate-800">
+          <div className={`p-6 rounded-3xl border transition-all ${
+            isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+          }`}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
+                <div className={`p-2 rounded-xl border ${
+                  isDark ? 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20' : 'bg-indigo-50 text-indigo-700 border-indigo-200'
+                }`}>
                   <BookOpen className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className={`font-extrabold text-base font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     My Scheduled Peer Tutorials
                   </h3>
-                  <p className="text-xs text-slate-400">100% Free 1-on-1 Academic Support</p>
+                  <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                    100% Free 1-on-1 Academic Support
+                  </p>
                 </div>
               </div>
 
-              <span className="text-xs font-black text-indigo-400 bg-indigo-950/60 px-2.5 py-1 rounded-xl border border-indigo-500/30">
+              <span className={`text-xs font-black px-2.5 py-1 rounded-xl border ${
+                isDark ? 'text-indigo-400 bg-indigo-950/60 border-indigo-500/30' : 'text-indigo-700 bg-indigo-50 border-indigo-200'
+              }`}>
                 {myBookings.length} Active
               </span>
             </div>
@@ -134,16 +142,18 @@ export const StudentPortal = () => {
                   <div
                     key={bk.id}
                     className={`p-4 rounded-2xl border flex flex-col justify-between gap-3 ${
-                      isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-white border-slate-200'
+                      isDark ? 'bg-slate-900/80 border-slate-800' : 'bg-slate-50 border-slate-200'
                     }`}
                   >
                     <div className="flex items-start justify-between gap-2">
                       <div>
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                          <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                            isDark ? 'text-emerald-400 bg-emerald-950/60 border-emerald-500/30' : 'text-emerald-700 bg-emerald-100 border-emerald-200'
+                          }`}>
                             {bk.status}
                           </span>
-                          <span className="text-[10px] text-slate-400">• Booked on {bk.bookedAt}</span>
+                          <span className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>• Booked on {bk.bookedAt}</span>
                         </div>
                         <h4 className={`font-extrabold text-base mt-1 font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
                           {bk.subject}
@@ -155,24 +165,28 @@ export const StudentPortal = () => {
 
                       <button
                         onClick={() => cancelBooking(bk.id)}
-                        className="text-slate-500 hover:text-rose-400 p-1.5 rounded-xl hover:bg-slate-800 transition-colors cursor-pointer"
+                        className="text-slate-400 hover:text-rose-500 p-1.5 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                         title="Cancel Booking"
                       >
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
 
-                    <div className="p-3 bg-black/40 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1">
+                    <div className={`p-3 rounded-xl border text-xs space-y-1 ${
+                      isDark ? 'bg-black/40 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-700'
+                    }`}>
                       <div className="flex items-center gap-1.5 font-medium">
-                        <Clock className="w-3.5 h-3.5 text-pink-400" />
+                        <Clock className="w-3.5 h-3.5 text-pink-500" />
                         <span>Schedule: <strong>{bk.day} ({bk.time})</strong></span>
                       </div>
                       <div className="flex items-center gap-1.5 font-medium">
-                        <MapPin className="w-3.5 h-3.5 text-pink-400" />
+                        <MapPin className="w-3.5 h-3.5 text-pink-500" />
                         <span>Venue / Link: <strong>{bk.mode}</strong></span>
                       </div>
                       {bk.meetingNote && (
-                        <p className="text-[11px] text-slate-400 italic pt-1 border-t border-slate-800/80">
+                        <p className={`text-[11px] italic pt-1 border-t ${
+                          isDark ? 'text-slate-400 border-slate-800/80' : 'text-slate-500 border-slate-200'
+                        }`}>
                           Prep Note: {bk.meetingNote}
                         </p>
                       )}
@@ -181,12 +195,14 @@ export const StudentPortal = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-8 rounded-2xl bg-slate-900/40 border border-dashed border-slate-800 text-slate-500 text-xs">
+              <div className={`text-center py-8 rounded-2xl border border-dashed text-xs ${
+                isDark ? 'bg-slate-900/40 border-slate-800 text-slate-400' : 'bg-slate-50 border-slate-200 text-slate-600'
+              }`}>
                 No active tutorial bookings right now.
                 <div className="mt-2">
                   <button
                     onClick={() => setActiveTab('tutorials')}
-                    className="px-4 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold"
+                    className="px-4 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-bold cursor-pointer"
                   >
                     Browse Free Tutors
                   </button>
@@ -196,31 +212,39 @@ export const StudentPortal = () => {
           </div>
 
           {/* Section 2: Volunteer Ministry Track & Serving Roster */}
-          <div className="genz-card p-6 border border-slate-800">
+          <div className={`p-6 rounded-3xl border transition-all ${
+            isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+          }`}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-pink-500/10 text-pink-400 border border-pink-500/20">
+                <div className={`p-2 rounded-xl border ${
+                  isDark ? 'bg-pink-500/10 text-pink-400 border-pink-500/20' : 'bg-pink-50 text-pink-600 border-pink-200'
+                }`}>
                   <Music className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className={`font-extrabold text-base font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     My Ministry Volunteer Track
                   </h3>
-                  <p className="text-xs text-slate-400">Serving God and Fellow Students across Campus</p>
+                  <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                    Serving God and Fellow Students across Campus
+                  </p>
                 </div>
               </div>
 
-              <span className="text-xs font-black text-pink-400 bg-pink-950/60 px-2.5 py-1 rounded-xl border border-pink-500/30">
+              <span className={`text-xs font-black px-2.5 py-1 rounded-xl border ${
+                isDark ? 'text-pink-400 bg-pink-950/60 border-pink-500/30' : 'text-pink-700 bg-pink-50 border-pink-200'
+              }`}>
                 Active Volunteer
               </span>
             </div>
 
             <div className={`p-4 rounded-2xl border space-y-3 ${
-              isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-slate-50 border-slate-200'
+              isDark ? 'bg-slate-950/50 border-slate-800' : 'bg-slate-50/70 border-slate-200'
             }`}>
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
                 <div>
-                  <span className="font-extrabold text-sm text-pink-500 block">
+                  <span className="font-extrabold text-sm text-pink-600 dark:text-pink-400 block">
                     {volunteerTrack.team}
                   </span>
                   <div className={`text-xs font-bold mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
@@ -228,41 +252,47 @@ export const StudentPortal = () => {
                   </div>
                 </div>
 
-                <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-black uppercase tracking-wider">
+                <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-black uppercase tracking-wider">
                   {volunteerTrack.status}
                 </span>
               </div>
 
-              <div className="p-3 bg-black/40 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1">
+              <div className={`p-3 rounded-xl border text-xs space-y-1 ${
+                isDark ? 'bg-black/40 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-700'
+              }`}>
                 <div className="flex items-center gap-1.5 font-medium">
-                  <Calendar className="w-3.5 h-3.5 text-pink-400" />
+                  <Calendar className="w-3.5 h-3.5 text-pink-500 shrink-0" />
                   <span>Next Roster: <strong>{volunteerTrack.nextDuty}</strong></span>
                 </div>
               </div>
 
               {/* Worship Setlist / Volunteer Resources */}
-              <div className="pt-2 border-t border-slate-800 space-y-3">
-                <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 flex flex-wrap items-center justify-between gap-2">
-                  <div className="flex items-center gap-1.5">
-                    <Music className="w-3.5 h-3.5 text-pink-400" />
+              <div className={`pt-3 border-t space-y-3 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                <div className="text-[11px] font-black uppercase tracking-wider flex flex-wrap items-center justify-between gap-2">
+                  <div className={`flex items-center gap-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                    <Music className="w-3.5 h-3.5 text-pink-500" />
                     <span>Campus Setlist & PDF Chords ({musicSetlist.length}):</span>
                   </div>
 
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => setShowUploadSongModal(true)}
-                      className="px-2.5 py-1 rounded-lg bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 font-bold text-[11px] border border-pink-500/30 cursor-pointer flex items-center gap-1 transition-all"
+                      className={`px-2.5 py-1 rounded-lg font-bold text-[11px] border cursor-pointer flex items-center gap-1 transition-all ${
+                        isDark ? 'bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 border-pink-500/30' : 'bg-pink-50 hover:bg-pink-100 text-pink-700 border-pink-200'
+                      }`}
                     >
                       <FileUp className="w-3 h-3" />
                       <span>+ Upload Song / PDF</span>
                     </button>
 
                     <button
-                      onClick={() => showToast('📥 Complete worship setlist & PDF chords bundle downloaded!', 'success')}
-                      className="text-indigo-400 hover:text-indigo-300 flex items-center gap-1 text-[11px] font-bold cursor-pointer transition-colors"
+                      onClick={() => showToast('📥 Complete worship setlist ready in app viewer!', 'success')}
+                      className={`flex items-center gap-1 text-[11px] font-bold cursor-pointer transition-colors ${
+                        isDark ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-800'
+                      }`}
                     >
-                      <Download className="w-3 h-3" />
-                      <span>Download All</span>
+                      <FileText className="w-3 h-3" />
+                      <span>Setlist Overview</span>
                     </button>
                   </div>
                 </div>
@@ -272,14 +302,18 @@ export const StudentPortal = () => {
                     <div
                       key={item.id}
                       onClick={() => setSelectedSongForView(item)}
-                      className="p-3 rounded-2xl bg-slate-950/70 border border-slate-800 text-xs flex items-center justify-between gap-2 group hover:border-pink-500/50 transition-all cursor-pointer"
+                      className={`p-3.5 rounded-2xl border text-xs flex items-center justify-between gap-2 group transition-all cursor-pointer ${
+                        isDark
+                          ? 'bg-slate-900 border-slate-800 text-white hover:border-pink-500/50'
+                          : 'bg-white border-slate-200 text-slate-900 shadow-xs hover:border-pink-300'
+                      }`}
                     >
                       <div className="min-w-0 flex-1">
-                        <div className="font-bold text-white truncate flex items-center gap-1.5">
+                        <div className={`font-extrabold truncate flex items-center gap-1.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
                           <span>{item.song}</span>
                         </div>
-                        <div className="text-[10px] text-slate-400 truncate mt-0.5">
-                          {item.artist} • <span className="text-pink-400 font-bold">{item.key}</span> • {item.tempo}
+                        <div className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                          {item.artist} • <span className="text-pink-600 dark:text-pink-400 font-bold">{item.key}</span> • {item.tempo}
                         </div>
                       </div>
 
@@ -289,7 +323,11 @@ export const StudentPortal = () => {
                           e.stopPropagation();
                           setSelectedSongForView(item);
                         }}
-                        className="px-3 py-1.5 rounded-xl bg-pink-600/20 hover:bg-pink-600 text-pink-300 hover:text-white border border-pink-500/30 transition-all cursor-pointer shrink-0 flex items-center gap-1 font-bold text-[11px]"
+                        className={`px-3 py-1.5 rounded-xl border transition-all cursor-pointer shrink-0 flex items-center gap-1 font-bold text-[11px] ${
+                          isDark
+                            ? 'bg-pink-600/20 hover:bg-pink-600 text-pink-300 hover:text-white border-pink-500/30'
+                            : 'bg-pink-50 hover:bg-pink-600 text-pink-700 hover:text-white border-pink-200 shadow-xs'
+                        }`}
                         title="View PDF / Chords"
                       >
                         <Eye className="w-3.5 h-3.5" />
@@ -303,21 +341,29 @@ export const StudentPortal = () => {
           </div>
 
           {/* Section 3: My Campus Life Group */}
-          <div className="genz-card p-6 border border-slate-800">
+          <div className={`p-6 rounded-3xl border transition-all ${
+            isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+          }`}>
             <div className="flex items-center justify-between mb-4">
               <div className="flex items-center gap-2">
-                <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                <div className={`p-2 rounded-xl border ${
+                  isDark ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' : 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                }`}>
                   <Users className="w-4 h-4" />
                 </div>
                 <div>
                   <h3 className={`font-extrabold text-base font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
                     My Campus Life Group
                   </h3>
-                  <p className="text-xs text-slate-400">Weekly Faith, Fellowship & Prayer</p>
+                  <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                    Weekly Faith, Fellowship & Prayer
+                  </p>
                 </div>
               </div>
 
-              <span className="text-xs font-black text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-xl border border-emerald-500/30">
+              <span className={`text-xs font-black px-2.5 py-1 rounded-xl border ${
+                isDark ? 'text-emerald-400 bg-emerald-950/60 border-emerald-500/30' : 'text-emerald-700 bg-emerald-50 border-emerald-200'
+              }`}>
                 {myJoinedGroups.length} Group
               </span>
             </div>
@@ -327,27 +373,33 @@ export const StudentPortal = () => {
                 {myJoinedGroups.map((grp) => (
                   <div
                     key={grp.id}
-                    className="p-4 rounded-2xl bg-emerald-950/20 border border-emerald-500/30 flex flex-col justify-between gap-3"
+                    className={`p-4 rounded-2xl border flex flex-col justify-between gap-3 ${
+                      isDark ? 'bg-slate-950/50 border-emerald-500/30' : 'bg-emerald-50/50 border-emerald-200'
+                    }`}
                   >
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-wider text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2.5 py-0.5 rounded-full">
+                      <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                        isDark ? 'text-emerald-400 bg-emerald-950/60 border-emerald-500/30' : 'text-emerald-800 bg-emerald-100 border-emerald-200'
+                      }`}>
                         {grp.topicCategory}
                       </span>
-                      <h4 className="font-extrabold text-base text-white mt-1 font-heading">
+                      <h4 className={`font-extrabold text-base mt-1 font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
                         {grp.title}
                       </h4>
-                      <p className="text-xs text-slate-300 mt-0.5">
+                      <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
                         Leader / Facilitator: <strong>{grp.facilitator}</strong>
                       </p>
                     </div>
 
-                    <div className="p-3 bg-black/40 rounded-xl border border-slate-800 text-xs text-slate-300 space-y-1">
+                    <div className={`p-3 rounded-xl border text-xs space-y-1 ${
+                      isDark ? 'bg-black/40 border-slate-800 text-slate-300' : 'bg-white border-emerald-100 text-slate-700'
+                    }`}>
                       <div className="flex items-center gap-1.5 font-medium">
-                        <Clock className="w-3.5 h-3.5 text-emerald-400" />
+                        <Clock className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <span>{grp.schedule}</span>
                       </div>
                       <div className="flex items-center gap-1.5 font-medium">
-                        <MapPin className="w-3.5 h-3.5 text-emerald-400" />
+                        <MapPin className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                         <span>{grp.location}</span>
                       </div>
                     </div>
@@ -355,11 +407,11 @@ export const StudentPortal = () => {
                 ))}
               </div>
             ) : (
-              <div className="text-center py-6 text-slate-500 text-xs">
+              <div className={`text-center py-6 text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
                 You haven't joined a life group yet.
                 <button
                   onClick={() => setActiveTab('discipleship')}
-                  className="ml-2 font-bold text-emerald-400 hover:underline"
+                  className="ml-2 font-bold text-emerald-600 dark:text-emerald-400 hover:underline cursor-pointer"
                 >
                   Find one nearby &rarr;
                 </button>
@@ -373,17 +425,19 @@ export const StudentPortal = () => {
           <DailyDevotional />
 
           {/* My Prayer Items */}
-          <div className="genz-card p-5 border border-slate-800">
+          <div className={`p-5 rounded-3xl border transition-all ${
+            isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+          }`}>
             <div className="flex items-center justify-between mb-3">
               <div className="flex items-center gap-2">
-                <Heart className="w-4 h-4 text-rose-400" />
-                <h4 className="font-extrabold text-sm text-white font-heading">
+                <Heart className="w-4 h-4 text-rose-500" />
+                <h4 className={`font-extrabold text-sm font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   My Prayer Items
                 </h4>
               </div>
               <button
                 onClick={() => setActiveTab('prayer')}
-                className="text-xs font-bold text-rose-400 hover:underline cursor-pointer"
+                className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
               >
                 Wall &rarr;
               </button>
@@ -392,17 +446,21 @@ export const StudentPortal = () => {
             {myPrayerItems.length > 0 ? (
               <div className="space-y-2.5">
                 {myPrayerItems.map((p) => (
-                  <div key={p.id} className="p-3 bg-slate-900/80 rounded-2xl border border-slate-800 text-xs">
-                    <p className="text-slate-200 italic line-clamp-2">"{p.content}"</p>
-                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-800 text-[11px]">
-                      <span className="text-rose-400 font-bold">❤️ {p.prayedCount} praying</span>
-                      <span className="text-slate-500">{p.createdAt}</span>
+                  <div key={p.id} className={`p-3 rounded-2xl border text-xs ${
+                    isDark ? 'bg-slate-950/60 border-slate-800 text-slate-200' : 'bg-slate-50 border-slate-200 text-slate-800'
+                  }`}>
+                    <p className="italic line-clamp-2">"{p.content}"</p>
+                    <div className={`flex items-center justify-between mt-2 pt-2 border-t text-[11px] ${
+                      isDark ? 'border-slate-800' : 'border-slate-200'
+                    }`}>
+                      <span className="text-rose-500 font-bold">❤️ {p.prayedCount} praying</span>
+                      <span className={isDark ? 'text-slate-500' : 'text-slate-400'}>{p.createdAt}</span>
                     </div>
                   </div>
                 ))}
               </div>
             ) : (
-              <p className="text-xs text-slate-500 py-3 text-center">
+              <p className={`text-xs py-3 text-center ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
                 No active prayer requests posted yet.
               </p>
             )}
