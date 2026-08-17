@@ -103,6 +103,7 @@ export const AdminPortal = () => {
   const [adminTab, setAdminTab] = useState(currentUser?.role === 'council' ? 'council' : 'roles'); // 'roles' | 'council' | 'workers' | 'tutors' | 'triage' | 'lg_requests' | 'campaigns' | 'prayers' | 'security'
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [selectedCampusFilter, setSelectedCampusFilter] = useState('all');
+  const [selectedRoleFilter, setSelectedRoleFilter] = useState('all');
   const [showAddUserModal, setShowAddUserModal] = useState(false);
 
   // Verification Checklist Interactive State
@@ -512,7 +513,8 @@ export const AdminPortal = () => {
       u.name.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
       u.email.toLowerCase().includes(userSearchQuery.toLowerCase());
     const matchesCampus = selectedCampusFilter === 'all' || u.campusId === selectedCampusFilter;
-    return matchesSearch && matchesCampus;
+    const matchesRole = selectedRoleFilter === 'all' || u.role === selectedRoleFilter;
+    return matchesSearch && matchesCampus && matchesRole;
   });
 
   const handleDeleteUser = (userId, userName) => {
@@ -774,7 +776,7 @@ export const AdminPortal = () => {
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search member by name or email..."
+                placeholder="Search by name, email, or campus..."
                 value={userSearchQuery}
                 onChange={(e) => setUserSearchQuery(e.target.value)}
                 className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border text-xs sm:text-sm ${
@@ -783,6 +785,20 @@ export const AdminPortal = () => {
               />
             </div>
 
+            {/* Campus Filter */}
+            <select
+              value={selectedCampusFilter}
+              onChange={(e) => setSelectedCampusFilter(e.target.value)}
+              className={`px-3.5 py-2.5 rounded-2xl border text-xs font-bold ${
+                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+              }`}
+            >
+              <option value="all">📍 All Campuses</option>
+              {CAMPUSES.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+            </select>
+
             <button
               onClick={() => setShowAddUserModal(true)}
               className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5 shrink-0"
@@ -790,6 +806,35 @@ export const AdminPortal = () => {
               <UserPlus className="w-3.5 h-3.5" />
               <span>Add Person / Staff</span>
             </button>
+          </div>
+
+          {/* Quick Role Filter Pills */}
+          <div className="flex items-center gap-2 overflow-x-auto pb-1 custom-scrollbar text-xs">
+            {[
+              { id: 'all', label: 'All Accounts', count: registeredUsers.length },
+              { id: 'worker', label: '✝️ Youth Workers', count: registeredUsers.filter((u) => u.role === 'worker').length },
+              { id: 'tutor', label: '👨‍🏫 Peer Tutors', count: registeredUsers.filter((u) => u.role === 'tutor').length },
+              { id: 'student', label: '🎓 Students', count: registeredUsers.filter((u) => u.role === 'student').length },
+              { id: 'council', label: '🏛️ Council', count: registeredUsers.filter((u) => u.role === 'council').length },
+              { id: 'leader', label: '🛡️ Admins', count: registeredUsers.filter((u) => u.role === 'leader').length }
+            ].map((rf) => (
+              <button
+                key={rf.id}
+                onClick={() => setSelectedRoleFilter(rf.id)}
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all cursor-pointer flex items-center gap-1.5 shrink-0 ${
+                  selectedRoleFilter === rf.id
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : isDark ? 'bg-slate-900 border border-slate-800 text-slate-400 hover:text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-50'
+                }`}
+              >
+                <span>{rf.label}</span>
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${
+                  selectedRoleFilter === rf.id ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300'
+                }`}>
+                  {rf.count}
+                </span>
+              </button>
+            ))}
           </div>
 
           <div className="space-y-3">
