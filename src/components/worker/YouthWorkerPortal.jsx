@@ -17,7 +17,13 @@ import {
   Coffee,
   Check,
   AlertCircle,
-  Bell
+  Bell,
+  BookOpen,
+  Download,
+  GraduationCap,
+  Music,
+  Share2,
+  FileText
 } from 'lucide-react';
 import { EditProfileModal } from '../profile/EditProfileModal';
 
@@ -25,7 +31,6 @@ export const YouthWorkerPortal = () => {
   const {
     currentUser,
     bibleStudies,
-    myBookings,
     pastoralRequests,
     resolvePastoralRequest,
     showToast,
@@ -33,8 +38,59 @@ export const YouthWorkerPortal = () => {
   } = useApp();
 
   const isDark = theme === 'dark';
-  const [activeWorkerTab, setActiveWorkerTab] = useState('pastoral_queue'); // 'pastoral_queue' | 'lifegroups' | 'care_notes'
+  const [activeWorkerTab, setActiveWorkerTab] = useState('classes'); // 'classes' | 'pastoral_queue' | 'curriculum' | 'care_notes'
   const [showEditProfile, setShowEditProfile] = useState(false);
+  const [selectedClassForRoster, setSelectedClassForRoster] = useState(bibleStudies[0] || null);
+
+  // Mock class rosters with interactive attendance
+  const [classAttendance, setClassAttendance] = useState({
+    'bs-1': [
+      { id: 'st-1', name: 'Bea Claridad', program: 'BS Biology', attended: true },
+      { id: 'st-2', name: 'Kenzo Ramirez', program: 'BS Civil Engg', attended: true },
+      { id: 'st-3', name: 'Althea Marie', program: 'BS Nursing', attended: false },
+      { id: 'st-4', name: 'John Paul', program: 'BS Fisheries', attended: true }
+    ],
+    'bs-2': [
+      { id: 'st-5', name: 'Joshua Dizon', program: 'BS Applied Math', attended: true },
+      { id: 'st-6', name: 'Chloe Anne', program: 'BA Communication', attended: true },
+      { id: 'st-7', name: 'Dave Gabriel', program: 'BS Chemistry', attended: false }
+    ]
+  });
+
+  const [curriculumLessons] = useState([
+    {
+      id: 'cur-1',
+      week: 'Week 1',
+      title: 'Foundations of Faith: The Unshakable Kingdom',
+      passage: 'Hebrews 12:28-29',
+      summary: 'Establishing identity in Christ amidst academic pressures and modern college culture.',
+      duration: '45 mins'
+    },
+    {
+      id: 'cur-2',
+      week: 'Week 2',
+      title: 'Grace & Mental Resilience during Finals Week',
+      passage: 'Philippians 4:6-7',
+      summary: 'Practical biblical tools for dealing with stress, burnout, and GPA anxiety.',
+      duration: '45 mins'
+    },
+    {
+      id: 'cur-3',
+      week: 'Week 3',
+      title: 'Being Light & Salt in the Dorms and Classrooms',
+      passage: 'Matthew 5:13-16',
+      summary: 'Integrity in group projects, loving your roommate, and everyday campus evangelism.',
+      duration: '50 mins'
+    },
+    {
+      id: 'cur-4',
+      week: 'Week 4',
+      title: 'Spiritual Disciplines: Daily Bread & Deep Prayer',
+      passage: 'Psalm 1:1-3',
+      summary: 'How to maintain a thriving devotional life despite a full semester class load.',
+      duration: '40 mins'
+    }
+  ]);
 
   const [careNotes, setCareNotes] = useState([
     {
@@ -57,6 +113,7 @@ export const YouthWorkerPortal = () => {
 
   const [newNoteStudent, setNewNoteStudent] = useState('');
   const [newNoteContent, setNewNoteContent] = useState('');
+  const [classBroadcastMsg, setClassBroadcastMsg] = useState('');
 
   // Relevant pastoral requests for this worker or campus
   const myPastoralRequests = pastoralRequests.filter((r) => {
@@ -70,6 +127,22 @@ export const YouthWorkerPortal = () => {
   });
 
   const pendingCount = myPastoralRequests.filter((r) => r.status === 'Pending Contact').length;
+
+  const toggleAttendance = (classId, studentId) => {
+    setClassAttendance((prev) => {
+      const roster = prev[classId] || [];
+      const updated = roster.map((s) => (s.id === studentId ? { ...s, attended: !s.attended } : s));
+      return { ...prev, [classId]: updated };
+    });
+    showToast('Attendance record updated!', 'success');
+  };
+
+  const handleSendBroadcast = (e) => {
+    e.preventDefault();
+    if (!classBroadcastMsg.trim()) return;
+    showToast(`📢 Announcement sent to ${selectedClassForRoster?.title || 'all students'} members!`, 'success');
+    setClassBroadcastMsg('');
+  };
 
   const handleAddCareNote = (e) => {
     e.preventDefault();
@@ -120,12 +193,12 @@ export const YouthWorkerPortal = () => {
               </span>
             </div>
             <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Field pastoral care, discipleship follow-ups, and student life groups for {currentUser.campusName}.
+              Leading campus Bible study classes, discipleship curricula, pastoral care, and student outreach for {currentUser.campusName}.
             </p>
           </div>
         </div>
 
-        {/* Worker Quick Metrics & Edit */}
+        {/* Worker Quick Actions */}
         <div className="flex items-center gap-3 w-full md:w-auto justify-between md:justify-end">
           <button
             onClick={() => setShowEditProfile(true)}
@@ -136,20 +209,44 @@ export const YouthWorkerPortal = () => {
         </div>
       </div>
 
-      {/* Navigation Tabs for Youth Worker */}
-      <div className={`flex items-center gap-1.5 p-1 rounded-2xl border overflow-x-auto scrollbar-none ${
+      {/* Navigation Tabs for Youth Worker (Responsive Flex-Wrap) */}
+      <div className={`flex flex-wrap items-center gap-2 p-1.5 rounded-2xl border ${
         isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
       }`}>
         <button
+          onClick={() => setActiveWorkerTab('classes')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+            activeWorkerTab === 'classes'
+              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
+              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+          }`}
+        >
+          <BookOpen className="w-3.5 h-3.5" />
+          <span>📖 My Bible Study Classes & Rosters ({bibleStudies.length})</span>
+        </button>
+
+        <button
+          onClick={() => setActiveWorkerTab('curriculum')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+            activeWorkerTab === 'curriculum'
+              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
+              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+          }`}
+        >
+          <FileText className="w-3.5 h-3.5" />
+          <span>📚 Discipleship Curriculum ({curriculumLessons.length})</span>
+        </button>
+
+        <button
           onClick={() => setActiveWorkerTab('pastoral_queue')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
             activeWorkerTab === 'pastoral_queue'
               ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
               : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
           }`}
         >
           <Bell className="w-3.5 h-3.5" />
-          <span>Pastoral Calls & Inquiries ({myPastoralRequests.length})</span>
+          <span>Pastoral Calls & Inquiries</span>
           {pendingCount > 0 && (
             <span className="px-1.5 py-0.2 rounded-full bg-rose-500 text-white font-black text-[10px] animate-pulse">
               {pendingCount}
@@ -158,29 +255,207 @@ export const YouthWorkerPortal = () => {
         </button>
 
         <button
-          onClick={() => setActiveWorkerTab('lifegroups')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
-            activeWorkerTab === 'lifegroups'
-              ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
-              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
-          }`}
-        >
-          🌱 Campus Life Groups Facilitated ({bibleStudies.length})
-        </button>
-
-        <button
           onClick={() => setActiveWorkerTab('care_notes')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
             activeWorkerTab === 'care_notes'
               ? 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
               : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
           }`}
         >
-          📝 Pastoral Care & 1-on-1 Notes ({careNotes.length})
+          <HeartHandshake className="w-3.5 h-3.5" />
+          <span>📝 1-on-1 Mentorship & Care Notes ({careNotes.length})</span>
         </button>
       </div>
 
-      {/* Tab 1: Live Pastoral Care & Urgent Calls Queue */}
+      {/* Tab 1: Bible Study Classes & Rosters */}
+      {activeWorkerTab === 'classes' && (
+        <div className="space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Left Col: Class Selection */}
+            <div className="space-y-3">
+              <span className={`text-xs font-black uppercase tracking-widest block ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                Select Bible Study Class:
+              </span>
+              {bibleStudies.map((grp) => (
+                <div
+                  key={grp.id}
+                  onClick={() => setSelectedClassForRoster(grp)}
+                  className={`p-4 rounded-2xl border cursor-pointer transition-all ${
+                    selectedClassForRoster?.id === grp.id
+                      ? 'border-emerald-500 bg-emerald-500/10 ring-2 ring-emerald-500/20'
+                      : isDark ? 'bg-slate-900 border-slate-800 hover:border-slate-700' : 'bg-white border-slate-200 hover:border-slate-300'
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-emerald-500 bg-emerald-950/60 px-2 py-0.5 rounded-full border border-emerald-500/30">
+                      {grp.topicCategory}
+                    </span>
+                    <span className="text-xs text-slate-400 font-bold">{grp.membersCount} Enrolled</span>
+                  </div>
+                  <h4 className={`font-extrabold text-sm mt-1.5 font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {grp.title}
+                  </h4>
+                  <div className={`text-[11px] mt-1 flex items-center gap-1 text-slate-400`}>
+                    <Clock className="w-3 h-3" />
+                    <span>{grp.schedule}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Right 2 Cols: Class Roster & Interactive Attendance */}
+            <div className="lg:col-span-2 space-y-4">
+              <div className={`p-6 rounded-3xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200'}`}>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pb-4 border-b border-slate-800">
+                  <div>
+                    <h3 className={`text-lg font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                      {selectedClassForRoster?.title || 'Class Roster'}
+                    </h3>
+                    <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                      Venue: <strong>{selectedClassForRoster?.location}</strong> • Schedule: <strong>{selectedClassForRoster?.schedule}</strong>
+                    </p>
+                  </div>
+
+                  <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl text-xs font-black">
+                    Live Discipleship Class
+                  </span>
+                </div>
+
+                {/* Student Attendance List */}
+                <div className="mt-4 space-y-3">
+                  <div className="text-xs font-black uppercase tracking-wider text-slate-400 flex items-center justify-between">
+                    <span>Enrolled Student Members ({classAttendance[selectedClassForRoster?.id || 'bs-1']?.length || 4}):</span>
+                    <span>Attendance Status</span>
+                  </div>
+
+                  {(classAttendance[selectedClassForRoster?.id || 'bs-1'] || [
+                    { id: 'st-1', name: 'Bea Claridad', program: 'BS Biology', attended: true },
+                    { id: 'st-2', name: 'Kenzo Ramirez', program: 'BS Civil Engg', attended: true },
+                    { id: 'st-3', name: 'Althea Marie', program: 'BS Nursing', attended: false }
+                  ]).map((st) => (
+                    <div
+                      key={st.id}
+                      className={`p-3 rounded-2xl border flex items-center justify-between ${
+                        isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 font-black text-xs flex items-center justify-center border border-emerald-500/30">
+                          {st.name.charAt(0)}
+                        </div>
+                        <div>
+                          <div className={`font-bold text-xs ${isDark ? 'text-white' : 'text-slate-900'}`}>{st.name}</div>
+                          <div className="text-[10px] text-slate-400">{st.program}</div>
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => toggleAttendance(selectedClassForRoster?.id || 'bs-1', st.id)}
+                        className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                          st.attended
+                            ? 'bg-emerald-600 text-white shadow-xs'
+                            : isDark ? 'bg-slate-800 text-slate-400 border border-slate-700 hover:text-white' : 'bg-white text-slate-500 border border-slate-300'
+                        }`}
+                      >
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        <span>{st.attended ? 'Present' : 'Absent'}</span>
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Broadcast Reminder to Class */}
+                <form onSubmit={handleSendBroadcast} className="mt-5 pt-4 border-t border-slate-800 space-y-2">
+                  <label className={`block text-[11px] font-black uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    📢 Send Reminder / Note to this Class:
+                  </label>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="text"
+                      placeholder="e.g. Bring your Bibles this Thursday at CAS Gazebo! Snacks provided."
+                      value={classBroadcastMsg}
+                      onChange={(e) => setClassBroadcastMsg(e.target.value)}
+                      className={`flex-1 px-3.5 py-2 rounded-xl border text-xs ${
+                        isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                      }`}
+                    />
+                    <button
+                      type="submit"
+                      className="px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-black transition-all cursor-pointer shrink-0"
+                    >
+                      Broadcast
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Tab 2: Discipleship Curriculum Hub */}
+      {activeWorkerTab === 'curriculum' && (
+        <div className="space-y-4">
+          <div className={`p-4 rounded-2xl border text-xs leading-relaxed flex items-start gap-3 ${
+            isDark ? 'bg-indigo-950/40 border-indigo-500/30 text-indigo-200' : 'bg-indigo-50 border-indigo-200 text-indigo-950'
+          }`}>
+            <BookOpen className="w-5 h-5 text-indigo-400 shrink-0 mt-0.5" />
+            <div>
+              <div className="font-extrabold">Official Campus Life Group Study Outlines & Curriculum</div>
+              <div className="text-[11px] opacity-90 mt-0.5">
+                Standardized 4-week discussion guides prepared by Grace Youth leadership for student facilitators and youth workers.
+              </div>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {curriculumLessons.map((lesson) => (
+              <div
+                key={lesson.id}
+                className={`p-5 rounded-3xl border flex flex-col justify-between space-y-3 ${
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+                }`}
+              >
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[10px] font-black uppercase tracking-wider text-indigo-400 bg-indigo-950/60 px-2.5 py-0.5 rounded-full border border-indigo-500/30">
+                      {lesson.week} • {lesson.duration}
+                    </span>
+                    <span className="text-xs font-bold text-amber-400">{lesson.passage}</span>
+                  </div>
+                  <h4 className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {lesson.title}
+                  </h4>
+                  <p className={`text-xs mt-1 leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                    {lesson.summary}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 pt-2 border-t border-slate-800">
+                  <button
+                    onClick={() => showToast(`📥 ${lesson.title} outline downloaded!`, 'success')}
+                    className="flex-1 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Download Discussion PDF</span>
+                  </button>
+                  <button
+                    onClick={() => showToast(`🔗 Study outline link copied!`, 'info')}
+                    className={`p-2 rounded-xl border text-xs font-bold ${
+                      isDark ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white' : 'bg-slate-100 border-slate-200 text-slate-700'
+                    }`}
+                    title="Share Outline"
+                  >
+                    <Share2 className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Tab 3: Pastoral Calls & Inquiries */}
       {activeWorkerTab === 'pastoral_queue' && (
         <div className="space-y-4">
           <div className={`p-4 rounded-2xl border text-xs leading-relaxed flex items-start gap-3 ${
@@ -228,36 +503,29 @@ export const YouthWorkerPortal = () => {
                       </div>
 
                       <div className={`text-xs ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                        Phone / Handle: <strong className="font-mono text-pink-500">{req.studentContact}</strong> • Campus: <strong>{req.campusName}</strong> • Requested: {req.createdAt}
+                        <span>Contact: <strong>{req.contactInfo}</strong></span> • <span>Campus: <strong>{req.campusName}</strong></span>
                       </div>
 
-                      <div className={`p-3 rounded-xl border text-xs italic ${
-                        isDark ? 'bg-slate-950/60 border-slate-800 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700'
-                      }`}>
-                        "{req.notes}"
-                      </div>
+                      {req.note && (
+                        <div className="p-3 bg-black/40 rounded-xl border border-slate-800 text-xs italic text-slate-300">
+                          "{req.note}"
+                        </div>
+                      )}
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0 w-full md:w-auto justify-between md:justify-end">
-                      <a
-                        href={`tel:${req.studentContact.replace(/[^0-9+]/g, '')}`}
-                        className="px-4 py-2 rounded-xl bg-teal-600 hover:bg-teal-500 text-white font-bold text-xs shadow-md transition-all flex items-center gap-1.5"
-                      >
-                        <PhoneCall className="w-3.5 h-3.5" />
-                        <span>Call / Message</span>
-                      </a>
-
+                    <div className="flex items-center gap-2 shrink-0">
                       {isPending ? (
                         <button
                           onClick={() => resolvePastoralRequest(req.id)}
-                          className="px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center gap-1"
+                          className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
                         >
                           <Check className="w-3.5 h-3.5" />
                           <span>Mark Contacted</span>
                         </button>
                       ) : (
-                        <span className="px-3 py-1 rounded-xl bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 text-xs font-bold flex items-center gap-1">
-                          <CheckCircle2 className="w-3.5 h-3.5" /> Resolved
+                        <span className="px-3 py-1.5 rounded-xl bg-emerald-950/60 text-emerald-400 border border-emerald-500/30 text-xs font-bold flex items-center gap-1">
+                          <CheckCircle2 className="w-3.5 h-3.5" />
+                          <span>Resolved</span>
                         </span>
                       )}
                     </div>
@@ -265,64 +533,15 @@ export const YouthWorkerPortal = () => {
                 );
               })
             ) : (
-              <div className={`p-8 text-center rounded-3xl border border-dashed text-xs ${
-                isDark ? 'bg-slate-900/40 border-slate-800 text-slate-500' : 'bg-white border-slate-200 text-slate-500'
-              }`}>
-                No incoming pastoral care requests at the moment.
+              <div className="p-8 text-center rounded-3xl border border-dashed border-slate-800 text-slate-500 text-xs">
+                No active pastoral inquiries in queue.
               </div>
             )}
           </div>
         </div>
       )}
 
-      {/* Tab 2: Campus Life Groups Facilitated */}
-      {activeWorkerTab === 'lifegroups' && (
-        <div className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {bibleStudies.map((grp) => (
-              <div
-                key={grp.id}
-                className={`p-5 rounded-3xl border space-y-3 ${
-                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-                }`}
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-500/30 px-2.5 py-0.5 rounded-full">
-                    {grp.topicCategory}
-                  </span>
-                  <span className="text-xs text-slate-400 font-bold">{grp.currentMembers}/{grp.maxCapacity} Members</span>
-                </div>
-
-                <h4 className="font-extrabold text-base font-heading">
-                  {grp.title}
-                </h4>
-
-                <div className={`text-xs space-y-1 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                  <div className="flex items-center gap-1.5">
-                    <Clock className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>{grp.schedule}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <MapPin className="w-3.5 h-3.5 text-emerald-500" />
-                    <span>{grp.location}</span>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => showToast(`📋 Attendance sheet and weekly study outline opened for ${grp.title}!`, 'info')}
-                  className={`w-full py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                    isDark ? 'bg-slate-800 border-slate-700 text-white hover:bg-slate-700' : 'bg-slate-100 border-slate-200 text-slate-800 hover:bg-slate-200'
-                  }`}
-                >
-                  Manage Group & Attendance
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Tab 3: Pastoral Care Notes */}
+      {/* Tab 4: Pastoral Care & 1-on-1 Notes */}
       {activeWorkerTab === 'care_notes' && (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 space-y-3">
