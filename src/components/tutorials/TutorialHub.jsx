@@ -124,10 +124,12 @@ export const TutorialHub = () => {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  className={`px-3 py-1.5 rounded-xl text-xs transition-all cursor-pointer ${
                     selectedCategory === cat
-                      ? 'bg-indigo-600 text-white shadow-md'
-                      : isDark ? 'bg-slate-900 text-slate-400 border border-slate-800 hover:text-white' : 'bg-slate-100 text-slate-700 border border-slate-200 hover:text-slate-900'
+                      ? 'bg-indigo-600 text-white font-extrabold shadow-md ring-2 ring-indigo-500/30'
+                      : isDark
+                      ? 'bg-slate-800 text-slate-200 border border-slate-700 hover:bg-slate-700 hover:text-white font-bold'
+                      : 'bg-slate-100 text-slate-800 border border-slate-300 hover:bg-slate-200 hover:text-slate-950 font-bold'
                   }`}
                 >
                   {cat}
