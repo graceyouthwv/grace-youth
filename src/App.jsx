@@ -29,7 +29,7 @@ export const App = () => {
   const t = (key) => getTranslation(key, language);
 
   return (
-    <div className={`min-h-screen flex flex-col justify-between pb-28 md:pb-12 subtle-grid selection:bg-pink-500 selection:text-white transition-colors duration-300 ${
+    <div className={`min-h-screen flex flex-col justify-between pb-28 md:pb-12 selection:bg-indigo-600 selection:text-white transition-colors duration-300 ${
       isDark ? 'bg-[#0b0f19] text-slate-100' : 'bg-[#f8fafc] text-slate-900'
     }`}>
       {/* Top Navigation */}

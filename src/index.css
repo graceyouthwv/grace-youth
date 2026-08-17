@@ -154,11 +154,11 @@ button:active {
 }
 
 /* ==========================================================================
-   ☀️ LIGHT THEME (HIGH CONTRAST & CLEAN ELEVATION)
+   ☀️ LIGHT THEME (CLEAN, MODERN, HIGH CONTRAST & PREMIUM)
    ========================================================================== */
 html.light, 
 html.light body {
-  background-color: #f1f5f9 !important;
+  background-color: #f8fafc !important;
   color: #0f172a !important;
 }
 
@@ -177,15 +177,15 @@ html.light p {
 
 html.light .genz-card {
   background-color: #ffffff !important;
-  border: 1px solid #cbd5e1 !important;
+  border: 1px solid #e2e8f0 !important;
   border-radius: 1.5rem !important;
-  box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.05) !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04) !important;
   color: #0f172a !important;
 }
 
 html.light .genz-card:hover {
-  border-color: #94a3b8 !important;
-  box-shadow: 0 12px 30px -6px rgba(15, 23, 42, 0.12) !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06) !important;
 }
 
 html.light .genz-card h1,
@@ -201,11 +201,11 @@ html.light .genz-card .text-white {
 html.light .genz-card p,
 html.light .genz-card .text-slate-300,
 html.light .genz-card .text-slate-200 {
-  color: #334155 !important;
+  color: #475569 !important;
 }
 
 html.light .genz-card .text-slate-400 {
-  color: #475569 !important;
+  color: #64748b !important;
 }
 
 html.light .genz-card .text-slate-500 {
@@ -225,25 +225,15 @@ html.light .bg-\[\#0c101d\],
 html.light .bg-\[\#0c101d\]\/90,
 html.light .bg-\[\#0b0f19\],
 html.light .bg-black\/40 {
-  background-color: #f8fafc !important;
-  border-color: #cbd5e1 !important;
-  color: #0f172a !important;
-}
-
-html.light .bg-slate-900 button:not(.bg-gradient-to-r):not(.bg-gradient-to-tr):not(.bg-indigo-600):not(.bg-pink-600):not(.bg-violet-600):not(.bg-emerald-600),
-html.light .bg-slate-900\/90 button:not(.bg-gradient-to-r):not(.bg-gradient-to-tr):not(.bg-indigo-600):not(.bg-pink-600):not(.bg-violet-600):not(.bg-emerald-600) {
-  color: #334155 !important;
-}
-
-html.light .bg-slate-900 button:hover,
-html.light .bg-slate-900\/90 button:hover {
+  background-color: #ffffff !important;
+  border-color: #e2e8f0 !important;
   color: #0f172a !important;
 }
 
 html.light header {
   background-color: rgba(255, 255, 255, 0.95) !important;
   border-bottom: 1px solid #e2e8f0 !important;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03) !important;
 }
 
 html.light header nav button {
@@ -257,7 +247,7 @@ html.light header nav button:hover {
 html.light nav.fixed {
   background-color: rgba(255, 255, 255, 0.98) !important;
   border-top: 1px solid #e2e8f0 !important;
-  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.06) !important;
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.04) !important;
 }
 
 html.light nav.fixed button {
@@ -268,10 +258,6 @@ html.light nav.fixed button span {
   color: #475569 !important;
 }
 
-html.light button.bg-gradient-to-r,
-html.light button.bg-gradient-to-tr,
-html.light button.bg-gradient-to-r span,
-html.light button.bg-gradient-to-tr span,
 html.light button.bg-indigo-600,
 html.light button.bg-indigo-600 span,
 html.light button.bg-violet-600,
@@ -283,8 +269,6 @@ html.light button.bg-emerald-600 span {
   color: #ffffff !important;
 }
 
-html.light button.bg-gradient-to-r svg,
-html.light button.bg-gradient-to-tr svg,
 html.light button.bg-indigo-600 svg,
 html.light button.bg-violet-600 svg,
 html.light button.bg-pink-600 svg,
@@ -296,7 +280,7 @@ html.light .fixed.inset-0 .genz-card,
 html.light .fixed.inset-0 .bg-\[\#111625\],
 html.light .fixed.inset-0 .bg-\[\#0c101d\] {
   background-color: #ffffff !important;
-  border: 1px solid #cbd5e1 !important;
+  border: 1px solid #e2e8f0 !important;
   color: #0f172a !important;
 }
 
@@ -313,39 +297,8 @@ html.light textarea::placeholder {
   color: #94a3b8 !important;
 }
 
-html.light .hero-title {
-  color: #0f172a !important;
-}
-
-html.light .gradient-text-acads {
-  background: linear-gradient(135deg, #d97706 0%, #db2777 50%, #4f46e5 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  font-weight: 900 !important;
-}
-
-html.light .gradient-text-faith {
-  background: linear-gradient(135deg, #0d9488 0%, #2563eb 100%) !important;
-  -webkit-background-clip: text !important;
-  -webkit-text-fill-color: transparent !important;
-  font-weight: 900 !important;
-}
-
-html.light .subtle-grid {
-  background-size: 32px 32px;
-  background-image: 
-    linear-gradient(to right, rgba(15, 23, 42, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(15, 23, 42, 0.05) 1px, transparent 1px);
-}
-
-html.light .genz-glow {
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.06) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.05) 0px, transparent 50%);
-}
-
 /* ==========================================================================
-   🌙 DARK THEME (OBSIDIAN TECH GLOW)
+   🌙 DARK THEME (OBSIDIAN TECH CLEAN)
    ========================================================================== */
 html.dark, 
 html.dark body {
@@ -366,22 +319,8 @@ html.dark .genz-card:hover {
   box-shadow: 0 10px 30px -10px rgba(99, 102, 241, 0.15);
 }
 
-html.dark .genz-glow {
-  background-image: 
-    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
-    radial-gradient(at 100% 0%, rgba(244, 63, 94, 0.15) 0px, transparent 50%),
-    radial-gradient(at 50% 100%, rgba(16, 185, 129, 0.12) 0px, transparent 50%);
-}
-
-html.dark .subtle-grid {
-  background-size: 32px 32px;
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
-}
-
 /* Scrollbars */
 html.dark ::-webkit-scrollbar-track { background: #090d16; }
 html.dark ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
-html.light ::-webkit-scrollbar-track { background: #f1f5f9; }
+html.light ::-webkit-scrollbar-track { background: #f8fafc; }
 html.light ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }

@@ -44,8 +44,8 @@ export const TutorialHub = () => {
             onClick={() => setSubTab('tutors')}
             className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
               subTab === 'tutors'
-                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
-                : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+                ? isDark ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-900 shadow-xs border border-slate-200'
+                : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-950 font-bold'
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
@@ -56,11 +56,11 @@ export const TutorialHub = () => {
             onClick={() => setSubTab('matching')}
             className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
               subTab === 'matching'
-                ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-md'
-                : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+                ? isDark ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-900 shadow-xs border border-slate-200'
+                : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-950 font-bold'
             }`}
           >
-            <Zap className="w-3.5 h-3.5 text-amber-300" />
+            <Zap className={`w-3.5 h-3.5 ${subTab === 'matching' ? (isDark ? 'text-amber-300' : 'text-amber-500') : 'text-amber-500'}`} />
             <span>{isHlg ? 'P2P Smart Match & Maayong Balita' : 'P2P Smart Match & Gospel'}</span>
           </button>
 
@@ -68,8 +68,8 @@ export const TutorialHub = () => {
             onClick={() => setSubTab('requests')}
             className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
               subTab === 'requests'
-                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
-                : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+                ? isDark ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-900 shadow-xs border border-slate-200'
+                : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-950 font-bold'
             }`}
           >
             <MessageSquarePlus className="w-3.5 h-3.5" />
@@ -80,8 +80,8 @@ export const TutorialHub = () => {
             onClick={() => setSubTab('reviewers')}
             className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
               subTab === 'reviewers'
-                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
-                : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+                ? isDark ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-900 shadow-xs border border-slate-200'
+                : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-950 font-bold'
             }`}
           >
             <FileText className="w-3.5 h-3.5" />
@@ -92,7 +92,7 @@ export const TutorialHub = () => {
         {/* Volunteer Tutor CTA */}
         <button
           onClick={() => setShowVolunteerModal(true)}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/20 hover:scale-105 active:scale-95 transition-all w-full sm:w-auto cursor-pointer"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-md hover:scale-105 active:scale-95 transition-all w-full sm:w-auto cursor-pointer"
         >
           <PlusCircle className="w-4 h-4 text-slate-950" />
           <span className="text-slate-950 font-black">{isHlg ? 'Mag-Volunteer bilang Tutor' : 'Volunteer as Peer Tutor'}</span>
