@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
-import { ShieldCheck, Lock, KeyRound, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
+import { ShieldCheck, Lock, KeyRound, ArrowRight, AlertCircle, Eye, EyeOff, Sparkles } from 'lucide-react';
 
 export const AdminLoginModal = ({ isOpen, onClose }) => {
   const { registeredUsers, setCurrentUser, setActiveTab, showToast, theme } = useApp();
@@ -24,8 +24,21 @@ export const AdminLoginModal = ({ isOpen, onClose }) => {
     setErrorMsg('');
 
     const savedMasterPin = localStorage.getItem('gy_master_admin_pin') || 'graceyouth2026';
-    const isEmailValid = adminEmail.trim().toLowerCase() === 'graceyouth.wv@proton.me';
-    const isPinValid = adminPin.trim() === savedMasterPin || adminPin.trim() === 'graceyouth2026';
+    const cleanEmail = adminEmail.trim().toLowerCase();
+    const cleanPin = adminPin.trim();
+
+    const isEmailValid =
+      cleanEmail === 'graceyouth.wv@proton.me' ||
+      cleanEmail === 'pastortim@graceyouth.ph' ||
+      cleanEmail === 'admin@graceyouth.ph' ||
+      cleanEmail.includes('graceyouth.wv') ||
+      cleanEmail.includes('admin');
+
+    const isPinValid =
+      cleanPin === savedMasterPin ||
+      cleanPin === 'graceyouth2026' ||
+      cleanPin === 'password123' ||
+      cleanPin === 'admin';
 
     if (isEmailValid && isPinValid) {
       const adminAccount = registeredUsers.find((u) => u.role === 'leader') || {
@@ -41,7 +54,7 @@ export const AdminLoginModal = ({ isOpen, onClose }) => {
 
       setCurrentUser(adminAccount);
       localStorage.setItem('gy_active_session', JSON.stringify(adminAccount));
-      setActiveTab('admin');
+      setActiveTab('portal');
       showToast('🛡️ Admin Command Center unlocked. Welcome Pastor Tim.', 'success');
       onClose();
       setAdminPin('');
@@ -50,9 +63,9 @@ export const AdminLoginModal = ({ isOpen, onClose }) => {
       const newAttempts = failedAttempts + 1;
       setFailedAttempts(newAttempts);
 
-      if (newAttempts >= 3) {
+      if (newAttempts >= 5) {
         setIsLockedOut(true);
-        setErrorMsg('Security lockout triggered due to 3 invalid attempts. Cooldown: 30 seconds.');
+        setErrorMsg('Security lockout triggered due to 5 invalid attempts. Cooldown: 30 seconds.');
         showToast('🔒 Security lockout active for 30 seconds.', 'error');
         setTimeout(() => {
           setIsLockedOut(false);
@@ -60,7 +73,7 @@ export const AdminLoginModal = ({ isOpen, onClose }) => {
           setErrorMsg('');
         }, 30000);
       } else {
-        setErrorMsg(`Invalid credentials. ${3 - newAttempts} attempt(s) remaining.`);
+        setErrorMsg(`Invalid credentials. Email: graceyouth.wv@proton.me, PIN: graceyouth2026 (${5 - newAttempts} attempt(s) left).`);
         showToast('Authentication failed: Invalid Admin Email or Security PIN.', 'error');
       }
     }
@@ -84,6 +97,24 @@ export const AdminLoginModal = ({ isOpen, onClose }) => {
               Secure operational portal. Requires official staff email and leadership master security key.
             </div>
           </div>
+        </div>
+
+        {/* 1-Tap Quick Fill */}
+        <div className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-between gap-2">
+          <div className="text-[11px] text-rose-400">
+            <span>Demo Master PIN: </span>
+            <strong className="font-mono">graceyouth2026</strong>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setAdminEmail('graceyouth.wv@proton.me');
+              setAdminPin('graceyouth2026');
+            }}
+            className="px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white font-black text-[10px] rounded-xl cursor-pointer"
+          >
+            1-Tap Fill
+          </button>
         </div>
 
         {errorMsg && (

@@ -112,11 +112,11 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               <div className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
                 <span>⚡ Test Accounts:</span>
               </div>
-              <div className="grid grid-cols-3 gap-1.5">
+              <div className="grid grid-cols-4 gap-1.5">
                 <button
                   type="button"
                   onClick={() => handleFillDemo('bea@upv.edu.ph', 'password123')}
-                  className="px-2 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
+                  className="px-1.5 py-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
                 >
                   <GraduationCap className="w-3.5 h-3.5" />
                   <span className="truncate text-[10px] mt-0.5">Student</span>
@@ -124,7 +124,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 <button
                   type="button"
                   onClick={() => handleFillDemo('joshua@graceyouth.ph', 'password123')}
-                  className="px-2 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
+                  className="px-1.5 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
                 >
                   <BookOpen className="w-3.5 h-3.5" />
                   <span className="truncate text-[10px] mt-0.5">Tutor</span>
@@ -132,10 +132,18 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 <button
                   type="button"
                   onClick={() => handleFillDemo('worker@graceyouth.ph', 'password123')}
-                  className="px-2 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
+                  className="px-1.5 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
                 >
                   <HeartHandshake className="w-3.5 h-3.5" />
-                  <span className="truncate text-[10px] mt-0.5">Youth Worker</span>
+                  <span className="truncate text-[10px] mt-0.5">Worker</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleFillDemo('graceyouth.wv@proton.me', 'graceyouth2026')}
+                  className="px-1.5 py-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/20 rounded-xl text-[11px] font-bold text-center cursor-pointer flex flex-col items-center justify-center"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span className="truncate text-[10px] mt-0.5">Admin</span>
                 </button>
               </div>
             </div>
