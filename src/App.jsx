@@ -255,7 +255,16 @@ export const App = () => {
             isDark ? 'border-slate-800 text-slate-500' : 'border-slate-100 text-slate-400'
           }`}>
             <div>© 2026 Grace Youth Campus Ministry. All ministry services are free.</div>
-            <div>Soli Deo Gloria ✝</div>
+            <div className="flex items-center gap-4">
+              <button
+                onClick={() => setActiveTab('admin')}
+                className="hover:text-pink-500 transition-colors cursor-pointer flex items-center gap-1 font-mono text-[10px]"
+              >
+                <span>🛡️ Admin Portal</span>
+              </button>
+              <span>•</span>
+              <div>Soli Deo Gloria ✝</div>
+            </div>
           </div>
         </div>
       </footer>

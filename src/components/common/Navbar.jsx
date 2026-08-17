@@ -1,11 +1,14 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Sparkles, Languages, Calendar, BookOpen, Heart, Menu, X, ShieldCheck, Database, Users, Sun, Moon, LogIn, UserPlus, LogOut, User, HeartHandshake, GraduationCap, Tent, Download, Smartphone } from 'lucide-react';
+import { Sparkles, Languages, Calendar, BookOpen, Heart, Menu, X, ShieldCheck, Database, Users, Sun, Moon, LogIn, UserPlus, LogOut, User, HeartHandshake, GraduationCap, Tent, Download, Smartphone, MessageSquare } from 'lucide-react';
 import { ProfileModal } from '../profile/ProfileModal';
 import { MySessionsModal } from '../profile/MySessionsModal';
 import { DbSchemaModal } from './DbSchemaModal';
 import { AuthModal } from '../auth/AuthModal';
 import { InstallModal } from './InstallModal';
+import { CampusChatDrawer } from './CampusChatDrawer';
+import { ConnectWorkerModal } from '../worker/ConnectWorkerModal';
+import { AdminLoginModal } from '../admin/AdminLoginModal';
 
 export const Navbar = () => {
   const { language, setLanguage, currentUser, myBookings, activeTab, setActiveTab, theme, toggleTheme, logout } = useApp();
@@ -14,6 +17,9 @@ export const Navbar = () => {
   const [showDbModal, setShowDbModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showInstallModal, setShowInstallModal] = useState(false);
+  const [showChatDrawer, setShowChatDrawer] = useState(false);
+  const [showConnectWorkerModal, setShowConnectWorkerModal] = useState(false);
+  const [showAdminLoginModal, setShowAdminLoginModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
@@ -148,13 +154,41 @@ export const Navbar = () => {
 
             {/* Right Action Bar */}
             <div className="flex items-center gap-2 sm:gap-2.5">
+              {/* 💬 LIVE CHAT BUTTON */}
+              <button
+                onClick={() => setShowChatDrawer(true)}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer border hover:scale-105 active:scale-95 ${
+                  isDark
+                    ? 'bg-indigo-950/60 border-indigo-500/30 text-indigo-300 hover:bg-indigo-900/60'
+                    : 'bg-indigo-50 border-indigo-200 text-indigo-700 hover:bg-indigo-100 shadow-xs'
+                }`}
+                title="Open Campus Live Chat"
+              >
+                <MessageSquare className="w-3.5 h-3.5 text-indigo-500" />
+                <span className="hidden sm:inline">Live Chat</span>
+              </button>
+
+              {/* 🤝 CONNECT WITH YOUTH WORKER */}
+              <button
+                onClick={() => setShowConnectWorkerModal(true)}
+                className={`hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer border hover:scale-105 active:scale-95 ${
+                  isDark
+                    ? 'bg-teal-950/60 border-teal-500/30 text-teal-300 hover:bg-teal-900/60'
+                    : 'bg-teal-50 border-teal-200 text-teal-800 hover:bg-teal-100 shadow-xs'
+                }`}
+                title="Pastoral Care & Mentorship"
+              >
+                <HeartHandshake className="w-3.5 h-3.5 text-teal-500" />
+                <span>Pastoral Care</span>
+              </button>
+
               {/* 📲 TOP INSTALL APP / DOWNLOAD BUTTON */}
               <button
                 onClick={() => setShowInstallModal(true)}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer border hover:scale-105 active:scale-95 ${
                   isDark
                     ? 'bg-gradient-to-r from-violet-600/30 to-pink-500/30 border-pink-500/40 text-pink-300 hover:bg-pink-500/40'
-                    : 'bg-indigo-50 border-indigo-200 text-indigo-700 hover:bg-indigo-100 shadow-xs'
+                    : 'bg-pink-50 border-pink-200 text-pink-700 hover:bg-pink-100 shadow-xs'
                 }`}
                 title="Install Grace Youth App (PWA)"
               >
@@ -266,6 +300,30 @@ export const Navbar = () => {
               <span>📲 Install Grace Youth App on Phone</span>
             </button>
 
+            {/* Mobile Live Chat & Pastoral Care */}
+            <div className="grid grid-cols-2 gap-2 pb-2">
+              <button
+                onClick={() => {
+                  setShowChatDrawer(true);
+                  setMobileMenuOpen(false);
+                }}
+                className="py-2.5 rounded-xl bg-indigo-600 text-white font-black text-xs flex items-center justify-center gap-1.5"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>Campus Chat</span>
+              </button>
+              <button
+                onClick={() => {
+                  setShowConnectWorkerModal(true);
+                  setMobileMenuOpen(false);
+                }}
+                className="py-2.5 rounded-xl bg-teal-600 text-white font-black text-xs flex items-center justify-center gap-1.5"
+              >
+                <HeartHandshake className="w-3.5 h-3.5" />
+                <span>Pastoral Care</span>
+              </button>
+            </div>
+
             {isGuest ? (
               <div className="grid grid-cols-2 gap-2 pb-2 border-b border-slate-800">
                 <button
@@ -282,24 +340,50 @@ export const Navbar = () => {
                 </button>
               </div>
             ) : (
-              <button
-                onClick={() => {
-                  setActiveTab('portal');
-                  setMobileMenuOpen(false);
-                }}
-                className="w-full text-left px-4 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-violet-600 to-pink-500 text-white flex items-center justify-between"
-              >
-                <span>
-                  {isLeader
-                    ? '🛡️ Open Admin Center'
-                    : isWorker
-                    ? '✝️ Open Youth Worker Console'
-                    : isTutor
-                    ? '👨‍🏫 Open Tutor Portal'
-                    : '🎓 Open Student Hub'}
-                </span>
-                <span>&rarr;</span>
-              </button>
+              <div className="space-y-2 pb-2 border-b border-slate-800">
+                <button
+                  onClick={() => {
+                    setActiveTab('portal');
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full text-left px-4 py-2.5 rounded-xl text-xs font-black bg-gradient-to-r from-violet-600 to-pink-500 text-white flex items-center justify-between"
+                >
+                  <span>
+                    {isLeader
+                      ? '🛡️ Open Admin Center'
+                      : isWorker
+                      ? '✝️ Open Youth Worker Console'
+                      : isTutor
+                      ? '👨‍🏫 Open Tutor Portal'
+                      : '🎓 Open Student Hub'}
+                  </span>
+                  <span>&rarr;</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowProfileModal(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 ${
+                    isDark ? 'bg-slate-900 text-slate-300' : 'bg-slate-100 text-slate-700'
+                  }`}
+                >
+                  <User className="w-4 h-4" />
+                  <span>Edit Profile & Account Settings</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    logout();
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-rose-600 text-white font-black text-xs flex items-center justify-center gap-2"
+                >
+                  <LogOut className="w-4 h-4" />
+                  <span>Sign Out from App</span>
+                </button>
+              </div>
             )}
 
             <button
@@ -357,16 +441,33 @@ export const Navbar = () => {
             >
               🙏 Prayer Wall
             </button>
+
+            {/* Discreet Admin Login Access */}
+            <div className="pt-2 border-t border-slate-800">
+              <button
+                onClick={() => {
+                  setShowAdminLoginModal(true);
+                  setMobileMenuOpen(false);
+                }}
+                className="w-full text-left px-4 py-2 rounded-xl text-[11px] text-slate-500 hover:text-slate-300 flex items-center justify-between"
+              >
+                <span>🛡️ Ministry Admin Gate</span>
+                <span className="font-mono text-[10px]">Staff Only</span>
+              </button>
+            </div>
           </div>
         )}
       </header>
 
-      {/* Modals */}
+      {/* Modals & Drawers */}
       <ProfileModal isOpen={showProfileModal} onClose={() => setShowProfileModal(false)} />
       <MySessionsModal isOpen={showSessionsModal} onClose={() => setShowSessionsModal(false)} />
       <DbSchemaModal isOpen={showDbModal} onClose={() => setShowDbModal(false)} />
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} initialMode={authMode} />
       <InstallModal isOpen={showInstallModal} onClose={() => setShowInstallModal(false)} />
+      <CampusChatDrawer isOpen={showChatDrawer} onClose={() => setShowChatDrawer(false)} />
+      <ConnectWorkerModal isOpen={showConnectWorkerModal} onClose={() => setShowConnectWorkerModal(false)} />
+      <AdminLoginModal isOpen={showAdminLoginModal} onClose={() => setShowAdminLoginModal(false)} />
     </>
   );
 };
