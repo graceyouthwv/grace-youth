@@ -188,7 +188,7 @@ export const JoinLifeGroupModal = ({ isOpen, onClose, group }) => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Full Name *
                 </label>
                 <input
@@ -197,14 +197,14 @@ export const JoinLifeGroupModal = ({ isOpen, onClose, group }) => {
                   placeholder="e.g. Bea Claridad"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
+                    isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
                   }`}
                 />
               </div>
 
               <div>
-                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Email / Contact Number *
                 </label>
                 <input
@@ -213,8 +213,8 @@ export const JoinLifeGroupModal = ({ isOpen, onClose, group }) => {
                   placeholder="e.g. bea@upv.edu.ph or 0917-xxx"
                   value={contact}
                   onChange={(e) => setContact(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
+                    isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
                   }`}
                 />
               </div>
@@ -222,14 +222,14 @@ export const JoinLifeGroupModal = ({ isOpen, onClose, group }) => {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Your University *
                 </label>
                 <select
                   value={campusId}
                   onChange={(e) => setCampusId(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
+                    isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
                   }`}
                 >
                   {CAMPUSES.map((c) => (
@@ -239,14 +239,14 @@ export const JoinLifeGroupModal = ({ isOpen, onClose, group }) => {
               </div>
 
               <div>
-                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Year Level
                 </label>
                 <select
                   value={yearLevel}
                   onChange={(e) => setYearLevel(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
+                    isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
                   }`}
                 >
                   <option value="1st Year">1st Year (Freshman)</option>
@@ -260,7 +260,7 @@ export const JoinLifeGroupModal = ({ isOpen, onClose, group }) => {
 
             {isGuest && (
               <div>
-                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                   Create a Password (to save to your Hub)
                 </label>
                 <input
@@ -268,15 +268,15 @@ export const JoinLifeGroupModal = ({ isOpen, onClose, group }) => {
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
+                    isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
                   }`}
                 />
               </div>
             )}
 
             <div>
-              <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
                 Any Prayer Request / Spiritual Goal (Optional)
               </label>
               <textarea
@@ -284,19 +284,34 @@ export const JoinLifeGroupModal = ({ isOpen, onClose, group }) => {
                 placeholder="e.g. Seeking godly community during exams..."
                 value={prayerNote}
                 onChange={(e) => setPrayerNote(e.target.value)}
-                className={`w-full px-3 py-2 rounded-xl border text-xs ${
-                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                  isDark ? 'bg-slate-900 border-slate-700 text-white placeholder-slate-500' : 'bg-white border-slate-300 text-slate-900 placeholder-slate-400 shadow-xs'
                 }`}
               />
             </div>
 
-            <button
-              type="submit"
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-emerald-500/25 hover:scale-[1.01] transition-all cursor-pointer flex items-center justify-center gap-2"
-            >
-              <Users className="w-4 h-4" />
-              <span>Confirm & Join {group.title}</span>
-            </button>
+            {/* Sticky Action Footer */}
+            <div className={`pt-3 border-t flex items-center gap-2 ${
+              isDark ? 'border-slate-800' : 'border-slate-200'
+            }`}>
+              <button
+                type="button"
+                onClick={handleClose}
+                className={`px-4 py-3 rounded-xl font-bold text-xs cursor-pointer transition-all ${
+                  isDark ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                }`}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                className="flex-1 py-3 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-indigo-600 hover:from-emerald-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-emerald-500/25 active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
+              >
+                <Users className="w-4 h-4" />
+                <span>Confirm & Join {group.title}</span>
+              </button>
+            </div>
           </form>
         )}
       </Modal>
