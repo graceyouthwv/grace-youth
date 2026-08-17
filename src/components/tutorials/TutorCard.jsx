@@ -56,11 +56,13 @@ export const TutorCard = ({ tutor }) => {
 
           {/* Ministry Badge */}
           <div className="flex items-center gap-2 mb-3">
-            <div className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-violet-500/10 text-violet-700 dark:text-violet-300 border border-violet-500/20">
+            <div className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${
+              isDark ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' : 'bg-slate-100 text-slate-800 border-slate-300'
+            }`}>
               ✨ {tutor.badge}
             </div>
             {isOwnListing && (
-              <div className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/30">
+              <div className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-500 dark:text-amber-400 border border-amber-500/30">
                 👑 Your Listing
               </div>
             )}
@@ -109,7 +111,7 @@ export const TutorCard = ({ tutor }) => {
           ) : (
             <button
               onClick={() => setShowBooking(true)}
-              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs shadow-md hover:scale-105 transition-all cursor-pointer"
+              className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs shadow-md hover:scale-105 transition-all cursor-pointer"
             >
               {isHlg ? 'Mag-Book sang Libreng Session →' : 'Book Free Session →'}
             </button>

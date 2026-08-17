@@ -13,6 +13,8 @@ export const INITIAL_TUTORS = [
     bio: 'Dedicated to helping fellow UPV batchmates ace Math 17 and Physics with step-by-step problem sets and Christ-centered encouragement.',
     subjects: ['Calculus 1 & 2', 'Algebra', 'Trigonometry', 'General Physics'],
     preferredMode: 'Hybrid',
+    isApproved: false,
+    status: 'Pending Admin Review',
     slots: [
       { id: 'slot-1a', day: 'Tuesday', time: '4:00 PM - 5:30 PM', mode: 'In-Person (CAS Gazebo, UPV)' },
       { id: 'slot-1b', day: 'Thursday', time: '5:00 PM - 6:30 PM', mode: 'Online (Google Meet)' },
@@ -33,6 +35,8 @@ export const INITIAL_TUTORS = [
     bio: 'WVSU Nursing honor student ready to help younger batchmates master AnaPhy concepts, pharmacology dosage calculations, and prayerful focus.',
     subjects: ['Anatomy & Physiology', 'Pharmacology', 'Health Assessment', 'Microbiology'],
     preferredMode: 'In-Person',
+    isApproved: true,
+    status: 'Active',
     slots: [
       { id: 'slot-2a', day: 'Wednesday', time: '3:30 PM - 5:00 PM', mode: 'In-Person (WVSU Library)' },
       { id: 'slot-2b', day: 'Friday', time: '4:00 PM - 5:30 PM', mode: 'In-Person (College of Nursing Lounge)' }
@@ -52,6 +56,8 @@ export const INITIAL_TUTORS = [
     bio: 'Passionate about coastal science and chemistry! Guiding ISUFST students through lab reports, reaction equations, and spiritual growth.',
     subjects: ['General Chemistry', 'Organic Chemistry', 'Marine Biology', 'Biochemistry'],
     preferredMode: 'Hybrid',
+    isApproved: true,
+    status: 'Active',
     slots: [
       { id: 'slot-3a', day: 'Monday', time: '4:00 PM - 5:30 PM', mode: 'In-Person (ISUFST Tiwi Study Hub)' },
       { id: 'slot-3b', day: 'Wednesday', time: '5:00 PM - 6:30 PM', mode: 'Online (Google Meet)' }
@@ -71,6 +77,8 @@ export const INITIAL_TUTORS = [
     bio: 'Helping Centralians conquer Financial Accounting, debits/credits, and balance sheet reconciliation with peace and diligence.',
     subjects: ['Financial Accounting', 'Cost Accounting', 'Business Math', 'Economics'],
     preferredMode: 'Hybrid',
+    isApproved: true,
+    status: 'Active',
     slots: [
       { id: 'slot-4a', day: 'Tuesday', time: '3:00 PM - 4:30 PM', mode: 'In-Person (CPU Halfmoon Lounge)' },
       { id: 'slot-4b', day: 'Thursday', time: '4:30 PM - 6:00 PM', mode: 'Online (Google Meet)' }
@@ -90,6 +98,8 @@ export const INITIAL_TUTORS = [
     bio: 'ISAT-U coder ready to debug code, explain data structures, and pray for your programming lab submissions.',
     subjects: ['Python Programming', 'Data Structures & Algorithms', 'Discrete Math', 'Web Dev'],
     preferredMode: 'Online',
+    isApproved: true,
+    status: 'Active',
     slots: [
       { id: 'slot-5a', day: 'Monday', time: '6:00 PM - 7:30 PM', mode: 'Online (Google Meet / Discord)' },
       { id: 'slot-5b', day: 'Friday', time: '6:00 PM - 7:30 PM', mode: 'Online (Google Meet)' }

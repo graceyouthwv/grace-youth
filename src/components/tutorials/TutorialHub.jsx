@@ -10,7 +10,7 @@ import { SUBJECT_CATEGORIES } from '../../data/campuses';
 import { getTranslation } from '../../data/translations';
 
 export const TutorialHub = () => {
-  const { tutors, selectedCampus, language, theme } = useApp();
+  const { tutors, registeredUsers, selectedCampus, language, theme } = useApp();
   const [subTab, setSubTab] = useState('tutors'); // 'tutors' | 'matching' | 'requests' | 'reviewers'
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Subjects');
@@ -20,12 +20,28 @@ export const TutorialHub = () => {
   const isHlg = language === 'hlg' || language === 'hil';
   const t = (key) => getTranslation(key, language);
 
-  const approvedTutorsCount = tutors.filter(
-    (t) => t.isApproved !== false && t.status !== 'Pending Admin Review' && t.status !== 'Pending Admin Approval'
-  ).length;
+  const isTutorApproved = (t) => {
+    // If explicitly marked as unapproved or pending review
+    if (t.isApproved === false || t.status === 'Pending Admin Review' || t.status === 'Pending Admin Approval') {
+      return false;
+    }
+    // Check corresponding account in registeredUsers
+    const userMatch = registeredUsers?.find(
+      (u) =>
+        (u.email && t.email && u.email.toLowerCase() === t.email.toLowerCase()) ||
+        (u.name && t.name && u.name.toLowerCase() === t.name.toLowerCase()) ||
+        u.id === t.id
+    );
+    if (userMatch && userMatch.role === 'tutor' && (!userMatch.isApproved || userMatch.status === 'Pending Admin Approval')) {
+      return false;
+    }
+    return t.isApproved === true || t.status === 'Active';
+  };
 
-  const filteredTutors = tutors.filter((t) => {
-    const isApproved = t.isApproved !== false && t.status !== 'Pending Admin Review' && t.status !== 'Pending Admin Approval';
+  const approvedTutors = tutors.filter(isTutorApproved);
+  const approvedTutorsCount = approvedTutors.length;
+
+  const filteredTutors = approvedTutors.filter((t) => {
     const matchesCampus = selectedCampus === 'all' || t.campusId === selectedCampus;
     const matchesCategory = selectedCategory === 'All Subjects' || t.category === selectedCategory;
     const matchesSearch =
@@ -33,7 +49,7 @@ export const TutorialHub = () => {
       t.subjects?.some((s) => s.toLowerCase().includes(searchQuery.toLowerCase())) ||
       t.bio?.toLowerCase().includes(searchQuery.toLowerCase());
 
-    return isApproved && matchesCampus && matchesCategory && matchesSearch;
+    return matchesCampus && matchesCategory && matchesSearch;
   });
 
   return (

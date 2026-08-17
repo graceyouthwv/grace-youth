@@ -133,8 +133,8 @@ export const Navbar = () => {
                 onClick={() => setActiveTab('home')}
                 className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'home'
-                    ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-500/20'
-                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
                 }`}
               >
                 Feed
@@ -146,14 +146,14 @@ export const Navbar = () => {
                   onClick={() => setActiveTab('portal')}
                   className={`px-3 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
                     activeTab === 'portal'
-                      ? 'bg-gradient-to-r from-violet-600 to-pink-500 text-white shadow-md'
+                      ? isLeader ? 'bg-rose-600 text-white shadow-xs' : 'bg-indigo-600 text-white shadow-xs'
                       : isWorker
-                      ? 'text-emerald-400 hover:text-emerald-300 font-extrabold'
+                      ? isDark ? 'text-emerald-400 hover:text-emerald-300 font-extrabold' : 'text-emerald-800 hover:text-emerald-950 font-extrabold'
                       : isTutor
-                      ? 'text-amber-400 hover:text-amber-300 font-extrabold'
+                      ? isDark ? 'text-amber-400 hover:text-amber-300 font-extrabold' : 'text-amber-800 hover:text-amber-950 font-extrabold'
                       : isLeader
-                      ? 'text-rose-400 hover:text-rose-300 font-extrabold'
-                      : 'text-indigo-400 hover:text-indigo-300 font-extrabold'
+                      ? isDark ? 'text-rose-400 hover:text-rose-300 font-extrabold' : 'text-rose-800 hover:text-rose-950 font-extrabold'
+                      : isDark ? 'text-indigo-400 hover:text-indigo-300 font-extrabold' : 'text-indigo-800 hover:text-indigo-950 font-extrabold'
                   }`}
                 >
                   {isLeader
@@ -170,11 +170,11 @@ export const Navbar = () => {
                 onClick={() => setActiveTab('tutorials')}
                 className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'tutorials'
-                    ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-500/20'
-                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
                 }`}
               >
-                <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+                <BookOpen className={`w-3.5 h-3.5 ${activeTab === 'tutorials' ? 'text-white' : 'text-amber-500'}`} />
                 <span>{t('nav_acads')}</span>
               </button>
 
@@ -182,11 +182,11 @@ export const Navbar = () => {
                 onClick={() => setActiveTab('discipleship')}
                 className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'discipleship'
-                    ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-500/20'
-                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
                 }`}
               >
-                <Users className="w-3.5 h-3.5 text-emerald-400" />
+                <Users className={`w-3.5 h-3.5 ${activeTab === 'discipleship' ? 'text-white' : 'text-emerald-500'}`} />
                 <span>{t('nav_groups')}</span>
               </button>
 
@@ -194,11 +194,11 @@ export const Navbar = () => {
                 onClick={() => setActiveTab('giving')}
                 className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'giving'
-                    ? 'bg-gradient-to-r from-pink-600 to-rose-600 text-white shadow-md shadow-pink-500/20'
-                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-rose-600 text-white shadow-xs'
+                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
                 }`}
               >
-                <Tent className="w-3.5 h-3.5 text-pink-400" />
+                <Tent className={`w-3.5 h-3.5 ${activeTab === 'giving' ? 'text-white' : 'text-pink-500'}`} />
                 <span>{t('nav_camps')}</span>
               </button>
 
@@ -206,11 +206,11 @@ export const Navbar = () => {
                 onClick={() => setActiveTab('prayer')}
                 className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'prayer'
-                    ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md shadow-indigo-500/20'
-                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
                 }`}
               >
-                <Heart className="w-3.5 h-3.5 text-rose-400" />
+                <Heart className={`w-3.5 h-3.5 ${activeTab === 'prayer' ? 'text-white' : 'text-rose-500'}`} />
                 <span>{t('nav_prayers')}</span>
               </button>
             </nav>

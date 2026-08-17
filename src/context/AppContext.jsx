@@ -15,7 +15,7 @@ export { DEMO_ACCOUNTS };
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v8_prod_sync';
+const STORAGE_VERSION = 'gy_clean_v9_tutor_gate';
 
 const GUEST_USER = {
   id: 'guest',
@@ -373,7 +373,11 @@ export const AppProvider = ({ children }) => {
 
     setRegisteredUsers((prev) =>
       prev.map((u) => {
-        if (u.id === userIdOrTutorId || u.name === userIdOrTutorId) {
+        if (
+          u.id === userIdOrTutorId ||
+          u.name === userIdOrTutorId ||
+          (u.email && u.email.toLowerCase() === String(userIdOrTutorId).toLowerCase())
+        ) {
           approvedUserObj = u;
           return {
             ...u,
@@ -389,7 +393,17 @@ export const AppProvider = ({ children }) => {
     );
 
     setTutors((prev) => {
-      const matchIndex = prev.findIndex((t) => t.id === userIdOrTutorId || t.name === userIdOrTutorId || (approvedUserObj && t.name === approvedUserObj.name));
+      const matchIndex = prev.findIndex(
+        (t) =>
+          t.id === userIdOrTutorId ||
+          t.name === userIdOrTutorId ||
+          (approvedUserObj && (
+            (t.email && approvedUserObj.email && t.email.toLowerCase() === approvedUserObj.email.toLowerCase()) ||
+            (t.name && approvedUserObj.name && t.name.toLowerCase() === approvedUserObj.name.toLowerCase()) ||
+            t.id === approvedUserObj.id
+          ))
+      );
+
       if (matchIndex !== -1) {
         return prev.map((t, idx) =>
           idx === matchIndex ? { ...t, isApproved: true, status: 'Active', badge: 'Verified Peer Tutor' } : t
@@ -398,12 +412,13 @@ export const AppProvider = ({ children }) => {
         const newTutorListing = {
           id: `tut-${Date.now()}`,
           name: approvedUserObj.name,
-          avatar: approvedUserObj.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+          email: approvedUserObj.email,
+          avatar: approvedUserObj.avatar || 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
           role: `Volunteer Peer Tutor (${approvedUserObj.program || 'Academics'})`,
           campusId: approvedUserObj.campusId,
           campusName: approvedUserObj.campusName,
           subjects: approvedUserObj.subjects?.length ? approvedUserObj.subjects : ['General Academics', approvedUserObj.program || 'Calculus'],
-          category: 'Academics',
+          category: 'STEM & Math',
           rating: 5.0,
           sessionsGiven: 0,
           isApproved: true,
@@ -412,8 +427,8 @@ export const AppProvider = ({ children }) => {
           bio: approvedUserObj.bio || 'Verified volunteer peer tutor ready to help batchmates succeed.',
           preferredMode: approvedUserObj.preferredMode || 'Hybrid',
           slots: [
-            { day: 'Tuesday', time: '4:00 PM - 5:30 PM', mode: 'In-Person' },
-            { day: 'Thursday', time: '5:00 PM - 6:30 PM', mode: 'Online' }
+            { id: `slot-${Date.now()}-1`, day: 'Tuesday', time: '4:00 PM - 5:30 PM', mode: 'In-Person (Campus Gazebo)' },
+            { id: `slot-${Date.now()}-2`, day: 'Thursday', time: '5:00 PM - 6:30 PM', mode: 'Online (Google Meet)' }
           ]
         };
         return [newTutorListing, ...prev];

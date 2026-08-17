@@ -10,6 +10,8 @@ export const DEMO_ACCOUNTS = [
     campusName: 'UP Visayas',
     program: 'BS Biology',
     yearLevel: '2nd Year',
+    isApproved: true,
+    status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
     bio: 'UPV Miagao Bio major finding strength in fellowship and review groups!'
   },
@@ -19,11 +21,13 @@ export const DEMO_ACCOUNTS = [
     email: 'joshua@graceyouth.ph',
     password: 'password123',
     role: 'tutor',
-    roleLabel: 'Volunteer Peer Tutor',
+    roleLabel: 'Volunteer Peer Tutor (Pending Certification)',
     campusId: 'upv',
     campusName: 'UP Visayas (Miagao)',
     program: 'BS Math',
     yearLevel: '4th Year',
+    isApproved: false,
+    status: 'Pending Admin Approval',
     avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
     bio: 'Calculus and physics peer tutor passionate about student academic success and spiritual growth.',
     subjects: ['Calculus 1 & 2', 'Algebra', 'Trigonometry', 'General Physics']
@@ -39,6 +43,8 @@ export const DEMO_ACCOUNTS = [
     campusName: 'All Iloilo Campuses',
     program: 'Campus Missionary',
     yearLevel: 'Staff',
+    isApproved: true,
+    status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
     bio: 'Campus youth director coordinating Bible study rosters, student care, and tutor dispatch.'
   },
@@ -53,6 +59,8 @@ export const DEMO_ACCOUNTS = [
     campusName: 'All Iloilo Campuses',
     program: 'BS Nursing / Youth Board',
     yearLevel: '3rd Year',
+    isApproved: true,
+    status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
     bio: 'Student board trustee overseeing ministry resource allocation, financial transparency audits, and community motions.'
   },
@@ -68,6 +76,8 @@ export const DEMO_ACCOUNTS = [
     campusName: 'ISAT-U (La Paz)',
     program: 'BS IT / Music Team Lead',
     yearLevel: '3rd Year',
+    isApproved: true,
+    status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
     bio: 'Guitarist & acoustic worship coordinator serving campus gatherings and praise nights.'
   },
@@ -83,6 +93,8 @@ export const DEMO_ACCOUNTS = [
     campusName: 'Central Philippine University (Jaro)',
     program: 'BS Accountancy / Care Team',
     yearLevel: '3rd Year',
+    isApproved: true,
+    status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80',
     bio: 'Serving free brewed coffee and welcoming freshmen during midterm exam study tables.'
   },
@@ -97,6 +109,8 @@ export const DEMO_ACCOUNTS = [
     campusName: 'All Iloilo Campuses',
     program: 'Grace Youth Ministry Oversight',
     yearLevel: 'Pastoral Staff',
+    isApproved: true,
+    status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
     bio: 'Grace Youth Western Visayas pastoral leadership team.'
   }

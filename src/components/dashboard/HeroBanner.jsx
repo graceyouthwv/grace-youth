@@ -41,11 +41,11 @@ export const HeroBanner = () => {
           {/* Main Headline */}
           <h1 className="hero-title text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight mb-4 leading-tight font-heading">
             {t('hero_title_1')}{' '}
-            <span className={isDark ? 'text-transparent bg-clip-text bg-gradient-to-r from-amber-300 via-pink-400 to-violet-400 font-black' : 'gradient-text-acads'}>
+            <span className={isDark ? 'text-amber-300 font-black' : 'text-indigo-800 font-black'}>
               {t('hero_title_acads')}
             </span>{' '}
             {t('hero_title_2')}{' '}
-            <span className={isDark ? 'text-transparent bg-clip-text bg-gradient-to-r from-sky-300 to-emerald-400 font-black' : 'gradient-text-faith'}>
+            <span className={isDark ? 'text-emerald-400 font-black' : 'text-emerald-700 font-black'}>
               {t('hero_title_faith')}
             </span>
           </h1>
