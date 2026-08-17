@@ -1,17 +1,12 @@
 import React, { useState } from 'react';
-import { HeartHandshake, PhoneCall, MessageSquare, ShieldCheck } from 'lucide-react';
-import { Modal } from '../common/Modal';
+import { HeartHandshake, PhoneCall, MessageSquare, ShieldCheck, ArrowRight } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
+import { ConnectWorkerModal } from '../worker/ConnectWorkerModal';
 
 export const CrisisBar = () => {
-  const [showModal, setShowModal] = useState(false);
-  const { showToast, theme } = useApp();
+  const [showWorkerModal, setShowWorkerModal] = useState(false);
+  const { theme } = useApp();
   const isDark = theme === 'dark';
-
-  const handleConnect = (type) => {
-    setShowModal(false);
-    showToast(`🕊️ Connected with Pastoral Care (${type}). A leader will reach out shortly!`, 'success');
-  };
 
   return (
     <>
@@ -37,60 +32,18 @@ export const CrisisBar = () => {
         </div>
 
         <button
-          onClick={() => setShowModal(true)}
-          className="w-full py-2.5 rounded-2xl bg-teal-600 hover:bg-teal-500 text-white font-black text-xs shadow-lg shadow-teal-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+          onClick={() => setShowWorkerModal(true)}
+          className="w-full py-3 rounded-2xl bg-teal-600 hover:bg-teal-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-teal-500/20 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
         >
-          Talk / Pray with a Campus Mentor
+          <HeartHandshake className="w-4 h-4" />
+          <span>Talk / Pray with a Campus Mentor</span>
         </button>
       </div>
 
-      <Modal
-        isOpen={showModal}
-        onClose={() => setShowModal(false)}
-        title="🕊️ Confidential Pastoral Support"
-      >
-        <div className="space-y-4 text-xs sm:text-sm">
-          <p className={`leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            You are never alone. Whether it's heavy thesis anxiety, homesickness, or needing someone to pray over your week, we are here to support you without judgment.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <div
-              onClick={() => handleConnect('One-on-One Coffee Chat')}
-              className={`p-4 rounded-2xl border cursor-pointer transition-all group ${
-                isDark
-                  ? 'bg-slate-900 border-slate-800 hover:border-indigo-500 text-white'
-                  : 'bg-white border-slate-200 hover:border-indigo-500 text-slate-900 shadow-xs'
-              }`}
-            >
-              <div className="p-2.5 rounded-xl bg-indigo-500/10 text-indigo-500 w-fit mb-2 group-hover:scale-110 transition-transform">
-                <MessageSquare className="w-4 h-4" />
-              </div>
-              <h5 className={`font-extrabold mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>Confidential Chat</h5>
-              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Meet for coffee or chat on Messenger/Zoom with a student counselor.
-              </p>
-            </div>
-
-            <div
-              onClick={() => handleConnect('Urgent Prayer Call')}
-              className={`p-4 rounded-2xl border cursor-pointer transition-all group ${
-                isDark
-                  ? 'bg-slate-900 border-slate-800 hover:border-teal-500 text-white'
-                  : 'bg-white border-slate-200 hover:border-teal-500 text-slate-900 shadow-xs'
-              }`}
-            >
-              <div className="p-2.5 rounded-xl bg-teal-500/10 text-teal-600 w-fit mb-2 group-hover:scale-110 transition-transform">
-                <PhoneCall className="w-4 h-4" />
-              </div>
-              <h5 className={`font-extrabold mb-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>Urgent Prayer Call</h5>
-              <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Receive an immediate phone/Viber prayer call from a campus pastor.
-              </p>
-            </div>
-          </div>
-        </div>
-      </Modal>
+      <ConnectWorkerModal
+        isOpen={showWorkerModal}
+        onClose={() => setShowWorkerModal(false)}
+      />
     </>
   );
 };
