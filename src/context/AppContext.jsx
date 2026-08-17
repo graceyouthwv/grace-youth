@@ -169,6 +169,24 @@ export const AppProvider = ({ children }) => {
     return saved ? JSON.parse(saved) : INITIAL_CAMPAIGNS;
   });
 
+  const [pastoralRequests, setPastoralRequests] = useState(() => {
+    const saved = localStorage.getItem('gy_pastoral_requests');
+    return saved ? JSON.parse(saved) : [
+      {
+        id: 'pr-demo-1',
+        studentName: 'Bea Claridad',
+        studentContact: '0917-882-9471 (Messenger: Bea Claridad)',
+        workerId: 'w-1',
+        workerName: 'Hannah Grace Dela Cruz',
+        connectType: 'coffee',
+        notes: 'Midterm thesis burnout and seeking prayer for peace of mind.',
+        campusName: 'UP Visayas',
+        createdAt: '10 mins ago',
+        status: 'Pending Contact'
+      }
+    ];
+  });
+
   const [myBookings, setMyBookings] = useState(() => {
     const saved = localStorage.getItem('gy_my_bookings');
     return saved ? JSON.parse(saved) : [];
@@ -637,6 +655,36 @@ export const AppProvider = ({ children }) => {
     showToast('📥 Reviewer downloaded! God bless your studies.', 'success');
   };
 
+  useEffect(() => {
+    localStorage.setItem('gy_pastoral_requests', JSON.stringify(pastoralRequests));
+  }, [pastoralRequests]);
+
+  const addPastoralRequest = (requestData) => {
+    const created = {
+      id: `pr-${Date.now()}`,
+      studentName: currentUser.name || requestData.studentName || 'Student Member',
+      studentContact: requestData.studentContact,
+      workerId: requestData.workerId,
+      workerName: requestData.workerName,
+      connectType: requestData.connectType, // 'coffee' | 'chat' | 'call'
+      notes: requestData.notes || 'Seeking prayer and spiritual encouragement.',
+      campusName: currentUser.campusName || requestData.campusName || 'UP Visayas',
+      createdAt: 'Just now',
+      status: 'Pending Contact'
+    };
+
+    setPastoralRequests((prev) => [created, ...prev]);
+    showToast(`🕊️ Pastoral request sent to ${requestData.workerName}! Notification sent to worker console.`, 'success');
+    triggerConfetti();
+  };
+
+  const resolvePastoralRequest = (requestId) => {
+    setPastoralRequests((prev) =>
+      prev.map((r) => (r.id === requestId ? { ...r, status: 'Contacted & Handled' } : r))
+    );
+    showToast('✓ Pastoral request marked as contacted & handled.', 'info');
+  };
+
   const donateToCampaign = (campaignId, donationData) => {
     setCampaigns((prev) =>
       prev.map((c) => {
@@ -696,6 +744,9 @@ export const AppProvider = ({ children }) => {
         reviewers,
         setReviewers,
         campaigns,
+        pastoralRequests,
+        addPastoralRequest,
+        resolvePastoralRequest,
         myBookings,
         myGroups,
         toasts,

@@ -28,7 +28,7 @@ const YOUTH_WORKERS = [
 ];
 
 export const ConnectWorkerModal = ({ isOpen, onClose }) => {
-  const { currentUser, showToast, theme } = useApp();
+  const { currentUser, addPastoralRequest, showToast, theme } = useApp();
   const isDark = theme === 'dark';
 
   const [selectedWorker, setSelectedWorker] = useState(YOUTH_WORKERS[0]);
@@ -44,8 +44,16 @@ export const ConnectWorkerModal = ({ isOpen, onClose }) => {
       return;
     }
 
+    addPastoralRequest({
+      workerId: selectedWorker.id,
+      workerName: selectedWorker.name,
+      studentContact: studentContact.trim(),
+      connectType,
+      notes: notes.trim(),
+      campusName: currentUser.campusName
+    });
+
     setIsSubmitted(true);
-    showToast(`🕊️ Connection request sent to ${selectedWorker.name}!`, 'success');
   };
 
   const handleCloseAll = () => {
