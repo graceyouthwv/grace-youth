@@ -3,7 +3,8 @@ import { useApp } from '../../context/AppContext';
 import { CheckCircle2, AlertCircle, Info, Sparkles } from 'lucide-react';
 
 export const Toast = () => {
-  const { toasts } = useApp();
+  const { toasts, theme } = useApp();
+  const isDark = theme === 'dark';
 
   if (!toasts.length) return null;
 
@@ -16,20 +17,32 @@ export const Toast = () => {
         return (
           <div
             key={toast.id}
-            className={`pointer-events-auto flex items-start gap-3 p-4 rounded-xl shadow-xl border text-sm font-medium transition-all transform animate-in slide-in-from-bottom-5 duration-300 ${
+            className={`pointer-events-auto flex items-start gap-3 p-4 rounded-2xl shadow-2xl border text-xs sm:text-sm font-semibold transition-all transform animate-toast-in backdrop-blur-xl ${
               isSuccess
-                ? 'bg-slate-900 text-white border-slate-800'
+                ? isDark
+                  ? 'bg-slate-900/95 text-white border-emerald-500/40 shadow-emerald-500/10'
+                  : 'bg-white/95 text-slate-900 border-emerald-500/30 shadow-emerald-500/10'
                 : isInfo
-                ? 'bg-indigo-950 text-indigo-50 border-indigo-800'
-                : 'bg-rose-900 text-white border-rose-800'
+                ? isDark
+                  ? 'bg-indigo-950/95 text-indigo-50 border-indigo-500/40 shadow-indigo-500/10'
+                  : 'bg-white/95 text-slate-900 border-indigo-500/30 shadow-indigo-500/10'
+                : isDark
+                ? 'bg-rose-950/95 text-white border-rose-500/40 shadow-rose-500/10'
+                : 'bg-white/95 text-slate-900 border-rose-500/30 shadow-rose-500/10'
             }`}
           >
             {isSuccess ? (
-              <Sparkles className="w-5 h-5 text-emerald-400 shrink-0 mt-0.5" />
+              <div className="p-1 rounded-xl bg-emerald-500/20 text-emerald-400 shrink-0 mt-0.5 animate-check-pop">
+                <Sparkles className="w-4 h-4" />
+              </div>
             ) : isInfo ? (
-              <Info className="w-5 h-5 text-indigo-300 shrink-0 mt-0.5" />
+              <div className="p-1 rounded-xl bg-indigo-500/20 text-indigo-400 shrink-0 mt-0.5 animate-check-pop">
+                <Info className="w-4 h-4" />
+              </div>
             ) : (
-              <AlertCircle className="w-5 h-5 text-rose-300 shrink-0 mt-0.5" />
+              <div className="p-1 rounded-xl bg-rose-500/20 text-rose-400 shrink-0 mt-0.5 animate-check-pop">
+                <AlertCircle className="w-4 h-4" />
+              </div>
             )}
             <div className="flex-1 leading-snug">{toast.message}</div>
           </div>

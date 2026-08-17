@@ -26,13 +26,13 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-xl' 
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity animate-in fade-in duration-200"
+        className="fixed inset-0 bg-black/70 backdrop-blur-md transition-opacity animate-in fade-in duration-200"
         onClick={onClose}
       />
 
-      {/* Modal Dialog Card */}
+      {/* Modal Dialog Card with smooth spring entrance */}
       <div
-        className={`relative w-full ${maxWidth} rounded-3xl shadow-2xl border p-6 z-10 overflow-hidden transform transition-all animate-in zoom-in-95 duration-200 ${
+        className={`relative w-full ${maxWidth} rounded-3xl shadow-2xl border p-6 z-10 overflow-hidden transform animate-modal-in ${
           isDark
             ? 'bg-[#111625] text-slate-100 border-slate-800'
             : 'bg-white text-slate-900 border-slate-200'
@@ -49,7 +49,7 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-xl' 
           </h3>
           <button
             onClick={onClose}
-            className={`p-2 rounded-full transition-colors cursor-pointer ${
+            className={`p-2 rounded-full transition-colors cursor-pointer hover:rotate-90 duration-200 ${
               isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
             }`}
             aria-label="Close modal"

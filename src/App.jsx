@@ -37,7 +37,7 @@ export const App = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full flex-1">
         {/* Selected Campus Badge Pill (on public views) */}
         {selectedCampus !== 'all' && activeTab !== 'portal' && (
-          <div className={`mb-6 p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs sm:text-sm border transition-colors ${
+          <div className={`mb-6 p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs sm:text-sm border transition-colors animate-tab-in ${
             isDark ? 'bg-slate-900/90 border-slate-800 text-slate-200' : 'bg-white border-slate-200 text-slate-800 shadow-xs'
           }`}>
             <div className="flex items-center gap-2 font-bold">
@@ -55,9 +55,10 @@ export const App = () => {
           </div>
         )}
 
-        {/* 1. DEDICATED ROLE PORTALS */}
-        {activeTab === 'portal' && (
-          <div>
+        <div key={activeTab} className="animate-tab-in">
+          {/* 1. DEDICATED ROLE PORTALS */}
+          {activeTab === 'portal' && (
+            <div>
             {currentUser.role === 'leader' ? (
               <AdminPortal />
             ) : currentUser.role === 'worker' ? (
@@ -200,6 +201,7 @@ export const App = () => {
             <ReviewerVault />
           </div>
         )}
+        </div>
       </main>
 
       {/* Footer */}

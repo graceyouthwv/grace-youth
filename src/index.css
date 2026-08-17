@@ -13,7 +13,8 @@
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
     letter-spacing: -0.01em;
-    transition: background-color 0.2s ease, color 0.2s ease;
+    transition: background-color 0.25s ease, color 0.25s ease;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -23,7 +24,133 @@
 }
 
 /* ==========================================================================
-   ☀️ LIGHT THEME (COMPREHENSIVE HIGH CONTRAST)
+   ✨ PREMIUM MICRO-ANIMATIONS & INTERACTION SYSTEM
+   ========================================================================== */
+
+/* Keyframe Animations */
+@keyframes fadeInScale {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(6px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes slideInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes checkmarkPop {
+  0% {
+    transform: scale(0.6);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes shimmerSweep {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+@keyframes pulseGlow {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.03);
+  }
+}
+
+@keyframes floatGentle {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+/* Animation Utility Classes */
+.animate-modal-in {
+  animation: fadeInScale 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-tab-in {
+  animation: slideInUp 0.28s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-toast-in {
+  animation: slideInRight 0.24s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-check-pop {
+  animation: checkmarkPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.animate-float {
+  animation: floatGentle 4s ease-in-out infinite;
+}
+
+.animate-shimmer {
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+  background-size: 200% 100%;
+  animation: shimmerSweep 2.5s infinite;
+}
+
+/* Tactile Button Feedback */
+button {
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+/* Card Hover Lifts */
+.genz-card {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+}
+
+.genz-card:hover {
+  transform: translateY(-3px);
+}
+
+/* ==========================================================================
+   ☀️ LIGHT THEME (HIGH CONTRAST & CLEAN ELEVATION)
    ========================================================================== */
 html.light, 
 html.light body {
@@ -31,7 +158,6 @@ html.light body {
   color: #0f172a !important;
 }
 
-/* All Headings & Paragraphs in Light Mode */
 html.light h1,
 html.light h2,
 html.light h3,
@@ -45,7 +171,6 @@ html.light p {
   color: #334155 !important;
 }
 
-/* Base Card Styling in Light Mode */
 html.light .genz-card {
   background-color: #ffffff !important;
   border: 1px solid #cbd5e1 !important;
@@ -59,7 +184,6 @@ html.light .genz-card:hover {
   box-shadow: 0 12px 30px -6px rgba(15, 23, 42, 0.12) !important;
 }
 
-/* Force readable text colors inside cards in Light Mode */
 html.light .genz-card h1,
 html.light .genz-card h2,
 html.light .genz-card h3,
@@ -84,7 +208,6 @@ html.light .genz-card .text-slate-500 {
   color: #64748b !important;
 }
 
-/* Sub-containers & inner blocks in Light Mode */
 html.light .bg-slate-900,
 html.light .bg-slate-900\/90,
 html.light .bg-slate-900\/80,
@@ -103,7 +226,6 @@ html.light .bg-black\/40 {
   color: #0f172a !important;
 }
 
-/* Light Sub-navigation buttons */
 html.light .bg-slate-900 button:not(.bg-gradient-to-r):not(.bg-gradient-to-tr):not(.bg-indigo-600):not(.bg-pink-600):not(.bg-violet-600):not(.bg-emerald-600),
 html.light .bg-slate-900\/90 button:not(.bg-gradient-to-r):not(.bg-gradient-to-tr):not(.bg-indigo-600):not(.bg-pink-600):not(.bg-violet-600):not(.bg-emerald-600) {
   color: #334155 !important;
@@ -114,7 +236,6 @@ html.light .bg-slate-900\/90 button:hover {
   color: #0f172a !important;
 }
 
-/* Top Navbar & Mobile Nav */
 html.light header {
   background-color: rgba(255, 255, 255, 0.95) !important;
   border-bottom: 1px solid #e2e8f0 !important;
@@ -143,7 +264,6 @@ html.light nav.fixed button span {
   color: #475569 !important;
 }
 
-/* ACTIVE GRADIENT BUTTONS IN LIGHT MODE (Ensure crisp white text) */
 html.light button.bg-gradient-to-r,
 html.light button.bg-gradient-to-tr,
 html.light button.bg-gradient-to-r span,
@@ -168,7 +288,6 @@ html.light button.bg-emerald-600 svg {
   color: #ffffff !important;
 }
 
-/* Modals & Dialogs in Light Mode */
 html.light .fixed.inset-0 .genz-card,
 html.light .fixed.inset-0 .bg-\[\#111625\],
 html.light .fixed.inset-0 .bg-\[\#0c101d\] {
@@ -177,7 +296,6 @@ html.light .fixed.inset-0 .bg-\[\#0c101d\] {
   color: #0f172a !important;
 }
 
-/* Form Inputs & Selects in Light Mode */
 html.light input,
 html.light select,
 html.light textarea {
@@ -191,7 +309,6 @@ html.light textarea::placeholder {
   color: #94a3b8 !important;
 }
 
-/* Hero Gradient Text in Light Mode */
 html.light .hero-title {
   color: #0f172a !important;
 }
@@ -210,7 +327,6 @@ html.light .gradient-text-faith {
   font-weight: 900 !important;
 }
 
-/* Background Grids in Light Mode */
 html.light .subtle-grid {
   background-size: 32px 32px;
   background-image: 
@@ -262,6 +378,6 @@ html.dark .subtle-grid {
 
 /* Scrollbars */
 html.dark ::-webkit-scrollbar-track { background: #090d16; }
-html.dark ::-webkit-scrollbar-thumb { background: #1e293b; }
+html.dark ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 9999px; }
 html.light ::-webkit-scrollbar-track { background: #f1f5f9; }
-html.light ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+html.light ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
