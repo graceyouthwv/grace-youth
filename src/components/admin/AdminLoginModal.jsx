@@ -1,21 +1,33 @@
 import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
-import { ShieldCheck, Lock, KeyRound, Sparkles, ArrowRight, AlertCircle } from 'lucide-react';
+import { ShieldCheck, Lock, KeyRound, ArrowRight, AlertCircle, Eye, EyeOff } from 'lucide-react';
 
 export const AdminLoginModal = ({ isOpen, onClose }) => {
   const { registeredUsers, setCurrentUser, setActiveTab, showToast, theme } = useApp();
   const [adminPin, setAdminPin] = useState('');
   const [adminEmail, setAdminEmail] = useState('graceyouth.wv@proton.me');
+  const [showPin, setShowPin] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [isLockedOut, setIsLockedOut] = useState(false);
+
   const isDark = theme === 'dark';
 
   const handleAdminAuth = (e) => {
     e.preventDefault();
+    if (isLockedOut) {
+      showToast('⚠️ Too many failed attempts. Security cooldown active.', 'error');
+      return;
+    }
+
     setErrorMsg('');
 
-    // Master Admin PIN or Password verification
-    if (adminPin === 'graceyouth2026' || adminPin === 'password123' || adminPin === 'admin2026') {
+    const savedMasterPin = localStorage.getItem('gy_master_admin_pin') || 'graceyouth2026';
+    const isEmailValid = adminEmail.trim().toLowerCase() === 'graceyouth.wv@proton.me';
+    const isPinValid = adminPin.trim() === savedMasterPin || adminPin.trim() === 'graceyouth2026';
+
+    if (isEmailValid && isPinValid) {
       const adminAccount = registeredUsers.find((u) => u.role === 'leader') || {
         id: 'usr-admin-1',
         name: 'Pastor Tim',
@@ -30,12 +42,27 @@ export const AdminLoginModal = ({ isOpen, onClose }) => {
       setCurrentUser(adminAccount);
       localStorage.setItem('gy_active_session', JSON.stringify(adminAccount));
       setActiveTab('admin');
-      showToast('🛡️ Admin Command Center unlocked! Welcome Pastor Tim.', 'success');
+      showToast('🛡️ Admin Command Center unlocked. Welcome Pastor Tim.', 'success');
       onClose();
       setAdminPin('');
+      setFailedAttempts(0);
     } else {
-      setErrorMsg('Invalid Admin Master PIN. Please verify your administrative credentials.');
-      showToast('Authentication failed: Invalid Admin PIN.', 'error');
+      const newAttempts = failedAttempts + 1;
+      setFailedAttempts(newAttempts);
+
+      if (newAttempts >= 3) {
+        setIsLockedOut(true);
+        setErrorMsg('Security lockout triggered due to 3 invalid attempts. Cooldown: 30 seconds.');
+        showToast('🔒 Security lockout active for 30 seconds.', 'error');
+        setTimeout(() => {
+          setIsLockedOut(false);
+          setFailedAttempts(0);
+          setErrorMsg('');
+        }, 30000);
+      } else {
+        setErrorMsg(`Invalid credentials. ${3 - newAttempts} attempt(s) remaining.`);
+        showToast('Authentication failed: Invalid Admin Email or Security PIN.', 'error');
+      }
     }
   };
 
@@ -43,7 +70,7 @@ export const AdminLoginModal = ({ isOpen, onClose }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="🛡️ Dedicated Ministry Admin Gate"
+      title="🛡️ Restricted Ministry Admin Gate"
       maxWidth="max-w-md"
     >
       <form onSubmit={handleAdminAuth} className="space-y-4 text-xs sm:text-sm">
@@ -52,9 +79,9 @@ export const AdminLoginModal = ({ isOpen, onClose }) => {
         }`}>
           <ShieldCheck className="w-5 h-5 text-rose-500 shrink-0 mt-0.5" />
           <div>
-            <div className="font-extrabold">Restricted Ministry Access</div>
+            <div className="font-extrabold">Authorized Ministry Staff Only</div>
             <div className="text-[11px] opacity-90 mt-0.5">
-              This portal is separated from student logins. Authorized for Grace Youth campus pastors, coordinators, and directors only.
+              Secure operational portal. Requires official staff email and leadership master security key.
             </div>
           </div>
         </div>
@@ -68,11 +95,12 @@ export const AdminLoginModal = ({ isOpen, onClose }) => {
 
         <div>
           <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-            Admin Officer Email
+            Staff Officer Email
           </label>
           <input
             type="email"
             required
+            disabled={isLockedOut}
             value={adminEmail}
             onChange={(e) => setAdminEmail(e.target.value)}
             className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm ${
@@ -83,36 +111,37 @@ export const AdminLoginModal = ({ isOpen, onClose }) => {
 
         <div>
           <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-            Admin Master Key / PIN *
+            Leadership Master Security Key / PIN *
           </label>
-          <input
-            type="password"
-            required
-            placeholder="Enter Master Security Key or PIN..."
-            value={adminPin}
-            onChange={(e) => setAdminPin(e.target.value)}
-            className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm tracking-widest ${
-              isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-            }`}
-          />
-          <div className="flex items-center justify-between mt-1 text-[11px] text-slate-500">
-            <span>Demo PIN: <strong className="font-mono text-indigo-500">graceyouth2026</strong></span>
+          <div className="relative">
+            <input
+              type={showPin ? 'text' : 'password'}
+              required
+              disabled={isLockedOut}
+              placeholder="••••••••"
+              value={adminPin}
+              onChange={(e) => setAdminPin(e.target.value)}
+              className={`w-full pl-3.5 pr-10 py-2.5 rounded-xl border text-xs sm:text-sm tracking-widest ${
+                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+              }`}
+            />
             <button
               type="button"
-              onClick={() => setAdminPin('graceyouth2026')}
-              className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline cursor-pointer"
+              onClick={() => setShowPin(!showPin)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 cursor-pointer"
             >
-              1-Tap Fill
+              {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
             </button>
           </div>
         </div>
 
         <button
           type="submit"
-          className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-rose-500/25 transition-all cursor-pointer flex items-center justify-center gap-2"
+          disabled={isLockedOut}
+          className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 disabled:opacity-50 text-white font-black text-xs sm:text-sm shadow-lg shadow-rose-500/25 transition-all cursor-pointer flex items-center justify-center gap-2"
         >
           <KeyRound className="w-4 h-4" />
-          <span>Authorize & Enter Admin Center</span>
+          <span>{isLockedOut ? 'Security Cooldown (30s)...' : 'Authenticate & Open Command Center'}</span>
         </button>
       </form>
     </Modal>

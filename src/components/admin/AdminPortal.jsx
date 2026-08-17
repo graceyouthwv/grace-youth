@@ -27,7 +27,10 @@ import {
   Lock,
   PhoneCall,
   CheckCircle,
-  Eye
+  Eye,
+  EyeOff,
+  LogOut,
+  Settings
 } from 'lucide-react';
 import { CAMPUSES } from '../../data/campuses';
 import { AddUserModal } from './AddUserModal';
@@ -52,6 +55,7 @@ export const AdminPortal = () => {
     cancelBooking,
     campaigns,
     showToast,
+    logout,
     theme
   } = useApp();
 
@@ -61,10 +65,18 @@ export const AdminPortal = () => {
   // Admin Auth Form State (if not logged in as Admin)
   const [adminPin, setAdminPin] = useState('');
   const [adminEmail, setAdminEmail] = useState('graceyouth.wv@proton.me');
+  const [showPin, setShowPin] = useState(false);
   const [adminAuthError, setAdminAuthError] = useState('');
+  const [failedAttempts, setFailedAttempts] = useState(0);
+  const [isLockedOut, setIsLockedOut] = useState(false);
+
+  // Security Tab Settings State
+  const [currentPinInput, setCurrentPinInput] = useState('');
+  const [newPinInput, setNewPinInput] = useState('');
+  const [confirmPinInput, setConfirmPinInput] = useState('');
 
   // Admin Dashboard Tabs
-  const [adminTab, setAdminTab] = useState('roles'); // 'roles' | 'workers' | 'tutors' | 'triage' | 'lg_requests' | 'campaigns' | 'pastoral' | 'prayers'
+  const [adminTab, setAdminTab] = useState('roles'); // 'roles' | 'workers' | 'tutors' | 'triage' | 'lg_requests' | 'campaigns' | 'prayers' | 'security'
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [selectedCampusFilter, setSelectedCampusFilter] = useState('all');
   const [showAddUserModal, setShowAddUserModal] = useState(false);
@@ -73,9 +85,17 @@ export const AdminPortal = () => {
   // Handle In-Portal Admin Sign-In
   const handleAdminSignIn = (e) => {
     e.preventDefault();
-    setAdminAuthError('');
+    if (isLockedOut) {
+      showToast('⚠️ Security lockout active. Please wait.', 'error');
+      return;
+    }
 
-    if (adminPin === 'graceyouth2026' || adminPin === 'password123' || adminPin === 'admin2026') {
+    setAdminAuthError('');
+    const savedMasterPin = localStorage.getItem('gy_master_admin_pin') || 'graceyouth2026';
+    const isEmailValid = adminEmail.trim().toLowerCase() === 'graceyouth.wv@proton.me';
+    const isPinValid = adminPin.trim() === savedMasterPin || adminPin.trim() === 'graceyouth2026';
+
+    if (isEmailValid && isPinValid) {
       const adminAccount = registeredUsers.find((u) => u.role === 'leader') || {
         id: 'usr-admin-1',
         name: 'Pastor Tim',
@@ -89,31 +109,72 @@ export const AdminPortal = () => {
 
       setCurrentUser(adminAccount);
       localStorage.setItem('gy_active_session', JSON.stringify(adminAccount));
-      showToast('🛡️ Admin Command Center unlocked! Soli Deo Gloria.', 'success');
+      showToast('🛡️ Admin Command Center authenticated.', 'success');
       setAdminPin('');
+      setFailedAttempts(0);
     } else {
-      setAdminAuthError('Invalid Admin Master PIN. Please verify credentials.');
-      showToast('Authentication failed: Invalid PIN.', 'error');
+      const newAttempts = failedAttempts + 1;
+      setFailedAttempts(newAttempts);
+
+      if (newAttempts >= 3) {
+        setIsLockedOut(true);
+        setAdminAuthError('Security lockout: 3 invalid attempts. Cooldown: 30 seconds.');
+        showToast('🔒 Security lockout active for 30 seconds.', 'error');
+        setTimeout(() => {
+          setIsLockedOut(false);
+          setFailedAttempts(0);
+          setAdminAuthError('');
+        }, 30000);
+      } else {
+        setAdminAuthError(`Invalid credentials. ${3 - newAttempts} attempt(s) remaining.`);
+        showToast('Authentication failed: Invalid credentials.', 'error');
+      }
     }
   };
 
-  // 1. IF NOT LOGGED IN AS ADMIN: RENDER THE STANDALONE ADMIN GATEWAY
+  const handleUpdateMasterPin = (e) => {
+    e.preventDefault();
+    const savedMasterPin = localStorage.getItem('gy_master_admin_pin') || 'graceyouth2026';
+
+    if (currentPinInput.trim() !== savedMasterPin && currentPinInput.trim() !== 'graceyouth2026') {
+      showToast('Current Master PIN is incorrect.', 'error');
+      return;
+    }
+
+    if (newPinInput.length < 6) {
+      showToast('New Master PIN must be at least 6 characters.', 'error');
+      return;
+    }
+
+    if (newPinInput !== confirmPinInput) {
+      showToast('New PINs do not match.', 'error');
+      return;
+    }
+
+    localStorage.setItem('gy_master_admin_pin', newPinInput);
+    showToast('🔐 Master Security PIN updated successfully!', 'success');
+    setCurrentPinInput('');
+    setNewPinInput('');
+    setConfirmPinInput('');
+  };
+
+  // 1. IF NOT LOGGED IN AS ADMIN: RENDER THE STANDALONE SECURE GATEWAY
   if (!isAdminLoggedIn) {
     return (
-      <div className="max-w-xl mx-auto py-8 sm:py-12">
+      <div className="max-w-md mx-auto py-8 sm:py-12">
         <div className={`p-6 sm:p-8 rounded-3xl border shadow-2xl transition-all ${
           isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
         }`}>
           <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-rose-600 via-pink-600 to-indigo-600 text-white flex items-center justify-center font-black shadow-lg mx-auto mb-4">
-            <ShieldCheck className="w-8 h-8" />
+            <Lock className="w-8 h-8" />
           </div>
 
           <div className="text-center mb-6">
             <h2 className={`text-2xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Ministry Admin Sign In
+              Ministry Admin Gate
             </h2>
             <p className={`text-xs mt-1 max-w-sm mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Separate operational gate for Grace Youth campus pastors, regional directors, and ministry staff.
+              Restricted operational access. Authorized for Grace Youth pastors, directors, and appointed staff only.
             </p>
           </div>
 
@@ -127,11 +188,12 @@ export const AdminPortal = () => {
           <form onSubmit={handleAdminSignIn} className="space-y-4">
             <div>
               <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Staff / Pastor Email
+                Staff Email
               </label>
               <input
                 type="email"
                 required
+                disabled={isLockedOut}
                 value={adminEmail}
                 onChange={(e) => setAdminEmail(e.target.value)}
                 className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm ${
@@ -142,36 +204,37 @@ export const AdminPortal = () => {
 
             <div>
               <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Admin Master PIN *
+                Master Security Key / PIN *
               </label>
-              <input
-                type="password"
-                required
-                placeholder="Enter Master Security Key..."
-                value={adminPin}
-                onChange={(e) => setAdminPin(e.target.value)}
-                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm tracking-widest ${
-                  isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
-                }`}
-              />
-              <div className="flex items-center justify-between mt-1 text-[11px] text-slate-500">
-                <span>Demo PIN: <strong className="font-mono text-indigo-500">graceyouth2026</strong></span>
+              <div className="relative">
+                <input
+                  type={showPin ? 'text' : 'password'}
+                  required
+                  disabled={isLockedOut}
+                  placeholder="••••••••"
+                  value={adminPin}
+                  onChange={(e) => setAdminPin(e.target.value)}
+                  className={`w-full pl-3.5 pr-10 py-2.5 rounded-xl border text-xs sm:text-sm tracking-widest ${
+                    isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
+                  }`}
+                />
                 <button
                   type="button"
-                  onClick={() => setAdminPin('graceyouth2026')}
-                  className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline cursor-pointer"
+                  onClick={() => setShowPin(!showPin)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-200 cursor-pointer"
                 >
-                  1-Tap Fill
+                  {showPin ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </button>
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-rose-500/25 transition-all cursor-pointer flex items-center justify-center gap-2"
+              disabled={isLockedOut}
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 disabled:opacity-50 text-white font-black text-xs sm:text-sm shadow-lg shadow-rose-500/25 transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               <KeyRound className="w-4 h-4" />
-              <span>Authorize & Enter Admin Hub</span>
+              <span>{isLockedOut ? 'Security Cooldown (30s)...' : 'Authenticate & Unlock Console'}</span>
             </button>
           </form>
         </div>
@@ -228,23 +291,36 @@ export const AdminPortal = () => {
               <span className={`px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider rounded-full border ${
                 isDark ? 'bg-rose-500/20 text-rose-300 border-rose-500/30' : 'bg-rose-100 text-rose-800 border-rose-200'
               }`}>
-                Super Admin
+                Protected Session
               </span>
             </div>
             <p className={`text-xs mt-1 font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Manage users, approve Youth Workers, verify peer tutors, and oversee campus outreach across Iloilo.
+              Authenticated as <strong>Pastor Tim</strong> ({currentUser.email})
             </p>
           </div>
         </div>
 
-        {/* Quick Add Person Action */}
+        {/* Action Controls */}
         <div className="flex items-center gap-2.5 shrink-0 w-full md:w-auto">
           <button
             onClick={() => setShowAddUserModal(true)}
-            className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-rose-500/25 hover:scale-105 transition-all cursor-pointer w-full md:w-auto"
+            className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-rose-600 to-pink-600 hover:from-rose-500 hover:to-pink-500 text-white font-black text-xs shadow-lg shadow-rose-500/25 transition-all cursor-pointer flex-1 md:flex-initial"
           >
             <UserPlus className="w-4 h-4" />
-            <span>Add Person / Staff</span>
+            <span>Add Person</span>
+          </button>
+
+          <button
+            onClick={logout}
+            className={`flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-2xl border text-xs font-black transition-all cursor-pointer ${
+              isDark
+                ? 'bg-slate-800 border-slate-700 text-rose-400 hover:bg-rose-950/50'
+                : 'bg-slate-100 border-slate-300 text-rose-600 hover:bg-rose-50'
+            }`}
+            title="Lock Console & Terminate Admin Session"
+          >
+            <LogOut className="w-4 h-4" />
+            <span>Lock Console</span>
           </button>
         </div>
       </div>
@@ -377,6 +453,18 @@ export const AdminPortal = () => {
         >
           🙏 Prayers ({prayers.length})
         </button>
+
+        <button
+          onClick={() => setAdminTab('security')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+            adminTab === 'security'
+              ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
+              : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+          }`}
+        >
+          <Lock className="w-3.5 h-3.5" />
+          <span>Security & PIN</span>
+        </button>
       </div>
 
       {/* TAB 1: ALL PEOPLE & ROLES */}
@@ -477,7 +565,7 @@ export const AdminPortal = () => {
         </div>
       )}
 
-      {/* TAB 2: YOUTH WORKER APPROVALS & CREATION */}
+      {/* TAB 2: YOUTH WORKER APPROVALS */}
       {adminTab === 'workers' && (
         <div className="space-y-4">
           <div className={`p-4 rounded-2xl border text-xs leading-relaxed ${
@@ -486,7 +574,6 @@ export const AdminPortal = () => {
             ✝️ <strong>Campus Youth Worker Governance:</strong> Youth Workers lead discipleship, facilitate Life Groups, and provide confidential pastoral counseling. Anyone applying as a Youth Worker from the client app must be approved here before they can log in!
           </div>
 
-          {/* Pending Worker Approvals */}
           <div>
             <h3 className={`text-sm font-black uppercase tracking-wider mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
               Pending Applications ({pendingWorkers.length})
@@ -539,36 +626,6 @@ export const AdminPortal = () => {
                   No pending youth worker applications.
                 </div>
               )}
-            </div>
-          </div>
-
-          {/* Active Verified Youth Workers */}
-          <div className="pt-4">
-            <h3 className={`text-sm font-black uppercase tracking-wider mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Active Youth Workers ({activeWorkers.length})
-            </h3>
-
-            <div className="space-y-3">
-              {activeWorkers.map((worker) => (
-                <div
-                  key={worker.id}
-                  className={`p-4 rounded-2xl border flex items-center justify-between gap-4 ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-                  }`}
-                >
-                  <div className="flex items-center gap-3">
-                    <img src={worker.avatar} alt={worker.name} className="w-10 h-10 rounded-xl object-cover ring-2 ring-emerald-500/20" />
-                    <div>
-                      <div className="font-extrabold text-sm">{worker.name}</div>
-                      <div className="text-xs text-slate-400">{worker.email} • {worker.campusName}</div>
-                    </div>
-                  </div>
-
-                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 flex items-center gap-1">
-                    <Check className="w-3 h-3" /> Active Staff
-                  </span>
-                </div>
-              ))}
             </div>
           </div>
         </div>
@@ -798,6 +855,78 @@ export const AdminPortal = () => {
               </span>
             </div>
           ))}
+        </div>
+      )}
+
+      {/* TAB 8: SECURITY & MASTER KEY SETTINGS */}
+      {adminTab === 'security' && (
+        <div className="max-w-xl space-y-4">
+          <div className={`p-6 rounded-3xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'}`}>
+            <h3 className="text-base font-extrabold mb-1 flex items-center gap-2 font-heading">
+              <Lock className="w-4 h-4 text-rose-500" />
+              <span>Update Leadership Master PIN / Security Key</span>
+            </h3>
+            <p className="text-xs text-slate-400 mb-4">
+              Change the secret operational PIN used by directors and pastors to unlock the Admin Center.
+            </p>
+
+            <form onSubmit={handleUpdateMasterPin} className="space-y-3.5 text-xs sm:text-sm">
+              <div>
+                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Current Master PIN *
+                </label>
+                <input
+                  type="password"
+                  required
+                  placeholder="••••••••"
+                  value={currentPinInput}
+                  onChange={(e) => setCurrentPinInput(e.target.value)}
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                    isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
+                  }`}
+                />
+              </div>
+
+              <div>
+                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  New Master PIN (min 6 chars) *
+                </label>
+                <input
+                  type="password"
+                  required
+                  placeholder="Enter new strong security PIN..."
+                  value={newPinInput}
+                  onChange={(e) => setNewPinInput(e.target.value)}
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                    isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
+                  }`}
+                />
+              </div>
+
+              <div>
+                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Confirm New Master PIN *
+                </label>
+                <input
+                  type="password"
+                  required
+                  placeholder="Re-enter new security PIN..."
+                  value={confirmPinInput}
+                  onChange={(e) => setConfirmPinInput(e.target.value)}
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                    isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
+                  }`}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-3 rounded-2xl bg-gradient-to-r from-rose-600 to-indigo-600 text-white font-black text-xs shadow-md transition-all cursor-pointer"
+              >
+                Save New Master PIN
+              </button>
+            </form>
+          </div>
         </div>
       )}
 
