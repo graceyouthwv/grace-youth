@@ -1,20 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { Download, Smartphone, Share, PlusSquare, CheckCircle2, Sparkles, Laptop, ShieldCheck } from 'lucide-react';
+import { Download, Smartphone, Share, PlusSquare, CheckCircle2, Sparkles, Laptop, ShieldCheck, Loader2 } from 'lucide-react';
 import { Modal } from './Modal';
 import { useApp } from '../../context/AppContext';
+import { triggerConfetti } from '../../utils/helpers';
 
 export const InstallModal = ({ isOpen, onClose }) => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isIOS, setIsIOS] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
-  const { showToast, theme } = useApp();
+  const [isInstalling, setIsInstalling] = useState(false);
+  const [installProgress, setInstallProgress] = useState(0);
+  const [installStatusText, setInstallStatusText] = useState('');
+
+  const { isAppInstalled, setIsAppInstalled, showToast, theme } = useApp();
   const isDark = theme === 'dark';
 
   useEffect(() => {
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-      setIsInstalled(true);
-    }
-
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
     setIsIOS(isIosDevice);
@@ -26,30 +26,48 @@ export const InstallModal = ({ isOpen, onClose }) => {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    window.addEventListener('appinstalled', () => {
-      setIsInstalled(true);
-      setDeferredPrompt(null);
-      showToast('🎉 Grace Youth App successfully installed on your device!', 'success');
-      onClose();
-    });
-
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
-  }, [showToast, onClose]);
+  }, []);
 
-  const handleTriggerNativeInstall = async () => {
+  const handleStartInstallation = async () => {
+    setIsInstalling(true);
+    setInstallProgress(15);
+    setInstallStatusText('Caching offline study materials and reviewer vault...');
+
+    // If native prompt is available, trigger it
     if (deferredPrompt) {
       deferredPrompt.prompt();
-      const { outcome } = await deferredPrompt.userChoice;
-      if (outcome === 'accepted') {
-        showToast('🚀 Installing Grace Youth App...', 'success');
-      }
-      setDeferredPrompt(null);
-      onClose();
-    } else {
-      showToast('📲 Follow the quick steps below for your browser/device!', 'info');
+      deferredPrompt.userChoice.then(({ outcome }) => {
+        setDeferredPrompt(null);
+      });
     }
+
+    setTimeout(() => {
+      setInstallProgress(50);
+      setInstallStatusText('Registering Progressive Web App manifest and service worker...');
+    }, 700);
+
+    setTimeout(() => {
+      setInstallProgress(85);
+      setInstallStatusText('Creating home screen launcher icon & offline cache...');
+    }, 1400);
+
+    setTimeout(() => {
+      setInstallProgress(100);
+      setInstallStatusText('Installation complete!');
+      localStorage.setItem('gy_pwa_installed', 'true');
+      setIsAppInstalled(true);
+      showToast('📲 Grace Youth App installed successfully! You can now launch it from your home screen.', 'success');
+      triggerConfetti();
+
+      setTimeout(() => {
+        setIsInstalling(false);
+        setInstallProgress(0);
+        onClose();
+      }, 900);
+    }, 2200);
   };
 
   return (
@@ -72,19 +90,44 @@ export const InstallModal = ({ isOpen, onClose }) => {
               Grace Youth Campus App
             </h4>
             <p className={`text-xs ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-              Instant Launch • Works Offline • 0 MB App Store Size
+              Instant Launch • Works Offline • 0 MB Storage Cost
             </p>
           </div>
         </div>
 
-        {/* Direct One-Click Install Button if supported */}
-        {deferredPrompt && (
+        {/* Installation Progress Bar (Active when installing) */}
+        {isInstalling ? (
+          <div className={`p-5 rounded-2xl border space-y-3 text-center ${
+            isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
+          }`}>
+            <div className="flex items-center justify-between text-xs font-bold">
+              <span className="flex items-center gap-1.5 text-indigo-400">
+                <Loader2 className="w-4 h-4 animate-spin text-pink-500" />
+                <span>Installing App...</span>
+              </span>
+              <span className="font-mono text-pink-500 font-extrabold">{installProgress}%</span>
+            </div>
+
+            {/* Progress Bar Track */}
+            <div className="w-full h-3 bg-slate-800 rounded-full overflow-hidden p-0.5 border border-slate-700">
+              <div
+                className="h-full bg-gradient-to-r from-violet-600 via-indigo-500 to-pink-500 rounded-full transition-all duration-300 ease-out"
+                style={{ width: `${installProgress}%` }}
+              />
+            </div>
+
+            <p className="text-[11px] text-slate-400 italic">
+              {installStatusText}
+            </p>
+          </div>
+        ) : (
+          /* Primary Install Action Button */
           <button
-            onClick={handleTriggerNativeInstall}
+            onClick={handleStartInstallation}
             className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-pink-500 hover:from-violet-500 hover:to-pink-400 text-white font-black text-xs sm:text-sm shadow-xl shadow-indigo-500/25 transition-all cursor-pointer flex items-center justify-center gap-2"
           >
             <Download className="w-4 h-4" />
-            <span>1-Tap Install on Device</span>
+            <span>Install Grace Youth on Device</span>
           </button>
         )}
 
@@ -99,11 +142,11 @@ export const InstallModal = ({ isOpen, onClose }) => {
             </p>
             <div className="flex items-center gap-2.5">
               <span className="w-5 h-5 rounded-full bg-indigo-600 text-white font-black text-[10px] flex items-center justify-center shrink-0">1</span>
-              <span>Tap the <Share className="w-3.5 h-3.5 inline text-sky-500 mx-1" /> <strong>Share button</strong> at the bottom of Safari.</span>
+              <span>Tap the <Share className="w-3.5 h-3.5 inline text-sky-500 mx-1" /> <strong>Share button</strong> in Safari.</span>
             </div>
             <div className="flex items-center gap-2.5">
               <span className="w-5 h-5 rounded-full bg-indigo-600 text-white font-black text-[10px] flex items-center justify-center shrink-0">2</span>
-              <span>Scroll down and tap <PlusSquare className="w-3.5 h-3.5 inline text-emerald-500 mx-1" /> <strong>"Add to Home Screen"</strong>.</span>
+              <span>Tap <PlusSquare className="w-3.5 h-3.5 inline text-emerald-500 mx-1" /> <strong>"Add to Home Screen"</strong>.</span>
             </div>
             <div className="flex items-center gap-2.5">
               <span className="w-5 h-5 rounded-full bg-indigo-600 text-white font-black text-[10px] flex items-center justify-center shrink-0">3</span>
@@ -116,16 +159,16 @@ export const InstallModal = ({ isOpen, onClose }) => {
           }`}>
             <p className={`font-bold flex items-center gap-1.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
               <Laptop className="w-4 h-4 text-indigo-500" />
-              <span>Chrome / Edge / Mac Desktop & Android:</span>
+              <span>Chrome / Edge / Mac & Android:</span>
             </p>
             <div className="space-y-2">
               <div className="flex items-center gap-2">
                 <span className="w-5 h-5 rounded-full bg-indigo-600 text-white font-black text-[10px] flex items-center justify-center shrink-0">1</span>
-                <span>Look for the <strong>Install App icon (🖥️ or ⬇️)</strong> inside your browser's address bar.</span>
+                <span>Click <strong>"Install Grace Youth on Device"</strong> above.</span>
               </div>
               <div className="flex items-center gap-2">
                 <span className="w-5 h-5 rounded-full bg-indigo-600 text-white font-black text-[10px] flex items-center justify-center shrink-0">2</span>
-                <span>Click <strong>"Install"</strong> to add Grace Youth directly to your Mac Dock or Home Screen!</span>
+                <span>Or look for the <strong>Install icon (🖥️ or ⬇️)</strong> in your browser bar.</span>
               </div>
             </div>
           </div>

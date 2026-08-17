@@ -7,16 +7,10 @@ export const InstallPWA = () => {
   const [deferredPrompt, setDeferredPrompt] = useState(null);
   const [isInstallable, setIsInstallable] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
-  const [isInstalled, setIsInstalled] = useState(false);
   const [showInstructions, setShowInstructions] = useState(false);
-  const { showToast } = useApp();
+  const { isAppInstalled, setIsAppInstalled, showToast } = useApp();
 
   useEffect(() => {
-    // Check if already installed
-    if (window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true) {
-      setIsInstalled(true);
-    }
-
     // Detect iOS
     const userAgent = window.navigator.userAgent.toLowerCase();
     const isIosDevice = /iphone|ipad|ipod/.test(userAgent);
@@ -31,17 +25,10 @@ export const InstallPWA = () => {
 
     window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
 
-    window.addEventListener('appinstalled', () => {
-      setIsInstalled(true);
-      setIsInstallable(false);
-      setDeferredPrompt(null);
-      showToast('🎉 Grace Youth App successfully installed on your device!', 'success');
-    });
-
     return () => {
       window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
     };
-  }, [showToast]);
+  }, []);
 
   const handleInstallClick = async () => {
     if (deferredPrompt) {
@@ -49,6 +36,8 @@ export const InstallPWA = () => {
       const { outcome } = await deferredPrompt.userChoice;
       if (outcome === 'accepted') {
         showToast('🚀 Installing Grace Youth App...', 'success');
+        setIsAppInstalled(true);
+        localStorage.setItem('gy_pwa_installed', 'true');
       }
       setDeferredPrompt(null);
     } else {
@@ -56,29 +45,14 @@ export const InstallPWA = () => {
     }
   };
 
-  if (isInstalled) {
-    return null; // Already running as installed PWA
+  // If app is already installed, completely hide
+  if (isAppInstalled) {
+    return null;
   }
 
   return (
     <>
-      {/* Sleek Gen-Z Floating Install Pill */}
-      <div className="fixed bottom-20 md:bottom-6 left-1/2 -translate-x-1/2 z-40 w-auto px-2">
-        <button
-          onClick={handleInstallClick}
-          className="flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-gradient-to-r from-violet-600 via-indigo-600 to-pink-500 hover:from-violet-500 hover:to-pink-400 text-white font-extrabold text-xs sm:text-sm shadow-xl shadow-indigo-500/30 hover:scale-105 active:scale-95 transition-all cursor-pointer border border-white/20 backdrop-blur-xl"
-        >
-          <div className="p-1 rounded-full bg-white/20 animate-pulse">
-            <Download className="w-3.5 h-3.5" />
-          </div>
-          <span>Install App on Phone</span>
-          <span className="hidden sm:inline px-2 py-0.5 rounded-full bg-white/20 text-[10px] font-bold">
-            PWA (Offline Ready)
-          </span>
-        </button>
-      </div>
-
-      {/* PWA Install Instructions Modal (for iOS & Desktop fallback) */}
+      {/* PWA Install Instructions Modal */}
       <Modal
         isOpen={showInstructions}
         onClose={() => setShowInstructions(false)}

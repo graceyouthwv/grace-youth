@@ -129,6 +129,26 @@ export const AppProvider = ({ children }) => {
   const [language, setLanguage] = useState('en');
   const [activeTab, setActiveTab] = useState('home');
 
+  const [isAppInstalled, setIsAppInstalled] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return (
+        window.matchMedia('(display-mode: standalone)').matches ||
+        window.navigator.standalone === true ||
+        localStorage.getItem('gy_pwa_installed') === 'true'
+      );
+    }
+    return false;
+  });
+
+  useEffect(() => {
+    const handleAppInstalled = () => {
+      setIsAppInstalled(true);
+      localStorage.setItem('gy_pwa_installed', 'true');
+    };
+    window.addEventListener('appinstalled', handleAppInstalled);
+    return () => window.removeEventListener('appinstalled', handleAppInstalled);
+  }, []);
+
   const [tutors, setTutors] = useState(() => {
     const saved = localStorage.getItem('gy_tutors');
     return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_TUTORS;
@@ -734,6 +754,8 @@ export const AppProvider = ({ children }) => {
         setLanguage,
         activeTab,
         setActiveTab,
+        isAppInstalled,
+        setIsAppInstalled,
         tutors,
         setTutors,
         requests,
