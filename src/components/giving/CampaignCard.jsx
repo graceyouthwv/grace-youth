@@ -15,19 +15,19 @@ export const CampaignCard = ({ campaign, onDonateClick, onDonate, onEdit }) => {
     <div className="genz-card overflow-hidden flex flex-col justify-between group transition-all duration-300">
       <div>
         {/* Cover Photo */}
-        <div className="relative h-48 w-full overflow-hidden">
+        <div className="relative h-48 w-full overflow-hidden" data-overlay="true">
           <img
             src={campaign.image}
             alt={campaign.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
           
           <div className="absolute top-3 left-3 flex items-center gap-1.5">
-            <span className="px-3 py-1 rounded-full text-[10px] font-black bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-xs">
+            <span className="px-3 py-1 rounded-full text-[10px] font-black bg-black/70 backdrop-blur-md text-white border border-white/30 shadow-xs" style={{ color: '#ffffff' }}>
               {campaign.category}
             </span>
-            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-900/80 text-indigo-200 border border-indigo-500/30">
+            <span className="px-2.5 py-1 rounded-full text-[10px] font-bold bg-indigo-900/90 text-indigo-100 border border-indigo-500/40">
               {campaign.campusName}
             </span>
           </div>
@@ -47,8 +47,11 @@ export const CampaignCard = ({ campaign, onDonateClick, onDonate, onEdit }) => {
             )}
           </div>
 
-          <div className="absolute bottom-3 left-3 right-3 text-white">
-            <h3 className="font-extrabold text-base sm:text-lg leading-tight line-clamp-2 font-heading text-white drop-shadow-md">
+          <div className="absolute bottom-3 left-3 right-3 card-overlay-text">
+            <h3
+              className="font-extrabold text-base sm:text-lg leading-tight line-clamp-2 font-heading text-white drop-shadow-lg"
+              style={{ color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}
+            >
               {campaign.title}
             </h3>
           </div>

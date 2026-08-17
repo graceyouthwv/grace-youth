@@ -5,8 +5,9 @@ import { Modal } from '../common/Modal';
 import { CAMPUSES, SUBJECT_CATEGORIES } from '../../data/campuses';
 
 export const RequestBoard = () => {
-  const { requests, addTutorialRequest, claimRequest, currentUser, selectedCampus } = useApp();
+  const { requests, addTutorialRequest, claimRequest, currentUser, selectedCampus, theme } = useApp();
   const [showNewRequestModal, setShowNewRequestModal] = useState(false);
+  const isDark = theme === 'dark';
 
   const [subject, setSubject] = useState('');
   const [category, setCategory] = useState(SUBJECT_CATEGORIES[1]);
@@ -45,25 +46,31 @@ export const RequestBoard = () => {
   return (
     <div className="space-y-6">
       {/* Top Banner */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 genz-card border border-amber-500/20 bg-gradient-to-r from-amber-950/40 via-slate-900 to-[#111625]">
+      <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-6 rounded-3xl border transition-all ${
+        isDark ? 'bg-slate-900 border-slate-800 text-white shadow-xl' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+      }`}>
         <div>
-          <h3 className="text-base sm:text-lg font-extrabold text-white flex items-center gap-2 font-heading">
+          <h3 className={`text-base sm:text-lg font-extrabold flex items-center gap-2 font-heading ${
+            isDark ? 'text-white' : 'text-slate-900'
+          }`}>
             <span>📢 Student Tutorial Request Board</span>
-            <span className="text-xs bg-amber-400/20 text-amber-300 border border-amber-400/30 px-2.5 py-0.5 rounded-full font-black">
+            <span className={`text-xs px-2.5 py-0.5 rounded-full font-black ${
+              isDark ? 'bg-amber-400/20 text-amber-300 border border-amber-400/30' : 'bg-amber-100 text-amber-900 border border-amber-300'
+            }`}>
               {filteredRequests.length} Active
             </span>
           </h3>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className={`text-xs mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
             Need help with a specific subject or upcoming exam? Post your request and campus leaders will match you.
           </p>
         </div>
 
         <button
           onClick={() => setShowNewRequestModal(true)}
-          className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-400/20 hover:scale-105 transition-all shrink-0 cursor-pointer"
+          className="flex items-center gap-2 px-5 py-3 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all shrink-0 cursor-pointer"
         >
-          <PlusCircle className="w-4 h-4" />
-          <span>Post Subject Request</span>
+          <PlusCircle className="w-4 h-4 text-slate-950" />
+          <span className="text-slate-950 font-black">Post Subject Request</span>
         </button>
       </div>
 

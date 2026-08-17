@@ -162,25 +162,11 @@ html.light body {
   color: #0f172a !important;
 }
 
-html.light h1,
-html.light h2,
-html.light h3,
-html.light h4,
-html.light h5,
-html.light h6 {
-  color: #0f172a !important;
-}
-
-html.light p {
-  color: #334155 !important;
-}
-
 html.light .genz-card {
   background-color: #ffffff !important;
   border: 1px solid #e2e8f0 !important;
   border-radius: 1.5rem !important;
   box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 1px 2px -1px rgba(0, 0, 0, 0.04) !important;
-  color: #0f172a !important;
 }
 
 html.light .genz-card:hover {
@@ -188,46 +174,21 @@ html.light .genz-card:hover {
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.06) !important;
 }
 
-html.light .genz-card h1,
-html.light .genz-card h2,
-html.light .genz-card h3,
-html.light .genz-card h4,
-html.light .genz-card h5,
-html.light .genz-card h6,
-html.light .genz-card .text-white {
-  color: #0f172a !important;
+/* Ensure photo overlay titles & text always stay crisp white */
+.card-overlay-text,
+.card-overlay-text *,
+[data-overlay="true"],
+[data-overlay="true"] * {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
 }
 
-html.light .genz-card p,
-html.light .genz-card .text-slate-300,
-html.light .genz-card .text-slate-200 {
-  color: #475569 !important;
-}
-
-html.light .genz-card .text-slate-400 {
-  color: #64748b !important;
-}
-
-html.light .genz-card .text-slate-500 {
-  color: #64748b !important;
-}
-
-html.light .bg-slate-900,
-html.light .bg-slate-900\/90,
-html.light .bg-slate-900\/80,
-html.light .bg-slate-900\/70,
-html.light .bg-slate-900\/60,
-html.light .bg-slate-950,
-html.light .bg-slate-950\/80,
-html.light .bg-slate-950\/60,
-html.light .bg-\[\#111625\],
-html.light .bg-\[\#0c101d\],
-html.light .bg-\[\#0c101d\]\/90,
-html.light .bg-\[\#0b0f19\],
-html.light .bg-black\/40 {
-  background-color: #ffffff !important;
-  border-color: #e2e8f0 !important;
-  color: #0f172a !important;
+html.light .card-overlay-text,
+html.light .card-overlay-text *,
+html.light [data-overlay="true"],
+html.light [data-overlay="true"] * {
+  color: #ffffff !important;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8) !important;
 }
 
 html.light header {

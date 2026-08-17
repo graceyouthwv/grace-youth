@@ -12,10 +12,14 @@ export const GroupCard = ({ group }) => {
   const [showCircleModal, setShowCircleModal] = useState(false);
 
   const isJoined = myGroups.includes(group.id);
+  const isLeaderOrWorker = currentUser && (
+    currentUser.role === 'leader' ||
+    currentUser.role === 'worker' ||
+    currentUser.role === 'council'
+  );
   const isFacilitator = currentUser && (
     (currentUser.name && group.facilitator && currentUser.name.toLowerCase() === group.facilitator.toLowerCase()) ||
-    currentUser.role === 'leader' ||
-    currentUser.role === 'worker'
+    isLeaderOrWorker
   );
   const isDark = theme === 'dark';
 
@@ -24,35 +28,40 @@ export const GroupCard = ({ group }) => {
       <div className="genz-card overflow-hidden flex flex-col justify-between group transition-all duration-300">
         <div>
           {/* Cover Photo */}
-          <div className="relative h-44 w-full overflow-hidden">
+          <div className="relative h-44 w-full overflow-hidden" data-overlay="true">
             <img
               src={group.image}
               alt={group.title}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
             
             <div className="absolute top-3 left-3">
-              <span className="px-3 py-1 rounded-full text-[10px] font-black bg-black/60 backdrop-blur-md text-white border border-white/20 shadow-xs">
+              <span className="px-3 py-1 rounded-full text-[10px] font-black bg-black/70 backdrop-blur-md text-white border border-white/30 shadow-xs" style={{ color: '#ffffff' }}>
                 {group.campusName}
               </span>
             </div>
 
-            {/* Edit Group Trigger */}
-            <button
-              type="button"
-              onClick={() => setShowEditModal(true)}
-              className="absolute top-3 right-3 p-2 rounded-xl bg-black/60 backdrop-blur-md hover:bg-white hover:text-slate-900 text-white transition-all cursor-pointer shadow-md"
-              title="Edit / Delete Group"
-            >
-              <Edit3 className="w-3.5 h-3.5" />
-            </button>
+            {/* Edit Group Trigger: ONLY Youth Worker or Admin */}
+            {isLeaderOrWorker && (
+              <button
+                type="button"
+                onClick={() => setShowEditModal(true)}
+                className="absolute top-3 right-3 p-2 rounded-xl bg-black/70 backdrop-blur-md hover:bg-white hover:text-slate-900 text-white transition-all cursor-pointer shadow-md border border-white/20"
+                title="Edit / Delete Group (Youth Worker & Admin Only)"
+              >
+                <Edit3 className="w-3.5 h-3.5 text-white" />
+              </button>
+            )}
 
-            <div className="absolute bottom-3 left-3 right-3 text-white">
-              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-400 block mb-0.5 drop-shadow-sm">
+            <div className="absolute bottom-3 left-3 right-3 card-overlay-text">
+              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-300 block mb-0.5 drop-shadow-md">
                 {group.topicCategory}
               </span>
-              <h3 className="font-extrabold text-base sm:text-lg leading-tight line-clamp-1 font-heading text-white drop-shadow-md">
+              <h3
+                className="font-extrabold text-base sm:text-lg leading-tight line-clamp-1 font-heading text-white drop-shadow-lg"
+                style={{ color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}
+              >
                 {group.title}
               </h3>
             </div>

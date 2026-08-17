@@ -5,46 +5,57 @@ import { generateCalendarICS } from '../../utils/helpers';
 import { EditEventModal } from './EditEventModal';
 
 export const EventCard = ({ event }) => {
-  const { toggleEventRsvp } = useApp();
+  const { toggleEventRsvp, currentUser } = useApp();
   const [showEditModal, setShowEditModal] = useState(false);
 
+  const canEditEvent = currentUser && (
+    currentUser.role === 'leader' ||
+    currentUser.role === 'worker' ||
+    currentUser.role === 'council'
+  );
+
   return (
-    <div className="genz-card border border-slate-800 overflow-hidden flex flex-col justify-between group">
+    <div className="genz-card overflow-hidden flex flex-col justify-between group">
       <div>
         {/* Cover Photo */}
-        <div className="relative h-48 w-full overflow-hidden">
+        <div className="relative h-48 w-full overflow-hidden" data-overlay="true">
           <img
             src={event.image}
             alt={event.title}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#111625] via-black/40 to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
 
           <div className="absolute top-3 left-3 flex gap-1.5">
-            <span className="px-3 py-1 rounded-full text-[10px] font-black bg-black/60 backdrop-blur-md text-white border border-white/10 shadow-xs">
+            <span className="px-3 py-1 rounded-full text-[10px] font-black bg-black/70 backdrop-blur-md text-white border border-white/30 shadow-xs" style={{ color: '#ffffff' }}>
               {event.campusName}
             </span>
-            <span className="px-3 py-1 rounded-full text-[10px] font-black bg-gradient-to-r from-violet-600 to-pink-500 text-white shadow-xs">
+            <span className="px-3 py-1 rounded-full text-[10px] font-black bg-indigo-600 text-white shadow-xs" style={{ color: '#ffffff' }}>
               {event.category}
             </span>
           </div>
 
-          {/* Edit Event Icon */}
-          <button
-            type="button"
-            onClick={() => setShowEditModal(true)}
-            className="absolute top-3 right-3 p-2 rounded-xl bg-black/60 backdrop-blur-md hover:bg-white hover:text-slate-900 text-white transition-all cursor-pointer shadow-md"
-            title="Edit / Delete Event"
-          >
-            <Edit3 className="w-3.5 h-3.5" />
-          </button>
+          {/* Edit Event Icon: Only Admin / Youth Worker */}
+          {canEditEvent && (
+            <button
+              type="button"
+              onClick={() => setShowEditModal(true)}
+              className="absolute top-3 right-3 p-2 rounded-xl bg-black/70 backdrop-blur-md hover:bg-white hover:text-slate-900 text-white transition-all cursor-pointer shadow-md border border-white/20"
+              title="Edit / Delete Event (Admin & Youth Worker Only)"
+            >
+              <Edit3 className="w-3.5 h-3.5 text-white" />
+            </button>
+          )}
 
-          <div className="absolute bottom-3 left-3 right-3 text-white">
-            <div className="text-xs text-amber-300 font-black flex items-center gap-1 mb-1 font-heading">
+          <div className="absolute bottom-3 left-3 right-3 card-overlay-text">
+            <div className="text-xs text-amber-300 font-black flex items-center gap-1 mb-1 font-heading drop-shadow-md">
               <Calendar className="w-3.5 h-3.5" />
               <span>{event.date}</span>
             </div>
-            <h3 className="font-extrabold text-lg leading-tight line-clamp-1 font-heading">
+            <h3
+              className="font-extrabold text-lg leading-tight line-clamp-1 font-heading text-white drop-shadow-lg"
+              style={{ color: '#ffffff', textShadow: '0 2px 4px rgba(0,0,0,0.9)' }}
+            >
               {event.title}
             </h3>
           </div>
