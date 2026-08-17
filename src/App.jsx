@@ -209,21 +209,22 @@ export const App = () => {
       </main>
 
       {/* Footer */}
-      <footer className={`border-t py-8 sm:py-12 mt-12 transition-colors ${
+      <footer className={`border-t transition-colors ${
         isDark ? 'border-slate-800/80 bg-[#0c101d] text-slate-400 text-xs' : 'border-slate-200 bg-white text-slate-600 text-xs shadow-xs'
       }`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div className="md:col-span-2 space-y-3">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
+          {/* Desktop Rich Links (Hidden on mobile to save vertical space) */}
+          <div className="hidden md:grid md:grid-cols-4 gap-8 mb-6">
+            <div className="md:col-span-2 space-y-2">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-violet-600 to-pink-500 text-white flex items-center justify-center font-bold">
-                  <Sparkles className="w-4 h-4 text-amber-300" />
+                <div className="w-7 h-7 rounded-xl bg-gradient-to-tr from-violet-600 to-pink-500 text-white flex items-center justify-center font-bold">
+                  <Sparkles className="w-3.5 h-3.5 text-amber-300" />
                 </div>
-                <span className={`font-extrabold text-base font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                <span className={`font-extrabold text-sm font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   GRACE YOUTH CAMPUS MINISTRY
                 </span>
               </div>
-              <p className="leading-relaxed max-w-md">
+              <p className="leading-relaxed max-w-md text-xs">
                 Empowering college students across Iloilo to excel in academics and thrive in faith. 100% free ministry service.
               </p>
               <div className="font-mono text-[11px] opacity-75">
@@ -232,10 +233,10 @@ export const App = () => {
             </div>
 
             <div>
-              <h5 className={`font-black uppercase tracking-wider mb-3 font-heading ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>
+              <h5 className={`font-black uppercase tracking-wider mb-2 font-heading ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>
                 Campuses Served
               </h5>
-              <ul className="space-y-1 opacity-80">
+              <ul className="space-y-1 opacity-80 text-xs">
                 <li>• ISUFST (Barotac Nuevo & Tiwi)</li>
                 <li>• UP Visayas (Miagao & Iloilo)</li>
                 <li>• Central Philippine University</li>
@@ -245,23 +246,22 @@ export const App = () => {
             </div>
 
             <div>
-              <h5 className={`font-black uppercase tracking-wider mb-3 font-heading ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>
+              <h5 className={`font-black uppercase tracking-wider mb-2 font-heading ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>
                 Get Involved & Connect
               </h5>
-              <p className="mb-2 opacity-80">
+              <p className="mb-1.5 opacity-80 text-xs">
                 Free Peer Tutoring • Weekly Life Groups • Annual Youth Camps • 24/7 Prayer Wall
               </p>
-              <div className="font-bold text-pink-500">
+              <div className="font-bold text-pink-500 text-xs">
                 graceyouth.wv@proton.me
               </div>
             </div>
           </div>
 
-          <div className={`pt-6 border-t flex flex-col sm:flex-row items-center justify-between gap-3 text-[11px] ${
-            isDark ? 'border-slate-800 text-slate-500' : 'border-slate-100 text-slate-400'
-          }`}>
-            <div>© 2026 Grace Youth Campus Ministry. All ministry services are free.</div>
-            <div className="flex items-center gap-4">
+          {/* Compact 1-line Footer on Mobile / Bottom Bar on Desktop */}
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-500 text-center sm:text-left">
+            <div>© 2026 Grace Youth Campus Ministry • All ministry services are free</div>
+            <div className="flex items-center gap-3">
               <button
                 onClick={() => setActiveTab('admin')}
                 className="hover:text-pink-500 transition-colors cursor-pointer flex items-center gap-1 font-mono text-[10px]"
