@@ -18,14 +18,26 @@ import {
 import { triggerConfetti } from '../../utils/helpers';
 
 export const SessionRoomModal = ({ isOpen, onClose, session }) => {
-  const { theme, showToast } = useApp();
+  const { currentUser, theme, showToast } = useApp();
   const isDark = theme === 'dark';
+
+  const defaultMeetLink = `https://meet.google.com/gy-${(session?.subject || 'acads').toLowerCase().replace(/[^a-z0-9]/g, '-')}-live`;
 
   const [activeRoomTab, setActiveRoomTab] = useState('meeting'); // 'meeting' | 'notes' | 'prayer'
   const [seconds, setSeconds] = useState(0);
+  const [isEditingLink, setIsEditingLink] = useState(false);
+  const [customMeetingLink, setCustomMeetingLink] = useState('');
   const [notes, setNotes] = useState(
     '1. Reviewed Power Rule: d/dx(x^n) = n*x^(n-1)\n2. Chain Rule: d/dx(f(g(x))) = f\'(g(x)) * g\'(x)\n3. Practice Problem #4 from UPV CAS Math 17 Reviewer.'
   );
+
+  useEffect(() => {
+    if (session) {
+      setCustomMeetingLink(
+        session.meetingLink || currentUser.meetingLink || defaultMeetLink
+      );
+    }
+  }, [session, currentUser]);
 
   useEffect(() => {
     let interval;
@@ -47,11 +59,16 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
 
   if (!session) return null;
 
-  const meetingLink = `https://meet.google.com/gy-${(session.subject || 'acads').toLowerCase().replace(/[^a-z0-9]/g, '-')}-live`;
+  const activeLink = customMeetingLink.trim() || defaultMeetLink;
 
   const handleCopyLink = () => {
-    navigator.clipboard?.writeText(meetingLink);
-    showToast('📋 Google Meet link copied to clipboard!', 'success');
+    navigator.clipboard?.writeText(activeLink);
+    showToast('📋 Meeting link copied to clipboard!', 'success');
+  };
+
+  const handleSaveCustomLink = () => {
+    setIsEditingLink(false);
+    showToast('✨ Custom meeting link saved for this tutorial session!', 'success');
   };
 
   const handleCompleteSession = () => {
@@ -106,7 +123,7 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
             onClick={() => setActiveRoomTab('meeting')}
             className={`flex-1 py-2 text-xs font-black rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
               activeRoomTab === 'meeting'
-                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
+                ? 'bg-indigo-600 text-white shadow-md'
                 : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -119,7 +136,7 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
             onClick={() => setActiveRoomTab('notes')}
             className={`flex-1 py-2 text-xs font-black rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
               activeRoomTab === 'notes'
-                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
+                ? 'bg-indigo-600 text-white shadow-md'
                 : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -132,7 +149,7 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
             onClick={() => setActiveRoomTab('prayer')}
             className={`flex-1 py-2 text-xs font-black rounded-xl transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
               activeRoomTab === 'prayer'
-                ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
+                ? 'bg-indigo-600 text-white shadow-md'
                 : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -144,44 +161,77 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
         {/* TAB 1: VIDEO LINK & LOCATION */}
         {activeRoomTab === 'meeting' && (
           <div className="space-y-4">
-            <div className={`p-5 rounded-3xl border space-y-3 ${
+            <div className={`p-5 rounded-3xl border space-y-3.5 ${
               isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
             }`}>
               <div className="flex items-center justify-between">
-                <span className="text-xs font-black uppercase tracking-wider text-indigo-400">
-                  🌐 Online Room (Google Meet):
+                <span className="text-xs font-black uppercase tracking-wider text-indigo-500">
+                  🌐 Online Meeting Link:
                 </span>
-                <span className="text-[11px] text-slate-400">Auto-Generated for Batchmates</span>
+                <button
+                  type="button"
+                  onClick={() => setIsEditingLink(!isEditingLink)}
+                  className="text-xs font-bold text-amber-500 hover:underline cursor-pointer"
+                >
+                  {isEditingLink ? '✕ Cancel Edit' : '✏️ Put Custom Link / Zoom'}
+                </button>
               </div>
 
-              <div className={`p-3 rounded-2xl border flex items-center justify-between gap-2 ${
-                isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
-              }`}>
-                <span className="font-mono text-xs text-indigo-400 truncate">{meetingLink}</span>
-                <div className="flex items-center gap-1.5 shrink-0">
-                  <button
-                    onClick={handleCopyLink}
-                    className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 cursor-pointer"
-                    title="Copy Link"
-                  >
-                    <Copy className="w-3.5 h-3.5" />
-                  </button>
-                  <a
-                    href={meetingLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1"
-                  >
-                    <span>Launch Meet</span>
-                    <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
+              {/* Editable Link Box */}
+              {isEditingLink ? (
+                <div className="p-3.5 rounded-2xl border space-y-2 bg-amber-500/5 border-amber-500/30">
+                  <label className="block text-[11px] font-bold text-slate-400">
+                    Paste Google Meet, Zoom, or Messenger Room URL:
+                  </label>
+                  <div className="flex gap-2">
+                    <input
+                      type="url"
+                      placeholder="https://meet.google.com/... or https://zoom.us/j/..."
+                      value={customMeetingLink}
+                      onChange={(e) => setCustomMeetingLink(e.target.value)}
+                      className={`flex-1 px-3 py-2 rounded-xl border text-xs font-mono ${
+                        isDark ? 'bg-slate-950 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900'
+                      }`}
+                    />
+                    <button
+                      type="button"
+                      onClick={handleSaveCustomLink}
+                      className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs cursor-pointer shrink-0"
+                    >
+                      Save Link
+                    </button>
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className={`p-3 rounded-2xl border flex items-center justify-between gap-2 ${
+                  isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
+                }`}>
+                  <span className="font-mono text-xs text-indigo-500 truncate">{activeLink}</span>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <button
+                      onClick={handleCopyLink}
+                      className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 cursor-pointer"
+                      title="Copy Link"
+                    >
+                      <Copy className="w-3.5 h-3.5" />
+                    </button>
+                    <a
+                      href={activeLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs flex items-center gap-1"
+                    >
+                      <span>Launch Room</span>
+                      <ExternalLink className="w-3.5 h-3.5" />
+                    </a>
+                  </div>
+                </div>
+              )}
 
               <div className="text-xs text-slate-400 flex items-start gap-2 pt-1">
                 <HelpCircle className="w-4 h-4 text-slate-400 shrink-0 mt-0.5" />
                 <span>
-                  Meeting Note: <em>"{session.meetingNote || 'CAS Gazebo or Google Meet link. Ready to solve calculus chain rule derivations together.'}"</em>
+                  Meeting Note / Physical Spot: <em>"{session.meetingNote || 'CAS Gazebo or Google Meet link. Ready to solve calculus derivations together.'}"</em>
                 </span>
               </div>
             </div>

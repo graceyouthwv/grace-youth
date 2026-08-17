@@ -35,6 +35,9 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
     currentUser.subjects ? currentUser.subjects.join(', ') : 'Calculus 1, General Chemistry'
   );
   const [preferredMode, setPreferredMode] = useState(currentUser.preferredMode || 'Hybrid');
+  const [meetingLink, setMeetingLink] = useState(
+    currentUser.meetingLink || 'https://meet.google.com/gy-joshua-upv'
+  );
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -60,7 +63,7 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
       bio: bio.trim(),
       avatar,
       ...(newPasswordInput.trim() && { password: newPasswordInput.trim() }),
-      ...(isTutor && { subjects: subjectsArray, preferredMode })
+      ...(isTutor && { subjects: subjectsArray, preferredMode, meetingLink: meetingLink.trim() })
     };
 
     if (newPasswordInput.trim()) {
@@ -87,6 +90,7 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
                 campusName: updatedUser.campusName,
                 subjects: subjectsArray,
                 preferredMode: updatedUser.preferredMode,
+                meetingLink: updatedUser.meetingLink,
                 bio: updatedUser.bio
               }
             : t
@@ -94,7 +98,7 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
       );
     }
 
-    showToast('✨ Profile updated successfully!', 'success');
+    showToast('✨ Profile and Meeting Link updated successfully!', 'success');
     onClose();
   };
 
@@ -230,6 +234,24 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
                 <option value="In-Person">In-Person Only (Campus Library / Lounge)</option>
                 <option value="Online">Online Only (Google Meet / Zoom)</option>
               </select>
+            </div>
+
+            <div>
+              <label className={`block text-[11px] font-bold mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                🌐 Your Online Meeting Link (Google Meet / Zoom / Discord):
+              </label>
+              <input
+                type="url"
+                placeholder="https://meet.google.com/abc-defg-hij or zoom.us/j/..."
+                value={meetingLink}
+                onChange={(e) => setMeetingLink(e.target.value)}
+                className={`w-full px-3 py-2 rounded-xl border text-xs font-mono ${
+                  isDark ? 'bg-slate-900 border-slate-800 text-indigo-400' : 'bg-white border-slate-200 text-indigo-600'
+                }`}
+              />
+              <p className="text-[10px] text-slate-400 mt-1">
+                Students will use this direct link when joining your booked online peer tutoring sessions.
+              </p>
             </div>
           </div>
         )}
