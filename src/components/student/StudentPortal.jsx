@@ -21,11 +21,21 @@ import {
 } from 'lucide-react';
 import { DailyDevotional } from '../dashboard/DailyDevotional';
 import { VolunteerModal } from '../common/VolunteerModal';
+import { UploadSongModal } from './UploadSongModal';
+import { UploadCloud, FileUp } from 'lucide-react';
 
 export const StudentPortal = () => {
   const { currentUser, myBookings, myGroups, bibleStudies, prayers, cancelBooking, setActiveTab, showToast, theme } = useApp();
   const [showVolunteerModal, setShowVolunteerModal] = useState(false);
+  const [showUploadSongModal, setShowUploadSongModal] = useState(false);
   const isDark = theme === 'dark';
+
+  const [musicSetlist, setMusicSetlist] = useState([
+    { id: 's1', song: 'Goodness of God', key: 'Key of G', tempo: '68 BPM', artist: 'Bethel Music', fileName: 'Goodness_of_God_Chords_G.pdf' },
+    { id: 's2', song: 'Gratitude', key: 'Key of B', tempo: '78 BPM', artist: 'Brandon Lake', fileName: 'Gratitude_Chord_Chart_B.pdf' },
+    { id: 's3', song: 'The Blessing', key: 'Key of C', tempo: '70 BPM', artist: 'Kari Jobe & Cody Carnes', fileName: 'The_Blessing_Lead_Sheet.pdf' },
+    { id: 's4', song: 'King of Kings', key: 'Key of D', tempo: '68 BPM', artist: 'Hillsong Worship', fileName: 'King_of_Kings_Chart_D.pdf' }
+  ]);
 
   const myJoinedGroups = bibleStudies.filter((g) => myGroups.includes(g.id));
   const myPrayerItems = prayers.filter((p) => p.author === currentUser.name || (!p.isAnonymous && p.author.includes(currentUser.name.split(' ')[0])));
@@ -35,12 +45,7 @@ export const StudentPortal = () => {
     team: '🎸 Campus Worship & Music Team',
     role: 'Acoustic Guitar & Backing Vocals',
     nextDuty: 'Thursday Campus Worship Night • 5:00 PM @ UPV Gazebo',
-    status: 'Scheduled',
-    setlist: [
-      { song: 'Goodness of God', key: 'Key of G', tempo: '68 BPM' },
-      { song: 'Gratitude (Brandon Lake)', key: 'Key of B', tempo: '78 BPM' },
-      { song: 'The Blessing', key: 'Key of C', tempo: '70 BPM' }
-    ]
+    status: 'Scheduled'
   };
 
   return (
@@ -234,23 +239,51 @@ export const StudentPortal = () => {
               </div>
 
               {/* Worship Setlist / Volunteer Resources */}
-              <div className="pt-2 border-t border-slate-800">
-                <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 flex items-center justify-between">
-                  <span>🎶 Assigned Songs & Chord Sheets:</span>
-                  <button
-                    onClick={() => showToast('📥 Worship chord charts and lyrics pack downloaded!', 'success')}
-                    className="text-indigo-400 hover:underline flex items-center gap-1 text-[11px] cursor-pointer"
-                  >
-                    <Download className="w-3 h-3" />
-                    <span>Download All Chords</span>
-                  </button>
+              <div className="pt-2 border-t border-slate-800 space-y-3">
+                <div className="text-[11px] font-black uppercase tracking-wider text-slate-400 flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5">
+                    <Music className="w-3.5 h-3.5 text-pink-400" />
+                    <span>Campus Setlist & PDF Chords ({musicSetlist.length}):</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <button
+                      onClick={() => setShowUploadSongModal(true)}
+                      className="px-2.5 py-1 rounded-lg bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 font-bold text-[11px] border border-pink-500/30 cursor-pointer flex items-center gap-1 transition-all"
+                    >
+                      <FileUp className="w-3 h-3" />
+                      <span>+ Upload Song / PDF</span>
+                    </button>
+
+                    <button
+                      onClick={() => showToast('📥 Complete worship setlist & PDF chords bundle downloaded!', 'success')}
+                      className="text-indigo-400 hover:text-indigo-300 flex items-center gap-1 text-[11px] font-bold cursor-pointer transition-colors"
+                    >
+                      <Download className="w-3 h-3" />
+                      <span>Download All</span>
+                    </button>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
-                  {volunteerTrack.setlist.map((item, idx) => (
-                    <div key={idx} className="p-2.5 rounded-xl bg-slate-950/60 border border-slate-800 text-xs">
-                      <div className="font-bold text-white truncate">{item.song}</div>
-                      <div className="text-[10px] text-pink-400 mt-0.5">{item.key} • {item.tempo}</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  {musicSetlist.map((item) => (
+                    <div key={item.id} className="p-3 rounded-2xl bg-slate-950/70 border border-slate-800 text-xs flex items-center justify-between gap-2 group hover:border-slate-700 transition-all">
+                      <div className="min-w-0 flex-1">
+                        <div className="font-bold text-white truncate flex items-center gap-1.5">
+                          <span>{item.song}</span>
+                        </div>
+                        <div className="text-[10px] text-slate-400 truncate mt-0.5">
+                          {item.artist} • <span className="text-pink-400 font-bold">{item.key}</span> • {item.tempo}
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => showToast(`📥 Downloaded ${item.fileName || item.song + '_Chords.pdf'}!`, 'success')}
+                        className="p-2 rounded-xl bg-slate-900 hover:bg-indigo-600/30 text-indigo-400 hover:text-white border border-slate-800 hover:border-indigo-500/40 transition-all cursor-pointer shrink-0"
+                        title="Download PDF Chord Sheet"
+                      >
+                        <Download className="w-3.5 h-3.5" />
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -369,6 +402,12 @@ export const StudentPortal = () => {
       <VolunteerModal
         isOpen={showVolunteerModal}
         onClose={() => setShowVolunteerModal(false)}
+      />
+
+      <UploadSongModal
+        isOpen={showUploadSongModal}
+        onClose={() => setShowUploadSongModal(false)}
+        onAddSong={(newSong) => setMusicSetlist((prev) => [newSong, ...prev])}
       />
     </div>
   );
