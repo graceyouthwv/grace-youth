@@ -42,7 +42,10 @@ export const Navbar = () => {
     isAppInstalled,
     theme,
     toggleTheme,
-    logout
+    logout,
+    registeredUsers,
+    setCurrentUser,
+    showToast
   } = useApp();
 
   const isHlg = language === 'hlg' || language === 'hil';
@@ -371,23 +374,110 @@ export const Navbar = () => {
                       </button>
                     </div>
 
+                    {/* 1-Tap Fast Role Switcher */}
+                    <div className={`p-2.5 rounded-2xl border space-y-1.5 ${isDark ? 'bg-slate-950/80 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                      <div className="text-[10px] font-black uppercase tracking-wider text-pink-400 flex items-center justify-between">
+                        <span>⚡ Quick Switch Role:</span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-1 text-[10px]">
+                        <button
+                          onClick={() => {
+                            const acc = registeredUsers.find(u => u.email === 'bea@upv.edu.ph') || { id: 'usr-1', name: 'Bea Claridad', email: 'bea@upv.edu.ph', role: 'student', roleLabel: 'Student (UPV)', campusName: 'UP Visayas', avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80' };
+                            setCurrentUser(acc);
+                            localStorage.setItem('gy_active_session', JSON.stringify(acc));
+                            setActiveTab('portal');
+                            setDesktopMenuOpen(false);
+                            showToast('Switched to Student (Bea)', 'info');
+                          }}
+                          className="p-1.5 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 rounded-lg text-left font-bold cursor-pointer"
+                        >
+                          🎓 Student
+                        </button>
+                        <button
+                          onClick={() => {
+                            const acc = registeredUsers.find(u => u.email === 'joshua@graceyouth.ph') || { id: 'usr-2', name: 'Joshua Alcantara', email: 'joshua@graceyouth.ph', role: 'tutor', roleLabel: 'Volunteer Peer Tutor', campusName: 'UP Visayas', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80' };
+                            setCurrentUser(acc);
+                            localStorage.setItem('gy_active_session', JSON.stringify(acc));
+                            setActiveTab('portal');
+                            setDesktopMenuOpen(false);
+                            showToast('Switched to Peer Tutor (Joshua)', 'info');
+                          }}
+                          className="p-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded-lg text-left font-bold cursor-pointer"
+                        >
+                          👨‍🏫 Peer Tutor
+                        </button>
+                        <button
+                          onClick={() => {
+                            const acc = registeredUsers.find(u => u.email === 'council@graceyouth.ph') || { id: 'usr-council-1', name: 'Keziah Marie Reyes', email: 'council@graceyouth.ph', role: 'council', roleLabel: 'Youth Council Trustee', campusName: 'CPU Jaro', avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=150&auto=format&fit=crop&q=80' };
+                            setCurrentUser(acc);
+                            localStorage.setItem('gy_active_session', JSON.stringify(acc));
+                            setActiveTab('portal');
+                            setDesktopMenuOpen(false);
+                            showToast('Switched to Youth Council (Keziah)', 'info');
+                          }}
+                          className="p-1.5 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 rounded-lg text-left font-bold cursor-pointer"
+                        >
+                          🏛️ Youth Council
+                        </button>
+                        <button
+                          onClick={() => {
+                            const acc = registeredUsers.find(u => u.email === 'worker@graceyouth.ph') || { id: 'usr-worker-1', name: 'Hannah Grace Dela Cruz', email: 'worker@graceyouth.ph', role: 'worker', roleLabel: 'Campus Youth Worker', campusName: 'ISUFST', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80' };
+                            setCurrentUser(acc);
+                            localStorage.setItem('gy_active_session', JSON.stringify(acc));
+                            setActiveTab('portal');
+                            setDesktopMenuOpen(false);
+                            showToast('Switched to Youth Worker (Hannah)', 'info');
+                          }}
+                          className="p-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg text-left font-bold cursor-pointer"
+                        >
+                          ✝️ Youth Worker
+                        </button>
+                        <button
+                          onClick={() => {
+                            const acc = registeredUsers.find(u => u.email === 'music@graceyouth.ph') || { id: 'usr-volunteer-music', name: 'Dave Gabriel Cruz', email: 'music@graceyouth.ph', role: 'student', roleLabel: 'Worship Volunteer', volunteerTrack: '🎸 Campus Worship & Music Team', avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80' };
+                            setCurrentUser(acc);
+                            localStorage.setItem('gy_active_session', JSON.stringify(acc));
+                            setActiveTab('portal');
+                            setDesktopMenuOpen(false);
+                            showToast('Switched to Worship Volunteer (Dave)', 'info');
+                          }}
+                          className="p-1.5 bg-violet-500/10 hover:bg-violet-500/20 text-violet-400 rounded-lg text-left font-bold cursor-pointer"
+                        >
+                          🎸 Worship
+                        </button>
+                        <button
+                          onClick={() => {
+                            const acc = registeredUsers.find(u => u.email === 'graceyouth.wv@proton.me') || { id: 'usr-admin-1', name: 'Pastor Tim', email: 'graceyouth.wv@proton.me', role: 'leader', roleLabel: 'Ministry Admin', avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80' };
+                            setCurrentUser(acc);
+                            localStorage.setItem('gy_active_session', JSON.stringify(acc));
+                            setActiveTab('portal');
+                            setDesktopMenuOpen(false);
+                            showToast('Switched to Admin (Pastor Tim)', 'info');
+                          }}
+                          className="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-lg text-left font-bold cursor-pointer"
+                        >
+                          🛡️ Admin
+                        </button>
+                      </div>
+                    </div>
+
                     <div className="border-t border-slate-800/60 my-1" />
 
-                    {/* Admin Access Gate */}
+                    {/* Leadership & Staff Gateway */}
                     <button
                       onClick={() => {
                         setShowAdminLoginModal(true);
                         setDesktopMenuOpen(false);
                       }}
-                      className={`w-full flex items-center justify-between p-2 rounded-xl text-[11px] font-bold cursor-pointer text-slate-400 hover:text-slate-200 ${
+                      className={`w-full flex items-center justify-between p-2 rounded-xl text-[11px] font-bold cursor-pointer text-indigo-400 hover:text-indigo-200 ${
                         isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-100'
                       }`}
                     >
                       <span className="flex items-center gap-2">
-                        <ShieldCheck className="w-3.5 h-3.5 text-rose-500" />
-                        <span>Ministry Admin Gate</span>
+                        <ShieldCheck className="w-3.5 h-3.5 text-indigo-500" />
+                        <span>Leadership & Staff Gateway</span>
                       </span>
-                      <span className="font-mono text-[9px] uppercase tracking-wider text-slate-500">Staff</span>
+                      <span className="font-mono text-[9px] uppercase tracking-wider text-indigo-400">Open &rarr;</span>
                     </button>
 
                     {/* Sign Out (if logged in) */}
