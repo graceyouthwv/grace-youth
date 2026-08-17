@@ -2,9 +2,10 @@ import React from 'react';
 import { useApp } from '../../context/AppContext';
 import { Heart, Users, Target, Calendar, ArrowRight, Sparkles } from 'lucide-react';
 
-export const CampaignCard = ({ campaign, onDonateClick }) => {
+export const CampaignCard = ({ campaign, onDonateClick, onDonate }) => {
   const { theme } = useApp();
   const isDark = theme === 'dark';
+  const handleDonate = onDonateClick || onDonate;
 
   const percentage = Math.min(100, Math.round((campaign.raisedAmount / campaign.targetAmount) * 100));
 
@@ -98,8 +99,9 @@ export const CampaignCard = ({ campaign, onDonateClick }) => {
       {/* Footer Action */}
       <div className="p-4 border-t bg-slate-50/50 dark:bg-slate-900/60 border-slate-100 dark:border-slate-800">
         <button
-          onClick={() => onDonateClick(campaign)}
-          className="w-full py-3 rounded-2xl font-black text-xs sm:text-sm bg-gradient-to-r from-rose-500 via-pink-600 to-indigo-600 hover:from-rose-400 hover:to-indigo-500 text-white shadow-lg shadow-pink-500/20 hover:scale-[1.01] transition-all cursor-pointer flex items-center justify-center gap-2"
+          type="button"
+          onClick={() => handleDonate && handleDonate(campaign)}
+          className="w-full py-3 rounded-2xl font-black text-xs sm:text-sm bg-gradient-to-r from-rose-500 via-pink-600 to-indigo-600 hover:from-rose-400 hover:to-indigo-500 text-white shadow-lg shadow-pink-500/20 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
         >
           <Heart className="w-4 h-4 fill-white" />
           <span>Seed Support for this Event</span>
