@@ -2,10 +2,13 @@ import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
 import { BookOpen, Calendar, Clock, MapPin, CheckCircle2, Plus, Sparkles, ShieldCheck, FileText, UserCheck, Edit3 } from 'lucide-react';
 import { EditProfileModal } from '../profile/EditProfileModal';
+import { SessionRoomModal } from './SessionRoomModal';
 
 export const TutorPortal = () => {
   const { currentUser, myBookings, tutors, showToast, theme } = useApp();
   const [showEditProfile, setShowEditProfile] = useState(false);
+  const [selectedSession, setSelectedSession] = useState(null);
+  const [showSessionRoom, setShowSessionRoom] = useState(false);
   const isDark = theme === 'dark';
 
   const tutorProfile = tutors.find((t) => t.name === currentUser.name) || {
@@ -114,10 +117,13 @@ export const TutorPortal = () => {
                     </div>
 
                     <button
-                      onClick={() => showToast(`Session link shared with ${bk.studentName}!`, 'success')}
-                      className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer shrink-0"
+                      onClick={() => {
+                        setSelectedSession(bk);
+                        setShowSessionRoom(true);
+                      }}
+                      className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer shrink-0 flex items-center gap-1.5"
                     >
-                      Start Session / Open Meeting
+                      <span>Start Session / Open Meeting &rarr;</span>
                     </button>
                   </div>
                 ))
@@ -179,6 +185,12 @@ export const TutorPortal = () => {
       <EditProfileModal
         isOpen={showEditProfile}
         onClose={() => setShowEditProfile(false)}
+      />
+
+      <SessionRoomModal
+        isOpen={showSessionRoom}
+        onClose={() => setShowSessionRoom(false)}
+        session={selectedSession}
       />
     </div>
   );

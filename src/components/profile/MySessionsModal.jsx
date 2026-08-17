@@ -1,10 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
-import { Clock, MapPin, Trash2, BookOpen, Users } from 'lucide-react';
+import { Clock, MapPin, Trash2, BookOpen, Users, Video } from 'lucide-react';
+import { SessionRoomModal } from '../tutor/SessionRoomModal';
 
 export const MySessionsModal = ({ isOpen, onClose }) => {
   const { myBookings, cancelBooking, myGroups, bibleStudies } = useApp();
+  const [selectedSession, setSelectedSession] = useState(null);
+  const [showSessionRoom, setShowSessionRoom] = useState(false);
 
   const joinedGroupsData = bibleStudies.filter((g) => myGroups.includes(g.id));
 
@@ -66,6 +69,18 @@ export const MySessionsModal = ({ isOpen, onClose }) => {
                         Note: {bk.meetingNote}
                       </p>
                     )}
+
+                    <div className="pt-2">
+                      <button
+                        onClick={() => {
+                          setSelectedSession(bk);
+                          setShowSessionRoom(true);
+                        }}
+                        className="w-full py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                      >
+                        <span>Launch Meeting Room & Scratchpad &rarr;</span>
+                      </button>
+                    </div>
                   </div>
                 </div>
               ))}
@@ -113,6 +128,12 @@ export const MySessionsModal = ({ isOpen, onClose }) => {
           )}
         </div>
       </div>
+
+      <SessionRoomModal
+        isOpen={showSessionRoom}
+        onClose={() => setShowSessionRoom(false)}
+        session={selectedSession}
+      />
     </Modal>
   );
 };
