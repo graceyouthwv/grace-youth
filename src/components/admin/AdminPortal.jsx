@@ -42,6 +42,7 @@ import { AddUserModal } from './AddUserModal';
 import { EditCampaignModal } from '../giving/EditCampaignModal';
 import { AddSeriesModal } from './AddSeriesModal';
 import { AddLessonModal } from '../worker/AddLessonModal';
+import { EditLessonModal } from '../worker/EditLessonModal';
 
 export const AdminPortal = () => {
   const {
@@ -78,6 +79,7 @@ export const AdminPortal = () => {
   const [editingCampaign, setEditingCampaign] = useState(null);
   const [showAddSeriesModal, setShowAddSeriesModal] = useState(false);
   const [showAddLessonModal, setShowAddLessonModal] = useState(false);
+  const [editingLessonData, setEditingLessonData] = useState(null);
   const [targetSeriesForLesson, setTargetSeriesForLesson] = useState(null);
 
   // Admin Auth Form State (if not logged in as Admin / Council)
@@ -1793,6 +1795,16 @@ export const AdminPortal = () => {
 
                         <div className="flex items-center gap-1.5 shrink-0">
                           <button
+                            type="button"
+                            onClick={() => setEditingLessonData({ seriesId: series.id, lesson })}
+                            className="p-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500 text-amber-400 hover:text-slate-950 border border-amber-500/30 transition-all cursor-pointer"
+                            title="Edit Master Lesson & PDF File"
+                          >
+                            <Edit3 className="w-3.5 h-3.5" />
+                          </button>
+
+                          <button
+                            type="button"
                             onClick={() => showToast(`📥 Downloaded ${lesson.fileName || lesson.title + '_Guide.pdf'}!`, 'success')}
                             className="p-1.5 rounded-lg bg-indigo-600/10 hover:bg-indigo-600 text-indigo-400 hover:text-white border border-indigo-500/30 transition-all cursor-pointer"
                             title="Download Teacher PDF Guide"
@@ -1801,6 +1813,7 @@ export const AdminPortal = () => {
                           </button>
 
                           <button
+                            type="button"
                             onClick={() => deleteLesson(series.id, lesson.id)}
                             className="p-1.5 rounded-lg bg-rose-500/10 hover:bg-rose-600 text-rose-400 hover:text-white border border-rose-500/30 transition-all cursor-pointer"
                             title="Remove Lesson"
@@ -1914,6 +1927,14 @@ export const AdminPortal = () => {
         isOpen={showAddLessonModal}
         onClose={() => setShowAddLessonModal(false)}
         defaultSeriesId={targetSeriesForLesson}
+      />
+
+      {/* Edit Lesson Modal */}
+      <EditLessonModal
+        isOpen={!!editingLessonData}
+        onClose={() => setEditingLessonData(null)}
+        seriesId={editingLessonData?.seriesId}
+        lesson={editingLessonData?.lesson}
       />
     </div>
   );
