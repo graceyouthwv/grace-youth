@@ -7,15 +7,18 @@ import { ReviewerVault } from './ReviewerVault';
 import { SmartMatchHub } from '../matching/SmartMatchHub';
 import { Search, PlusCircle, BookOpen, MessageSquarePlus, FileText, Sparkles, Zap } from 'lucide-react';
 import { SUBJECT_CATEGORIES } from '../../data/campuses';
+import { getTranslation } from '../../data/translations';
 
 export const TutorialHub = () => {
-  const { tutors, selectedCampus, theme } = useApp();
+  const { tutors, selectedCampus, language, theme } = useApp();
   const [subTab, setSubTab] = useState('tutors'); // 'tutors' | 'matching' | 'requests' | 'reviewers'
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Subjects');
   const [showVolunteerModal, setShowVolunteerModal] = useState(false);
 
   const isDark = theme === 'dark';
+  const isHlg = language === 'hlg' || language === 'hil';
+  const t = (key) => getTranslation(key, language);
 
   const filteredTutors = tutors.filter((t) => {
     const matchesCampus = selectedCampus === 'all' || t.campusId === selectedCampus;
@@ -46,7 +49,7 @@ export const TutorialHub = () => {
             }`}
           >
             <BookOpen className="w-3.5 h-3.5" />
-            <span>Tutors ({tutors.length})</span>
+            <span>{isHlg ? `Tutors (${tutors.length})` : `Tutors (${tutors.length})`}</span>
           </button>
 
           <button
@@ -58,7 +61,7 @@ export const TutorialHub = () => {
             }`}
           >
             <Zap className="w-3.5 h-3.5 text-amber-300" />
-            <span>P2P Smart Match & Gospel</span>
+            <span>{isHlg ? 'P2P Smart Match & Maayong Balita' : 'P2P Smart Match & Gospel'}</span>
           </button>
 
           <button
@@ -70,7 +73,7 @@ export const TutorialHub = () => {
             }`}
           >
             <MessageSquarePlus className="w-3.5 h-3.5" />
-            <span>Request Matching Board</span>
+            <span>{isHlg ? 'Board sang mga Pangabay' : 'Request Matching Board'}</span>
           </button>
 
           <button
@@ -82,7 +85,7 @@ export const TutorialHub = () => {
             }`}
           >
             <FileText className="w-3.5 h-3.5" />
-            <span>Reviewer Vault</span>
+            <span>{isHlg ? 'Vault sang Reviewers' : 'Reviewer Vault'}</span>
           </button>
         </div>
 
@@ -92,7 +95,7 @@ export const TutorialHub = () => {
           className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 font-black text-xs shadow-lg shadow-amber-500/20 hover:scale-105 active:scale-95 transition-all w-full sm:w-auto cursor-pointer"
         >
           <PlusCircle className="w-4 h-4 text-slate-950" />
-          <span className="text-slate-950 font-black">Volunteer as Peer Tutor</span>
+          <span className="text-slate-950 font-black">{isHlg ? 'Mag-Volunteer bilang Tutor' : 'Volunteer as Peer Tutor'}</span>
         </button>
       </div>
 
@@ -106,7 +109,7 @@ export const TutorialHub = () => {
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
-                placeholder="Search tutor name, subject (e.g. Calculus, Nursing, Organic Chem)..."
+                placeholder={isHlg ? "Pangitaa ang ngalan sang tutor, subject (Calculus, Chemistry, Nursing)..." : "Search tutor name, subject (e.g. Calculus, Nursing, Organic Chem)..."}
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
@@ -146,10 +149,12 @@ export const TutorialHub = () => {
             }`}>
               <BookOpen className="w-12 h-12 text-slate-500 mx-auto" />
               <h4 className={`font-extrabold text-base font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                No Tutors Found for this Filter
+                {isHlg ? 'Wala sang Tutor nga Nakita' : 'No Tutors Found for this Filter'}
               </h4>
               <p className={`text-xs max-w-md mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Try adjusting your search keywords or university filter, or post a request on our Request Matching Board!
+                {isHlg
+                  ? 'Testingan liwat ang mga keywords ukon mag-post sang pangabay sa aton Request Matching Board!'
+                  : 'Try adjusting your search keywords or university filter, or post a request on our Request Matching Board!'}
               </p>
               <button
                 onClick={() => {
@@ -158,7 +163,7 @@ export const TutorialHub = () => {
                 }}
                 className="mt-2 px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-xl text-xs font-black cursor-pointer"
               >
-                Clear Filters
+                {isHlg ? 'I-Clear ang Filters' : 'Clear Filters'}
               </button>
             </div>
           )}

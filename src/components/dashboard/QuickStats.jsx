@@ -4,36 +4,37 @@ import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
 
 export const QuickStats = () => {
-  const { tutors, bibleStudies, prayers, theme } = useApp();
+  const { tutors, bibleStudies, prayers, language, theme } = useApp();
   const isDark = theme === 'dark';
+  const isHlg = language === 'hlg' || language === 'hil';
 
   const stats = [
     {
-      label: 'Free Peer Tutors',
+      label: isHlg ? 'Libre nga Peer Tutors' : 'Free Peer Tutors',
       value: `${tutors.length}`,
-      subtext: 'Verified peer tutors',
+      subtext: isHlg ? 'Beripikado nga tutors' : 'Verified peer tutors',
       icon: BookOpen,
       iconColor: 'text-amber-500',
       bg: isDark ? 'bg-amber-400/10 border-amber-400/20' : 'bg-amber-50 border-amber-200'
     },
     {
-      label: 'Campus Life Groups',
+      label: isHlg ? 'Campus Life Groups' : 'Campus Life Groups',
       value: `${bibleStudies.length}`,
-      subtext: 'Grace Youth circles',
+      subtext: isHlg ? 'Grupo sang kabataan' : 'Grace Youth circles',
       icon: Users,
       iconColor: 'text-emerald-500',
       bg: isDark ? 'bg-emerald-400/10 border-emerald-400/20' : 'bg-emerald-50 border-emerald-200'
     },
     {
-      label: 'Prayers Lifted Up',
+      label: isHlg ? 'Pangamuyo nga Ginbayaw' : 'Prayers Lifted Up',
       value: `${prayers.reduce((acc, p) => acc + (p.prayedCount || 1), 0)}`,
-      subtext: 'By campus warriors',
+      subtext: isHlg ? 'Sang mga estudyante' : 'By campus warriors',
       icon: Heart,
       iconColor: 'text-rose-500',
       bg: isDark ? 'bg-rose-400/10 border-rose-400/20' : 'bg-rose-50 border-rose-200'
     },
     {
-      label: 'Iloilo Campuses',
+      label: isHlg ? 'Unibersidad sa Iloilo' : 'Iloilo Campuses',
       value: `${CAMPUSES.filter((c) => c.id !== 'all').length}`,
       subtext: 'ISUFST, UPV, CPU, WVSU, ISAT-U, USA',
       icon: School,
@@ -60,7 +61,7 @@ export const QuickStats = () => {
               <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${
                 isDark ? 'text-emerald-400 bg-emerald-950/60 border-emerald-500/30' : 'text-emerald-700 bg-emerald-50 border-emerald-300'
               }`}>
-                Live
+                {isHlg ? 'Aktibo' : 'Live'}
               </span>
             </div>
             <div>

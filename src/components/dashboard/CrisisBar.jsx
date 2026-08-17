@@ -2,11 +2,13 @@ import React, { useState } from 'react';
 import { HeartHandshake, PhoneCall, MessageSquare, ShieldCheck, ArrowRight } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 import { ConnectWorkerModal } from '../worker/ConnectWorkerModal';
+import { getTranslation } from '../../data/translations';
 
 export const CrisisBar = () => {
   const [showWorkerModal, setShowWorkerModal] = useState(false);
-  const { theme } = useApp();
+  const { language, theme } = useApp();
   const isDark = theme === 'dark';
+  const isHlg = language === 'hlg' || language === 'hil';
 
   return (
     <>
@@ -23,10 +25,12 @@ export const CrisisBar = () => {
           </div>
           <div>
             <h4 className={`font-extrabold text-sm sm:text-base ${isDark ? 'text-white' : 'text-teal-950'}`}>
-              Feeling Burned Out or Overwhelmed?
+              {isHlg ? 'Nabudlayan ka bala ukon may Ginabatyag?' : 'Feeling Burned Out or Overwhelmed?'}
             </h4>
             <p className={`text-xs mt-1 leading-relaxed ${isDark ? 'text-slate-400' : 'text-teal-900'}`}>
-              Grace Youth Pastoral Care is 100% confidential and safe for all college students.
+              {isHlg
+                ? 'Ang Grace Youth Pastoral Care 100% kompidensyal kag hilway para sa tanan nga estudyante.'
+                : 'Grace Youth Pastoral Care is 100% confidential and safe for all college students.'}
             </p>
           </div>
         </div>
@@ -36,7 +40,7 @@ export const CrisisBar = () => {
           className="w-full py-3 rounded-2xl bg-teal-600 hover:bg-teal-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-teal-500/20 hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
         >
           <HeartHandshake className="w-4 h-4" />
-          <span>Talk / Pray with a Campus Mentor</span>
+          <span>{isHlg ? 'Makig-istorya / Pangamuyo upod sa Mentor' : 'Talk / Pray with a Campus Mentor'}</span>
         </button>
       </div>
 

@@ -5,8 +5,9 @@ import { useApp } from '../../context/AppContext';
 
 export const TutorCard = ({ tutor }) => {
   const [showBooking, setShowBooking] = useState(false);
-  const { theme } = useApp();
+  const { language, theme } = useApp();
   const isDark = theme === 'dark';
+  const isHlg = language === 'hlg' || language === 'hil';
 
   return (
     <>
@@ -60,7 +61,7 @@ export const TutorCard = ({ tutor }) => {
           {/* Subjects Teachable Chips */}
           <div className="mb-4">
             <span className={`text-[10px] font-black uppercase tracking-widest block mb-1.5 ${isDark ? 'text-slate-500' : 'text-slate-600'}`}>
-              Reviews & Teaches:
+              {isHlg ? 'Ginatudlo kag Ginarebyu:' : 'Reviews & Teaches:'}
             </span>
             <div className="flex flex-wrap gap-1.5">
               {tutor.subjects.map((sub, idx) => (
@@ -80,7 +81,9 @@ export const TutorCard = ({ tutor }) => {
         {/* Action Button */}
         <div className={`pt-4 border-t flex items-center justify-between gap-3 ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
           <div className="text-[11px]">
-            <span className={`block font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>Next Slot:</span>
+            <span className={`block font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              {isHlg ? 'Bakante:' : 'Next Slot:'}
+            </span>
             <span className={`font-black ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
               {tutor.slots[0]?.day} ({tutor.slots[0]?.time.split('-')[0]})
             </span>
@@ -90,7 +93,7 @@ export const TutorCard = ({ tutor }) => {
             onClick={() => setShowBooking(true)}
             className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs shadow-md hover:scale-105 transition-all cursor-pointer"
           >
-            Book Free Session &rarr;
+            {isHlg ? 'Mag-Book sang Libreng Session →' : 'Book Free Session →'}
           </button>
         </div>
       </div>

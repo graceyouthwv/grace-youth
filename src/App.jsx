@@ -20,11 +20,13 @@ import { YouthWorkerPortal } from './components/worker/YouthWorkerPortal';
 import { AdminPortal } from './components/admin/AdminPortal';
 import { Sparkles, BookOpen, School, ShieldCheck } from 'lucide-react';
 import { CAMPUSES } from './data/campuses';
+import { getTranslation } from './data/translations';
 
 export const App = () => {
-  const { activeTab, setActiveTab, selectedCampus, currentUser, theme } = useApp();
+  const { activeTab, setActiveTab, selectedCampus, currentUser, language, theme } = useApp();
   const currentCampusObj = CAMPUSES.find((c) => c.id === selectedCampus);
   const isDark = theme === 'dark';
+  const t = (key) => getTranslation(key, language);
 
   return (
     <div className={`min-h-screen flex flex-col justify-between pb-28 md:pb-12 subtle-grid selection:bg-pink-500 selection:text-white transition-colors duration-300 ${
@@ -117,10 +119,10 @@ export const App = () => {
           <div className="space-y-4">
             <div className="mb-2">
               <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Peer Tutorials & Academic Care
+                {t('acads_heading')}
               </h1>
               <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Connecting college students across Iloilo universities with free peer tutoring.
+                {t('acads_subheading')}
               </p>
             </div>
             <TutorialHub />
@@ -132,10 +134,10 @@ export const App = () => {
           <div className="space-y-4">
             <div className="mb-2">
               <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Campus Life Groups & Discipleship
+                {t('groups_heading')}
               </h1>
               <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Grow in faith, make lasting college friendships, and find purpose in Christ.
+                {t('groups_subheading')}
               </p>
             </div>
             <BibleStudyHub />
@@ -147,10 +149,10 @@ export const App = () => {
           <div className="space-y-4">
             <div className="mb-2">
               <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Fundraising, Youth Camps & Fellowships
+                {t('camps_heading')}
               </h1>
               <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Seed donations to sponsor students for youth camps, exam survival outreach, and campus worship nights.
+                {t('camps_subheading')}
               </p>
             </div>
             <FundraisingHub />
@@ -162,10 +164,10 @@ export const App = () => {
           <div className="space-y-4">
             <div className="mb-2">
               <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                24/7 Campus Prayer & Praise Wall
+                {t('prayer_heading')}
               </h1>
               <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Stand in the gap for students in ISUFST, UPV, CPU, WVSU, ISAT-U, and USA.
+                {t('prayer_subheading')}
               </p>
             </div>
             <PrayerWall />
@@ -177,10 +179,12 @@ export const App = () => {
           <div className="space-y-4">
             <div className="mb-2">
               <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Campus Fellowship & Gatherings
+                {language === 'hlg' ? 'Campus Fellowship & Tilipon sang Pagtuo' : 'Campus Fellowship & Gatherings'}
               </h1>
               <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Midterm chill nights, beach prayer walks, and youth discipleship conferences.
+                {language === 'hlg'
+                  ? 'Midterm chill nights, beach prayer walks, kag youth discipleship conferences.'
+                  : 'Midterm chill nights, beach prayer walks, and youth discipleship conferences.'}
               </p>
             </div>
             <EventList />
@@ -192,10 +196,10 @@ export const App = () => {
           <div className="space-y-4">
             <div className="mb-2">
               <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                Free Academic Reviewer Vault
+                {t('reviewers_heading')}
               </h1>
               <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                High-yield formula cheatsheets, mock problem sets, and review outlines.
+                {t('reviewers_subheading')}
               </p>
             </div>
             <ReviewerVault />

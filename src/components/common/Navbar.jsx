@@ -30,6 +30,7 @@ import { InstallModal } from './InstallModal';
 import { CampusChatDrawer } from './CampusChatDrawer';
 import { ConnectWorkerModal } from '../worker/ConnectWorkerModal';
 import { AdminLoginModal } from '../admin/AdminLoginModal';
+import { getTranslation } from '../../data/translations';
 
 export const Navbar = () => {
   const {
@@ -43,6 +44,9 @@ export const Navbar = () => {
     toggleTheme,
     logout
   } = useApp();
+
+  const isHlg = language === 'hlg' || language === 'hil';
+  const t = (key) => getTranslation(key, language);
 
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showSessionsModal, setShowSessionsModal] = useState(false);
@@ -143,12 +147,12 @@ export const Navbar = () => {
                   }`}
                 >
                   {isLeader
-                    ? '🛡️ Admin Center'
+                    ? t('nav_adminhub')
                     : isWorker
-                    ? '✝️ Worker Console'
+                    ? t('nav_workerhub')
                     : isTutor
-                    ? '👨‍🏫 Tutor Portal'
-                    : '🎓 Student Hub'}
+                    ? t('nav_tutorhub')
+                    : t('nav_myhub')}
                 </button>
               )}
 
@@ -161,7 +165,7 @@ export const Navbar = () => {
                 }`}
               >
                 <BookOpen className="w-3.5 h-3.5 text-amber-400" />
-                <span>Acads</span>
+                <span>{t('nav_acads')}</span>
               </button>
 
               <button
@@ -173,7 +177,7 @@ export const Navbar = () => {
                 }`}
               >
                 <Users className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Life Groups</span>
+                <span>{t('nav_groups')}</span>
               </button>
 
               <button
@@ -185,7 +189,7 @@ export const Navbar = () => {
                 }`}
               >
                 <Tent className="w-3.5 h-3.5 text-pink-400" />
-                <span>Camps</span>
+                <span>{t('nav_camps')}</span>
               </button>
 
               <button
@@ -197,7 +201,7 @@ export const Navbar = () => {
                 }`}
               >
                 <Heart className="w-3.5 h-3.5 text-rose-400" />
-                <span>Prayers</span>
+                <span>{t('nav_prayers')}</span>
               </button>
             </nav>
 
