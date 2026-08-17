@@ -61,7 +61,7 @@ export const App = () => {
           {/* 1. DEDICATED ROLE PORTALS */}
           {activeTab === 'portal' && (
             <div>
-            {currentUser.role === 'leader' ? (
+            {currentUser.role === 'leader' || currentUser.role === 'council' ? (
               <AdminPortal />
             ) : currentUser.role === 'worker' ? (
               <YouthWorkerPortal />

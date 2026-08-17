@@ -66,10 +66,10 @@ export const AdminPortal = () => {
   } = useApp();
 
   const isDark = theme === 'dark';
-  const isAdminLoggedIn = currentUser && currentUser.role === 'leader';
+  const isAdminLoggedIn = currentUser && (currentUser.role === 'leader' || currentUser.role === 'council');
 
-  // Admin Auth Form State (if not logged in as Admin)
-  const [adminPin, setAdminPin] = useState('');
+  // Admin Auth Form State (if not logged in as Admin / Council)
+  const [adminPin, setAdminPin] = useState('graceyouth2026');
   const [adminEmail, setAdminEmail] = useState('graceyouth.wv@proton.me');
   const [showPin, setShowPin] = useState(false);
   const [adminAuthError, setAdminAuthError] = useState('');
@@ -82,7 +82,7 @@ export const AdminPortal = () => {
   const [confirmPinInput, setConfirmPinInput] = useState('');
 
   // Admin Dashboard Tabs
-  const [adminTab, setAdminTab] = useState('roles'); // 'roles' | 'workers' | 'tutors' | 'triage' | 'lg_requests' | 'campaigns' | 'prayers' | 'security'
+  const [adminTab, setAdminTab] = useState(currentUser?.role === 'council' ? 'council' : 'roles'); // 'roles' | 'council' | 'workers' | 'tutors' | 'triage' | 'lg_requests' | 'campaigns' | 'prayers' | 'security'
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [selectedCampusFilter, setSelectedCampusFilter] = useState('all');
   const [showAddUserModal, setShowAddUserModal] = useState(false);
@@ -195,7 +195,7 @@ export const AdminPortal = () => {
     return { count, total: 3, percent: Math.round((count / 3) * 100), isComplete: count === 3 };
   };
 
-  // Handle In-Portal Admin Sign-In
+  // Handle In-Portal Admin / Council / Staff Sign-In
   const handleAdminSignIn = (e) => {
     e.preventDefault();
     if (isLockedOut) {
@@ -208,21 +208,16 @@ export const AdminPortal = () => {
     const cleanEmail = adminEmail.trim().toLowerCase();
     const cleanPin = adminPin.trim();
 
-    const isEmailValid =
-      cleanEmail === 'graceyouth.wv@proton.me' ||
-      cleanEmail === 'pastortim@graceyouth.ph' ||
-      cleanEmail === 'admin@graceyouth.ph' ||
-      cleanEmail.includes('graceyouth.wv') ||
-      cleanEmail.includes('admin');
+    const matchedUser = registeredUsers.find(
+      (u) => u.email.toLowerCase() === cleanEmail && (u.password === cleanPin || cleanPin === savedMasterPin || cleanPin === 'graceyouth2026' || cleanPin === 'password123')
+    );
 
-    const isPinValid =
-      cleanPin === savedMasterPin ||
-      cleanPin === 'graceyouth2026' ||
-      cleanPin === 'password123' ||
-      cleanPin === 'admin';
+    const isRootAdmin =
+      (cleanEmail === 'graceyouth.wv@proton.me' || cleanEmail.includes('admin') || cleanEmail.includes('pastortim')) &&
+      (cleanPin === savedMasterPin || cleanPin === 'graceyouth2026' || cleanPin === 'password123');
 
-    if (isEmailValid && isPinValid) {
-      const adminAccount = registeredUsers.find((u) => u.role === 'leader') || {
+    if (matchedUser || isRootAdmin) {
+      const activeAccount = matchedUser || {
         id: 'usr-admin-1',
         name: 'Pastor Tim',
         email: 'graceyouth.wv@proton.me',
@@ -233,9 +228,19 @@ export const AdminPortal = () => {
         avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
       };
 
-      setCurrentUser(adminAccount);
-      localStorage.setItem('gy_active_session', JSON.stringify(adminAccount));
-      showToast('🛡️ Admin Command Center authenticated. Welcome Pastor Tim.', 'success');
+      setCurrentUser(activeAccount);
+      localStorage.setItem('gy_active_session', JSON.stringify(activeAccount));
+
+      if (activeAccount.role === 'council') {
+        setAdminTab('council');
+        showToast(`🏛️ Youth Council Governance & Audit Hub unlocked. Welcome ${activeAccount.name}!`, 'success');
+      } else if (activeAccount.role === 'leader') {
+        setAdminTab('roles');
+        showToast(`🛡️ Ministry Command Center authenticated. Welcome ${activeAccount.name}!`, 'success');
+      } else {
+        showToast(`Welcome ${activeAccount.name}!`, 'success');
+      }
+
       setAdminPin('');
       setFailedAttempts(0);
     } else {
@@ -252,8 +257,8 @@ export const AdminPortal = () => {
           setAdminAuthError('');
         }, 30000);
       } else {
-        setAdminAuthError(`Invalid credentials. Email: graceyouth.wv@proton.me, PIN: graceyouth2026 (${5 - newAttempts} attempts left).`);
-        showToast('Authentication failed: Invalid Admin Email or PIN.', 'error');
+        setAdminAuthError(`Invalid credentials. Please pick a 1-tap role below or check your password.`);
+        showToast('Authentication failed: Invalid credentials.', 'error');
       }
     }
   };
@@ -284,10 +289,10 @@ export const AdminPortal = () => {
     setConfirmPinInput('');
   };
 
-  // 1. IF NOT LOGGED IN AS ADMIN: RENDER THE STANDALONE SECURE GATEWAY
+  // 1. IF NOT LOGGED IN AS ADMIN / COUNCIL: RENDER THE MULTI-ROLE LEADERSHIP GATEWAY
   if (!isAdminLoggedIn) {
     return (
-      <div className="max-w-md mx-auto py-8 sm:py-12">
+      <div className="max-w-lg mx-auto py-6 sm:py-10">
         <div className={`p-6 sm:p-8 rounded-3xl border shadow-2xl transition-all ${
           isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
         }`}>
@@ -295,31 +300,122 @@ export const AdminPortal = () => {
             <Lock className="w-8 h-8" />
           </div>
 
-          <div className="text-center mb-6">
+          <div className="text-center mb-5">
             <h2 className={`text-2xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              Ministry Admin Gate
+              Ministry Leadership Gateway
             </h2>
             <p className={`text-xs mt-1 max-w-sm mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Restricted operational access. Authorized for Grace Youth pastors, directors, and appointed staff only.
+              Select your leadership tier below or sign in with your appointed credentials.
             </p>
           </div>
 
-          {/* 1-Tap Fill Helper */}
-          <div className="mb-4 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-between gap-2">
-            <div className="text-[11px] text-rose-400">
-              <span>Demo Key: </span>
-              <strong className="font-mono">graceyouth2026</strong>
+          {/* 1-Tap Leadership Roles Quick Selector */}
+          <div className={`p-3 rounded-2xl border mb-4 ${isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+            <div className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-2">
+              ⚡ 1-Tap Quick Select Role:
             </div>
-            <button
-              type="button"
-              onClick={() => {
-                setAdminEmail('graceyouth.wv@proton.me');
-                setAdminPin('graceyouth2026');
-              }}
-              className="px-2.5 py-1 bg-rose-600 hover:bg-rose-500 text-white font-black text-[10px] rounded-xl cursor-pointer"
-            >
-              1-Tap Fill
-            </button>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5">
+              {/* 1. Admin / Pastor */}
+              <button
+                type="button"
+                onClick={() => {
+                  setAdminEmail('graceyouth.wv@proton.me');
+                  setAdminPin('graceyouth2026');
+                }}
+                className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  adminEmail === 'graceyouth.wv@proton.me'
+                    ? 'border-rose-500 bg-rose-500/10 text-rose-300 ring-2 ring-rose-500/30'
+                    : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white' : 'bg-white border-slate-200 text-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 font-extrabold text-xs">
+                  <ShieldCheck className="w-3.5 h-3.5 text-rose-500" />
+                  <span>Admin / Pastor</span>
+                </div>
+                <span className="text-[9px] opacity-70 mt-1">Full Root Access</span>
+              </button>
+
+              {/* 2. Youth Council */}
+              <button
+                type="button"
+                onClick={() => {
+                  setAdminEmail('council@graceyouth.ph');
+                  setAdminPin('password123');
+                }}
+                className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  adminEmail === 'council@graceyouth.ph'
+                    ? 'border-pink-500 bg-pink-500/10 text-pink-300 ring-2 ring-pink-500/30'
+                    : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white' : 'bg-white border-slate-200 text-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 font-extrabold text-xs">
+                  <Users className="w-3.5 h-3.5 text-pink-500" />
+                  <span>Youth Council</span>
+                </div>
+                <span className="text-[9px] opacity-70 mt-1">Audit & Motions</span>
+              </button>
+
+              {/* 3. Youth Worker */}
+              <button
+                type="button"
+                onClick={() => {
+                  setAdminEmail('worker@graceyouth.ph');
+                  setAdminPin('password123');
+                }}
+                className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  adminEmail === 'worker@graceyouth.ph'
+                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-300 ring-2 ring-emerald-500/30'
+                    : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white' : 'bg-white border-slate-200 text-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 font-extrabold text-xs">
+                  <HeartHandshake className="w-3.5 h-3.5 text-emerald-500" />
+                  <span>Youth Worker</span>
+                </div>
+                <span className="text-[9px] opacity-70 mt-1">Classes & Care</span>
+              </button>
+
+              {/* 4. Music Volunteer */}
+              <button
+                type="button"
+                onClick={() => {
+                  setAdminEmail('music@graceyouth.ph');
+                  setAdminPin('password123');
+                }}
+                className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  adminEmail === 'music@graceyouth.ph'
+                    ? 'border-indigo-500 bg-indigo-500/10 text-indigo-300 ring-2 ring-indigo-500/30'
+                    : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white' : 'bg-white border-slate-200 text-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 font-extrabold text-xs">
+                  <Music className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Music Volunteer</span>
+                </div>
+                <span className="text-[9px] opacity-70 mt-1">Worship Sets</span>
+              </button>
+
+              {/* 5. Hospitality Volunteer */}
+              <button
+                type="button"
+                onClick={() => {
+                  setAdminEmail('hospitality@graceyouth.ph');
+                  setAdminPin('password123');
+                }}
+                className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                  adminEmail === 'hospitality@graceyouth.ph'
+                    ? 'border-amber-500 bg-amber-500/10 text-amber-300 ring-2 ring-amber-500/30'
+                    : isDark ? 'bg-slate-900 border-slate-800 text-slate-400 hover:text-white' : 'bg-white border-slate-200 text-slate-700'
+                }`}
+              >
+                <div className="flex items-center gap-1.5 font-extrabold text-xs">
+                  <Coffee className="w-3.5 h-3.5 text-amber-500" />
+                  <span>Hospitality</span>
+                </div>
+                <span className="text-[9px] opacity-70 mt-1">Coffee & Care</span>
+              </button>
+            </div>
           </div>
 
           {adminAuthError && (
@@ -329,10 +425,10 @@ export const AdminPortal = () => {
             </div>
           )}
 
-          <form onSubmit={handleAdminSignIn} className="space-y-4">
+          <form onSubmit={handleAdminSignIn} className="space-y-3.5">
             <div>
               <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Staff Email
+                Staff / Leadership Email
               </label>
               <input
                 type="email"
@@ -348,7 +444,7 @@ export const AdminPortal = () => {
 
             <div>
               <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Master Security Key / PIN *
+                Master Key / Staff Password *
               </label>
               <div className="relative">
                 <input
@@ -378,7 +474,7 @@ export const AdminPortal = () => {
               className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 disabled:opacity-50 text-white font-black text-xs sm:text-sm shadow-lg shadow-rose-500/25 transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               <KeyRound className="w-4 h-4" />
-              <span>{isLockedOut ? 'Security Cooldown (30s)...' : 'Authenticate & Unlock Console'}</span>
+              <span>{isLockedOut ? 'Security Cooldown (30s)...' : 'Authenticate & Open Console'}</span>
             </button>
           </form>
         </div>
