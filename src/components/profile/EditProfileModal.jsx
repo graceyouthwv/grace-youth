@@ -285,7 +285,9 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
           />
         </div>
 
-        <div className="flex items-center justify-end gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
+        <div className={`sticky bottom-0 pt-3 pb-1 border-t flex items-center justify-end gap-2 z-10 ${
+          isDark ? 'bg-[#111625]/95 border-slate-800 backdrop-blur-md' : 'bg-white/95 border-slate-200 backdrop-blur-md'
+        }`}>
           <button
             type="button"
             onClick={onClose}
