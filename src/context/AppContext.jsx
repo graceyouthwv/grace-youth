@@ -15,7 +15,7 @@ export { DEMO_ACCOUNTS };
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v9_tutor_gate';
+const STORAGE_VERSION = 'gy_clean_v10_session_flow';
 
 const GUEST_USER = {
   id: 'guest',
@@ -33,15 +33,15 @@ const GUEST_USER = {
 const DEFAULT_BOOKINGS = [
   {
     id: 'bk-default-1',
-    tutorId: 'tutor-1',
-    tutorName: 'Joshua Alcantara',
+    tutorId: 'tutor-2',
+    tutorName: 'Hannah Grace Villaruel',
     studentName: 'Bea Claridad',
     studentContact: 'bea.claridad@upv.edu.ph',
-    subject: 'Calculus 1 (Derivatives & Chain Rule)',
-    day: 'Tuesday',
-    time: '4:00 PM - 5:30 PM',
-    mode: 'In-Person (CAS Gazebo, UPV)',
-    meetingNote: 'Bring your Math 17 syllabus and previous quiz papers.',
+    subject: 'Anatomy & Physiology (Cardiovascular System)',
+    day: 'Wednesday',
+    time: '3:30 PM - 5:00 PM',
+    mode: 'In-Person (WVSU Library)',
+    meetingNote: 'Bring your AnaPhy lecture notes and flashcards.',
     status: 'Confirmed'
   }
 ];

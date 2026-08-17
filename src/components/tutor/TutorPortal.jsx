@@ -11,12 +11,19 @@ export const TutorPortal = () => {
   const [showSessionRoom, setShowSessionRoom] = useState(false);
   const isDark = theme === 'dark';
 
+  const isApproved = currentUser.isApproved !== false && currentUser.status !== 'Pending Admin Approval';
+
   const tutorProfile = tutors.find((t) => t.name === currentUser.name) || {
     subjects: currentUser.subjects || ['Calculus 1', 'General Chemistry'],
     rating: 5.0,
-    sessionsGiven: 4,
+    sessionsGiven: 0,
     preferredMode: currentUser.preferredMode || 'Hybrid'
   };
+
+  const myAssignedBookings = myBookings.filter((bk) =>
+    (bk.tutorName && currentUser.name && bk.tutorName.toLowerCase() === currentUser.name.toLowerCase()) ||
+    (bk.tutorId && currentUser.id && bk.tutorId === currentUser.id)
+  );
 
   return (
     <div className="space-y-6">
@@ -33,7 +40,9 @@ export const TutorPortal = () => {
               alt={currentUser.name}
               className="w-16 h-16 rounded-2xl object-cover ring-2 ring-amber-500/40"
             />
-            <span className="absolute -bottom-1 -right-1 bg-amber-400 text-slate-950 p-1 rounded-full ring-2 ring-slate-900">
+            <span className={`absolute -bottom-1 -right-1 p-1 rounded-full ring-2 ring-slate-900 ${
+              isApproved ? 'bg-emerald-500 text-white' : 'bg-amber-400 text-slate-950'
+            }`}>
               <ShieldCheck className="w-3.5 h-3.5" />
             </span>
           </div>
@@ -43,8 +52,12 @@ export const TutorPortal = () => {
               <h2 className="text-xl sm:text-2xl font-extrabold font-heading">
                 Peer Tutor Hub: {currentUser.name}
               </h2>
-              <span className="px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider bg-amber-400/20 text-amber-600 dark:text-amber-300 rounded-full border border-amber-400/30">
-                Certified Tutor
+              <span className={`px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider rounded-full border ${
+                isApproved
+                  ? 'bg-emerald-400/20 text-emerald-600 dark:text-emerald-300 border-emerald-400/30'
+                  : 'bg-amber-400/20 text-amber-700 dark:text-amber-300 border-amber-400/30'
+              }`}>
+                {isApproved ? '✓ Certified Tutor' : '⏳ Pending Admin Certification'}
               </span>
             </div>
             <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
@@ -64,6 +77,21 @@ export const TutorPortal = () => {
           </button>
         </div>
       </div>
+
+      {/* Pending Approval Notice */}
+      {!isApproved && (
+        <div className={`p-4 sm:p-5 rounded-2xl border flex items-start gap-3.5 ${
+          isDark ? 'bg-amber-950/40 border-amber-500/30 text-amber-200' : 'bg-amber-50 border-amber-300 text-amber-950'
+        }`}>
+          <Sparkles className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
+          <div className="text-xs space-y-1">
+            <div className="font-extrabold text-sm">Tutor Application Under Admin Review</div>
+            <p className="leading-relaxed">
+              Your Peer Tutor application is currently awaiting 3-step verification in the Admin Center. Once your academic subjects and safeguarding covenant are certified by Admin, your tutor profile will be published to the public <strong>Acads & Tutors</strong> hub so students can book sessions with you!
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Main Grid: Scheduled Sessions & Academic Tools */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -86,13 +114,13 @@ export const TutorPortal = () => {
               </div>
 
               <span className="text-xs font-black text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-950/60 px-2.5 py-1 rounded-xl border border-amber-300 dark:border-amber-500/30">
-                {myBookings.length} Scheduled
+                {myAssignedBookings.length} Scheduled
               </span>
             </div>
 
             <div className="space-y-3">
-              {myBookings.length > 0 ? (
-                myBookings.map((bk) => (
+              {myAssignedBookings.length > 0 ? (
+                myAssignedBookings.map((bk) => (
                   <div
                     key={bk.id}
                     className={`p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
@@ -131,7 +159,9 @@ export const TutorPortal = () => {
                 <div className={`p-8 text-center rounded-2xl border border-dashed text-xs ${
                   isDark ? 'bg-slate-950/40 border-slate-800 text-slate-500' : 'bg-slate-50 border-slate-200 text-slate-500'
                 }`}>
-                  No student tutorial sessions booked yet. Open slots are listed in the public Tutorial Hub.
+                  {!isApproved
+                    ? 'Your tutor profile is pending certification. Once approved by Admin and published to the directory, booked sessions will appear here.'
+                    : 'No student tutorial sessions booked yet. Open slots are published and available in the public Tutorial Hub.'}
                 </div>
               )}
             </div>
