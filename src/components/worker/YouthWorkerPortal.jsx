@@ -39,6 +39,7 @@ import { AddLessonModal } from './AddLessonModal';
 import { EditLessonModal } from './EditLessonModal';
 import { ViewLessonModal } from './ViewLessonModal';
 import { AddSeriesModal } from '../admin/AddSeriesModal';
+import { LifeGroupCircleModal } from '../discipleship/LifeGroupCircleModal';
 import { FileUp, UploadCloud, Trash, Trash2 } from 'lucide-react';
 
 export const YouthWorkerPortal = () => {
@@ -70,6 +71,7 @@ export const YouthWorkerPortal = () => {
   const [noteText, setNoteText] = useState('');
   const [targetSeriesForLesson, setTargetSeriesForLesson] = useState(null);
   const [selectedClassForRoster, setSelectedClassForRoster] = useState(bibleStudies[0] || null);
+  const [showCircleModalForWorker, setShowCircleModalForWorker] = useState(false);
 
   const [selectedSeriesId, setSelectedSeriesId] = useState(curriculumSeries[0]?.id || 'ser-1');
 
@@ -663,9 +665,19 @@ export const YouthWorkerPortal = () => {
                     </p>
                   </div>
 
-                  <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl text-xs font-black">
-                    Live Discipleship Class
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowCircleModalForWorker(true)}
+                      className="px-3.5 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-black shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
+                    >
+                      <MessageSquare className="w-3.5 h-3.5" />
+                      <span>Group Chat & Roster</span>
+                    </button>
+                    <span className="px-3 py-1 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl text-xs font-black">
+                      Live Discipleship Class
+                    </span>
+                  </div>
                 </div>
 
                 {/* Student Attendance List */}
@@ -1125,6 +1137,13 @@ export const YouthWorkerPortal = () => {
         onClose={() => setViewingLessonData(null)}
         lesson={viewingLessonData?.lesson}
         seriesTitle={viewingLessonData?.seriesTitle}
+      />
+
+      {/* Life Group Circle Modal */}
+      <LifeGroupCircleModal
+        isOpen={showCircleModalForWorker}
+        onClose={() => setShowCircleModalForWorker(false)}
+        group={selectedClassForRoster}
       />
     </div>
   );

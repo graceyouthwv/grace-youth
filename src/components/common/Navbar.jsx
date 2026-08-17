@@ -27,7 +27,6 @@ import { MySessionsModal } from '../profile/MySessionsModal';
 import { DbSchemaModal } from './DbSchemaModal';
 import { AuthModal } from '../auth/AuthModal';
 import { InstallModal } from './InstallModal';
-import { CampusChatDrawer } from './CampusChatDrawer';
 import { ConnectWorkerModal } from '../worker/ConnectWorkerModal';
 import { AdminLoginModal } from '../admin/AdminLoginModal';
 import { getTranslation } from '../../data/translations';
@@ -56,7 +55,6 @@ export const Navbar = () => {
   const [showDbModal, setShowDbModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showInstallModal, setShowInstallModal] = useState(false);
-  const [showChatDrawer, setShowChatDrawer] = useState(false);
   const [showConnectWorkerModal, setShowConnectWorkerModal] = useState(false);
   const [showAdminLoginModal, setShowAdminLoginModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
@@ -316,18 +314,18 @@ export const Navbar = () => {
                   <div className={`absolute right-0 mt-2 w-64 p-3 rounded-2xl border shadow-2xl space-y-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150 ${
                     isDark ? 'bg-slate-900/95 border-slate-800 text-white backdrop-blur-xl' : 'bg-white border-slate-200 text-slate-900 shadow-xl'
                   }`}>
-                    {/* Live Campus Chat */}
+                    {/* Life Groups & Fellowship Circles */}
                     <button
                       onClick={() => {
-                        setShowChatDrawer(true);
+                        setActiveTab('discipleship');
                         setDesktopMenuOpen(false);
                       }}
                       className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        isDark ? 'hover:bg-slate-800 text-indigo-300' : 'hover:bg-slate-100 text-indigo-700'
+                        isDark ? 'hover:bg-slate-800 text-emerald-300' : 'hover:bg-slate-100 text-emerald-800'
                       }`}
                     >
-                      <MessageSquare className="w-4 h-4 text-indigo-500" />
-                      <span>Campus Live Chat</span>
+                      <Users className="w-4 h-4 text-emerald-500" />
+                      <span>Life Groups & Circles</span>
                     </button>
 
                     {/* Pastoral Care */}
@@ -507,7 +505,6 @@ export const Navbar = () => {
       <DbSchemaModal isOpen={showDbModal} onClose={() => setShowDbModal(false)} />
       <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} initialMode={authMode} />
       <InstallModal isOpen={showInstallModal} onClose={() => setShowInstallModal(false)} />
-      <CampusChatDrawer isOpen={showChatDrawer} onClose={() => setShowChatDrawer(false)} />
       <ConnectWorkerModal isOpen={showConnectWorkerModal} onClose={() => setShowConnectWorkerModal(false)} />
       <AdminLoginModal isOpen={showAdminLoginModal} onClose={() => setShowAdminLoginModal(false)} />
     </>

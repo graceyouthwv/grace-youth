@@ -15,7 +15,7 @@ export { DEMO_ACCOUNTS };
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v10_session_flow';
+const STORAGE_VERSION = 'gy_clean_v11_lifegroup_chat';
 
 const GUEST_USER = {
   id: 'guest',
@@ -854,6 +854,90 @@ export const AppProvider = ({ children }) => {
     showToast('Life Group removed.', 'info');
   };
 
+  const sendLifeGroupMessage = (groupId, messageText, tag = 'Fellowship') => {
+    if (!messageText || !messageText.trim()) return;
+    const newMessage = {
+      id: `msg-${Date.now()}`,
+      senderId: currentUser.id || 'guest',
+      senderName: currentUser.name || 'Student Member',
+      senderAvatar: currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      senderRole: currentUser.role === 'worker' ? 'Youth Worker' : currentUser.role === 'leader' ? 'Pastor / Admin' : currentUser.roleLabel || 'Student Member',
+      message: messageText.trim(),
+      timestamp: 'Just now',
+      tag
+    };
+
+    setBibleStudies((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId) {
+          const chatMessages = g.chatMessages ? [...g.chatMessages, newMessage] : [newMessage];
+          return { ...g, chatMessages };
+        }
+        return g;
+      })
+    );
+    showToast('💬 Message sent to Life Group!', 'success');
+  };
+
+  const deleteLifeGroupMessage = (groupId, messageId) => {
+    setBibleStudies((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId) {
+          const chatMessages = (g.chatMessages || []).filter((m) => m.id !== messageId);
+          return { ...g, chatMessages };
+        }
+        return g;
+      })
+    );
+    showToast('Message deleted from group chat.', 'info');
+  };
+
+  const addLifeGroupMember = (groupId, memberData) => {
+    const newMember = {
+      id: `mem-${Date.now()}`,
+      name: memberData.name.trim(),
+      email: memberData.email?.trim() || '',
+      campus: memberData.campus || currentUser.campusName || 'Iloilo Campus',
+      role: memberData.role || 'Student Member',
+      yearLevel: memberData.yearLevel || 'Student',
+      avatar: memberData.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      joinedAt: 'Just now'
+    };
+
+    setBibleStudies((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId) {
+          const members = g.members ? [...g.members, newMember] : [newMember];
+          return {
+            ...g,
+            members,
+            currentMembers: members.length
+          };
+        }
+        return g;
+      })
+    );
+    showToast(`✓ Added ${newMember.name} to Life Group roster!`, 'success');
+    triggerConfetti();
+  };
+
+  const removeLifeGroupMember = (groupId, memberId) => {
+    setBibleStudies((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId) {
+          const members = (g.members || []).filter((m) => m.id !== memberId);
+          return {
+            ...g,
+            members,
+            currentMembers: Math.max(1, members.length)
+          };
+        }
+        return g;
+      })
+    );
+    showToast('Member removed from Life Group roster.', 'info');
+  };
+
   const deletePrayer = (prayerId) => {
     setPrayers((prev) => prev.filter((p) => p.id !== prayerId));
     showToast('Prayer request removed.', 'info');
@@ -1101,6 +1185,10 @@ export const AppProvider = ({ children }) => {
         addBibleStudy,
         updateBibleStudy,
         deleteBibleStudy,
+        sendLifeGroupMessage,
+        deleteLifeGroupMessage,
+        addLifeGroupMember,
+        removeLifeGroupMember,
         deletePrayer,
         volunteerApplications,
         addVolunteerApplication,

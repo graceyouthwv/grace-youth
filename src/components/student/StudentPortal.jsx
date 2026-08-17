@@ -23,13 +23,15 @@ import { DailyDevotional } from '../dashboard/DailyDevotional';
 import { VolunteerModal } from '../common/VolunteerModal';
 import { UploadSongModal } from './UploadSongModal';
 import { ViewSongModal } from './ViewSongModal';
-import { UploadCloud, FileUp, Eye } from 'lucide-react';
+import { LifeGroupCircleModal } from '../discipleship/LifeGroupCircleModal';
+import { UploadCloud, FileUp, Eye, MessageSquare } from 'lucide-react';
 
 export const StudentPortal = () => {
   const { currentUser, myBookings, myGroups, bibleStudies, prayers, cancelBooking, setActiveTab, showToast, theme } = useApp();
   const [showVolunteerModal, setShowVolunteerModal] = useState(false);
   const [showUploadSongModal, setShowUploadSongModal] = useState(false);
   const [selectedSongForView, setSelectedSongForView] = useState(null);
+  const [selectedGroupForCircle, setSelectedGroupForCircle] = useState(null);
   const isDark = theme === 'dark';
 
   const [musicSetlist, setMusicSetlist] = useState([
@@ -377,18 +379,28 @@ export const StudentPortal = () => {
                       isDark ? 'bg-slate-950/50 border-emerald-500/30' : 'bg-emerald-50/50 border-emerald-200'
                     }`}
                   >
-                    <div>
-                      <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
-                        isDark ? 'text-emerald-400 bg-emerald-950/60 border-emerald-500/30' : 'text-emerald-800 bg-emerald-100 border-emerald-200'
-                      }`}>
-                        {grp.topicCategory}
-                      </span>
-                      <h4 className={`font-extrabold text-base mt-1 font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                        {grp.title}
-                      </h4>
-                      <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                        Leader / Facilitator: <strong>{grp.facilitator}</strong>
-                      </p>
+                    <div className="flex items-start justify-between gap-2">
+                      <div>
+                        <span className={`text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full border ${
+                          isDark ? 'text-emerald-400 bg-emerald-950/60 border-emerald-500/30' : 'text-emerald-800 bg-emerald-100 border-emerald-200'
+                        }`}>
+                          {grp.topicCategory}
+                        </span>
+                        <h4 className={`font-extrabold text-base mt-1 font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                          {grp.title}
+                        </h4>
+                        <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                          Leader / Facilitator: <strong>{grp.facilitator}</strong>
+                        </p>
+                      </div>
+
+                      <button
+                        onClick={() => setSelectedGroupForCircle(grp)}
+                        className="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+                      >
+                        <MessageSquare className="w-3.5 h-3.5" />
+                        <span>Open Chat & Roster</span>
+                      </button>
                     </div>
 
                     <div className={`p-3 rounded-xl border text-xs space-y-1 ${
@@ -484,6 +496,12 @@ export const StudentPortal = () => {
         onClose={() => setSelectedSongForView(null)}
         song={selectedSongForView}
         onDeleteSong={(songId) => setMusicSetlist((prev) => prev.filter((s) => s.id !== songId))}
+      />
+
+      <LifeGroupCircleModal
+        isOpen={!!selectedGroupForCircle}
+        onClose={() => setSelectedGroupForCircle(null)}
+        group={selectedGroupForCircle}
       />
     </div>
   );

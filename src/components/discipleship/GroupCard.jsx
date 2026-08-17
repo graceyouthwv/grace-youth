@@ -1,16 +1,21 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { Users, MapPin, Clock, CheckCircle2, Edit3 } from 'lucide-react';
+import { Users, MapPin, Clock, CheckCircle2, Edit3, MessageSquare, ArrowRight } from 'lucide-react';
 import { JoinLifeGroupModal } from './JoinLifeGroupModal';
 import { EditGroupModal } from './EditGroupModal';
+import { LifeGroupCircleModal } from './LifeGroupCircleModal';
 
 export const GroupCard = ({ group }) => {
-  const { currentUser, myGroups, joinLifeGroup, theme } = useApp();
+  const { currentUser, myGroups, theme } = useApp();
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showCircleModal, setShowCircleModal] = useState(false);
+
   const isJoined = myGroups.includes(group.id);
   const isFacilitator = currentUser && (
-    (currentUser.name && group.facilitator && currentUser.name.toLowerCase() === group.facilitator.toLowerCase())
+    (currentUser.name && group.facilitator && currentUser.name.toLowerCase() === group.facilitator.toLowerCase()) ||
+    currentUser.role === 'leader' ||
+    currentUser.role === 'worker'
   );
   const isDark = theme === 'dark';
 
@@ -59,7 +64,7 @@ export const GroupCard = ({ group }) => {
               <span>Facilitator: <strong className={isDark ? 'text-slate-200' : 'text-slate-900'}>{group.facilitator} {isFacilitator && '(You)'}</strong></span>
               <span className="flex items-center gap-1 font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/30 px-2.5 py-0.5 rounded-full text-[10px]">
                 <Users className="w-3 h-3" />
-                <span>{group.currentMembers + (isJoined && !isFacilitator ? 1 : 0)} / {group.maxCapacity}</span>
+                <span>{group.members?.length || group.currentMembers || 1} / {group.maxCapacity}</span>
               </span>
             </div>
 
@@ -92,34 +97,35 @@ export const GroupCard = ({ group }) => {
           </div>
         </div>
 
-        {/* Footer Action */}
-        <div className="p-4 border-t bg-slate-50/50 dark:bg-slate-900/60 border-slate-100 dark:border-slate-800">
+        {/* Footer Action Buttons */}
+        <div className="p-4 border-t bg-slate-50/50 dark:bg-slate-900/60 border-slate-100 dark:border-slate-800 flex items-center gap-2">
+          {isJoined || isFacilitator ? (
+            <button
+              onClick={() => setShowCircleModal(true)}
+              className="flex-1 py-3 rounded-2xl font-black text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <MessageSquare className="w-4 h-4" />
+              <span>Open Circle & Chat ({group.chatMessages?.length || 0})</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => setShowJoinModal(true)}
+              className="flex-1 py-3 rounded-2xl font-black text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <Users className="w-4 h-4" />
+              <span>Join This Life Group</span>
+            </button>
+          )}
+
+          {/* Quick Roster / Details Trigger */}
           <button
-            onClick={() => setShowJoinModal(true)}
-            className={`w-full py-3 rounded-2xl font-black text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-2 ${
-              isFacilitator
-                ? 'bg-amber-100 dark:bg-amber-950/80 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-500/40'
-                : isJoined
-                ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/40'
-                : 'bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-emerald-500/20 hover:scale-[1.01]'
+            onClick={() => setShowCircleModal(true)}
+            className={`p-3 rounded-2xl border font-bold text-xs transition-all cursor-pointer shrink-0 ${
+              isDark ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
             }`}
+            title="View Roster & Group Details"
           >
-            {isFacilitator ? (
-              <>
-                <CheckCircle2 className="w-4 h-4 text-amber-500" />
-                <span>👑 You Facilitate this Group</span>
-              </>
-            ) : isJoined ? (
-              <>
-                <CheckCircle2 className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-                <span>Joined (View Circle)</span>
-              </>
-            ) : (
-              <>
-                <Users className="w-4 h-4" />
-                <span>Join This Life Group</span>
-              </>
-            )}
+            <Users className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -127,6 +133,12 @@ export const GroupCard = ({ group }) => {
       <JoinLifeGroupModal
         isOpen={showJoinModal}
         onClose={() => setShowJoinModal(false)}
+        group={group}
+      />
+
+      <LifeGroupCircleModal
+        isOpen={showCircleModal}
+        onClose={() => setShowCircleModal(false)}
         group={group}
       />
 
@@ -138,3 +150,4 @@ export const GroupCard = ({ group }) => {
     </>
   );
 };
+
