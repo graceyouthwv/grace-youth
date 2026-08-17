@@ -143,8 +143,21 @@ export const AppProvider = ({ children }) => {
     checkVersionAndGet('gy_campaigns', INITIAL_CAMPAIGNS)
   );
 
-  const [workerConnectRequests, setWorkerConnectRequests] = useState(() =>
-    checkVersionAndGet('gy_worker_connect_requests', [])
+  const [pastoralRequests, setPastoralRequests] = useState(() =>
+    checkVersionAndGet('gy_pastoral_requests', [
+      {
+        id: 'pr-demo-1',
+        studentName: 'Bea Claridad',
+        contactInfo: '0917-882-9471 (Messenger: Bea Claridad)',
+        workerId: 'usr-worker-1',
+        workerName: 'Kuya Daniel Chavez',
+        connectType: 'coffee',
+        note: 'Midterm thesis burnout and seeking prayer for peace of mind.',
+        campusName: 'UP Visayas',
+        createdAt: '10 mins ago',
+        status: 'Pending Contact'
+      }
+    ])
   );
 
   const [myBookings, setMyBookings] = useState(() =>

@@ -44,9 +44,27 @@ class ErrorBoundary extends React.Component {
           }}>
             <div style={{ fontSize: '36px', marginBottom: '12px' }}>✝️</div>
             <h2 style={{ fontSize: '20px', fontWeight: '800', marginBottom: '8px' }}>Grace Youth Portal</h2>
-            <p style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '20px', lineHeight: '1.5' }}>
-              We noticed a brief rendering glitch. Click below to refresh your connection.
+            <p style={{ fontSize: '13px', color: '#94a3b8', marginBottom: '12px', lineHeight: '1.5' }}>
+              We noticed a brief rendering glitch.
             </p>
+            {this.state.error && (
+              <pre style={{
+                background: '#090d16',
+                border: '1px solid #ef4444',
+                color: '#f87171',
+                padding: '12px',
+                borderRadius: '12px',
+                fontSize: '11px',
+                textAlign: 'left',
+                overflowX: 'auto',
+                marginBottom: '16px',
+                whiteSpace: 'pre-wrap'
+              }}>
+                {this.state.error.toString()}
+                {'\n'}
+                {this.state.error.stack?.split('\n').slice(0, 4).join('\n')}
+              </pre>
+            )}
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
               <button
                 onClick={() => window.location.reload()}
