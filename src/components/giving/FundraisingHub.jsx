@@ -29,100 +29,98 @@ export const FundraisingHub = () => {
   });
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
       {/* Clean, Non-Muddy Header Banner */}
-      <div className={`p-6 sm:p-8 rounded-3xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-6 transition-all ${
+      <div className={`p-5 sm:p-8 rounded-3xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 transition-all ${
         isDark
           ? 'bg-slate-900 border-slate-800 text-white shadow-xl'
           : 'bg-white border-slate-200 text-slate-900 shadow-xs'
       }`}>
-        <div className="max-w-xl">
-          <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-black mb-2.5 border ${
-            isDark
-              ? 'bg-pink-950/60 text-pink-300 border-pink-500/30'
-              : 'bg-pink-50 text-pink-700 border-pink-200'
-          }`}>
-            <Heart className="w-3.5 h-3.5 text-pink-500 fill-pink-500" />
-            <span>{isHlg ? 'Bulig sa Pagpauswag sang Ministry' : 'Kingdom Impact & Event Sponsorship'}</span>
+        <div className="max-w-xl space-y-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <div className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-black border ${
+              isDark
+                ? 'bg-pink-950/60 text-pink-300 border-pink-500/30'
+                : 'bg-pink-50 text-pink-700 border-pink-200'
+            }`}>
+              <Heart className="w-3.5 h-3.5 text-pink-500 fill-pink-500" />
+              <span>{isHlg ? 'Bulig sa Pagpauswag sang Ministry' : 'Kingdom Impact & Sponsorship'}</span>
+            </div>
+
+            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+              100% Ministry Directed
+            </span>
           </div>
-          <h2 className={`text-2xl sm:text-3xl font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+
+          <h2 className={`text-xl sm:text-3xl font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
             {isHlg ? 'Suporta para sa Outreach, Camps & Tilipon sang Kabataan' : 'Fuel Campus Outreach, Camps & Youth Fellowships'}
           </h2>
-          <p className={`text-xs sm:text-sm mt-2 leading-relaxed font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+          <p className={`text-xs sm:text-sm leading-relaxed font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
             {isHlg
               ? 'Ang tagsa ka piso naga-sponsor sa mga estudyante gikan sa ISUFST, UPV, CPU, kag WVSU para sa life-changing youth camps kag worship nights.'
               : 'Every peso directly sponsors college students from ISUFST, UPV, CPU, and WVSU for life-changing youth camps, free midterm coffee outreach, and campus worship nights.'}
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 shrink-0 w-full md:w-auto">
-          {canCreate ? (
+        {canCreate && (
+          <div className="shrink-0 w-full md:w-auto">
             <button
               onClick={() => setShowCreateModal(true)}
-              className="flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-indigo-500/25 transition-all cursor-pointer"
+              className="w-full md:w-auto flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-indigo-500/25 transition-all cursor-pointer"
             >
               <PlusCircle className="w-4 h-4" />
               <span>{isHlg ? 'Mag-umpisa sang Bag-ong Fundraiser' : 'Launch New Fundraiser'}</span>
             </button>
-          ) : (
-            <div className={`p-4 rounded-2xl border text-right ${
-              isDark ? 'bg-slate-800/80 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'
-            }`}>
-              <div className="font-extrabold text-sm text-pink-600 dark:text-pink-400">{isHlg ? '100% Para sa Estudyante' : '100% Ministry Directed'}</div>
-              <div className={`text-[11px] font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                {isHlg ? 'Beripikado sang Grace Youth Council' : 'Verified by Grace Youth Council'}
-              </div>
-            </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
 
-      {/* Metric Counters */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className={`p-5 rounded-2xl border flex items-center gap-4 ${
+      {/* Metric Counters (Clean 3-Column Grid on Mobile & Desktop) */}
+      <div className="grid grid-cols-3 gap-2 sm:gap-4">
+        <div className={`p-3 sm:p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 ${
           isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
         }`}>
-          <div className="p-3 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-500 shrink-0">
-            <Heart className="w-6 h-6" />
+          <div className="p-2 sm:p-3 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-500 shrink-0">
+            <Heart className="w-4 h-4 sm:w-6 sm:h-6 fill-rose-500/30" />
           </div>
           <div>
-            <div className={`text-2xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <div className={`text-sm sm:text-2xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
               ₱{totalRaised.toLocaleString()}
             </div>
-            <div className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              {isHlg ? 'Kabilugan nga Naipon' : 'Total Faith Seeds Raised'}
+            <div className={`text-[10px] sm:text-xs font-bold leading-tight ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              {isHlg ? 'Naipon' : 'Total Raised'}
             </div>
           </div>
         </div>
 
-        <div className={`p-5 rounded-2xl border flex items-center gap-4 ${
+        <div className={`p-3 sm:p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 ${
           isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
         }`}>
-          <div className="p-3 rounded-2xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 shrink-0">
-            <Users className="w-6 h-6" />
+          <div className="p-2 sm:p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-500 shrink-0">
+            <Users className="w-4 h-4 sm:w-6 sm:h-6" />
           </div>
           <div>
-            <div className={`text-2xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <div className={`text-sm sm:text-2xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
               {totalDonors}
             </div>
-            <div className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              {isHlg ? 'Estudyante & Alumni Sponsors' : 'Student & Alumni Sponsors'}
+            <div className={`text-[10px] sm:text-xs font-bold leading-tight ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              {isHlg ? 'Sponsors' : 'Sponsors'}
             </div>
           </div>
         </div>
 
-        <div className={`p-5 rounded-2xl border flex items-center gap-4 ${
+        <div className={`p-3 sm:p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 ${
           isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
         }`}>
-          <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 shrink-0">
-            <Target className="w-6 h-6" />
+          <div className="p-2 sm:p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-500 shrink-0">
+            <Target className="w-4 h-4 sm:w-6 sm:h-6" />
           </div>
           <div>
-            <div className={`text-2xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            <div className={`text-sm sm:text-2xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
               {campaigns.length}
             </div>
-            <div className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              {isHlg ? 'Aktibo nga Proyekto' : 'Active Campus Projects'}
+            <div className={`text-[10px] sm:text-xs font-bold leading-tight ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              {isHlg ? 'Proyekto' : 'Active Projects'}
             </div>
           </div>
         </div>
