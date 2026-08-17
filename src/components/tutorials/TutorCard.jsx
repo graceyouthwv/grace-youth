@@ -5,7 +5,7 @@ import { useApp } from '../../context/AppContext';
 
 export const TutorCard = ({ tutor }) => {
   const [showBooking, setShowBooking] = useState(false);
-  const { language, theme } = useApp();
+  const { currentUser, language, theme } = useApp();
   const isDark = theme === 'dark';
   const isHlg = language === 'hlg' || language === 'hil';
 
