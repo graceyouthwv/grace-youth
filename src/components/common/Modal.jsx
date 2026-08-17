@@ -1,10 +1,16 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
 
 export const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-xl' }) => {
   const { theme } = useApp();
   const isDark = theme === 'dark';
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const handleKeyDown = (e) => {
@@ -20,26 +26,26 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-xl' 
     };
   }, [isOpen, onClose]);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
-  return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-hidden">
+  const modalContent = (
+    <div className="fixed inset-0 z-[99999] flex items-center justify-center p-3 sm:p-6 overflow-hidden">
       {/* Backdrop */}
       <div
         className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity animate-in fade-in duration-200"
         onClick={onClose}
       />
 
-      {/* Modal Dialog Card with strict viewport bounded max-height and internal scroll */}
+      {/* Modal Dialog Card with guaranteed top-level centering & viewport bounds */}
       <div
-        className={`relative w-full ${maxWidth} rounded-3xl shadow-2xl border p-4 sm:p-6 z-10 overflow-hidden flex flex-col max-h-[90vh] max-h-[90dvh] transition-all transform animate-modal-in ${
+        className={`relative w-full ${maxWidth} rounded-3xl shadow-2xl border p-4 sm:p-6 z-10 overflow-hidden flex flex-col max-h-[88vh] max-h-[88dvh] transition-all transform animate-modal-in ${
           isDark
             ? 'bg-[#111625] text-slate-100 border-slate-800'
             : 'bg-white text-slate-900 border-slate-200'
         }`}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header - Always Fixed at Top of Modal */}
+        {/* Header - Fixed at Top */}
         <div className={`flex items-center justify-between pb-3 border-b mb-3 shrink-0 ${
           isDark ? 'border-slate-800' : 'border-slate-200'
         }`}>
@@ -60,7 +66,7 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-xl' 
           </button>
         </div>
 
-        {/* Scrollable Body - Never pushes header off screen */}
+        {/* Scrollable Body - Scrollbar is completely inside the modal */}
         <div className={`overflow-y-auto overscroll-contain flex-1 min-h-0 pr-1.5 space-y-4 custom-scrollbar ${
           isDark ? 'text-slate-200' : 'text-slate-700'
         }`}>
@@ -69,4 +75,6 @@ export const Modal = ({ isOpen, onClose, title, children, maxWidth = 'max-w-xl' 
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 };
