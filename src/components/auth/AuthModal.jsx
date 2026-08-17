@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
-import { Lock, Mail, User, School, ArrowRight, BookOpen, GraduationCap, ShieldCheck, HeartHandshake } from 'lucide-react';
+import { Lock, Mail, User, School, ArrowRight, BookOpen, GraduationCap, ShieldCheck, HeartHandshake, AlertCircle, Sparkles } from 'lucide-react';
 
 export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const { login, register, showToast, theme } = useApp();
@@ -12,14 +12,15 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
 
-  // Register Form State (Public registration ONLY for Student or Tutor Volunteer)
+  // Register Form State (Student | Tutor | Youth Worker)
   const [name, setName] = useState('');
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
-  const [role, setRole] = useState('student');
+  const [role, setRole] = useState('student'); // 'student' | 'tutor' | 'worker'
   const [campusId, setCampusId] = useState('upv');
   const [program, setProgram] = useState('');
   const [yearLevel, setYearLevel] = useState('1st Year');
+  const [bioNote, setBioNote] = useState('');
 
   const isDark = theme === 'dark';
 
@@ -54,11 +55,12 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
       name,
       email: registerEmail,
       password: registerPassword,
-      role: role === 'tutor' ? 'tutor' : 'student',
+      role,
       campusId,
       campusName: campusObj?.name || 'UP Visayas',
       program,
-      yearLevel
+      yearLevel,
+      bioNote
     });
 
     if (success) {
@@ -70,7 +72,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={mode === 'login' ? '🔐 Sign In to Grace Youth' : '✨ Create Student / Tutor Account'}
+      title={mode === 'login' ? '🔐 Sign In to Grace Youth' : '✨ Register / Apply for Access'}
       maxWidth="max-w-md"
     >
       <div className="space-y-4 text-xs sm:text-sm">
@@ -146,18 +148,18 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
             <form onSubmit={handleLoginSubmit} className="space-y-3">
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-slate-400 mb-1">
+                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   Account Email
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="email"
                     required
                     placeholder="name@school.edu.ph"
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border text-xs sm:text-sm ${
                       isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                     }`}
                   />
@@ -165,18 +167,18 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               </div>
 
               <div>
-                <label className="block text-xs font-black uppercase tracking-wider text-slate-400 mb-1">
+                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   Password
                 </label>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                   <input
                     type="password"
                     required
                     placeholder="••••••••"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border text-xs sm:text-sm ${
                       isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                     }`}
                   />
@@ -187,7 +189,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 type="submit"
                 className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-indigo-500/25 transition-all cursor-pointer flex items-center justify-center gap-2"
               >
-                <span>Sign In to Dashboard</span>
+                <span>Sign In</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
@@ -196,42 +198,65 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           /* 2. Public Self-Registration */
           <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
             <div>
-              <label className="block text-xs font-black uppercase tracking-wider text-slate-400 mb-1.5">
-                Join As:
+              <label className={`block text-xs font-black uppercase tracking-wider mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                Select Account Role:
               </label>
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid grid-cols-3 gap-1.5">
                 <button
                   type="button"
                   onClick={() => setRole('student')}
-                  className={`p-3 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
+                  className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
                     role === 'student'
-                      ? 'bg-indigo-600 text-white border-indigo-500 shadow-md shadow-indigo-500/20'
+                      ? 'bg-indigo-600 text-white border-indigo-500 shadow-md'
                       : isDark ? 'bg-slate-900 border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-600'
                   }`}
                 >
-                  <GraduationCap className="w-5 h-5" />
-                  <span className="text-xs font-black">Student Member</span>
-                  <span className="text-[10px] opacity-80">Free Tutorials & Life Groups</span>
+                  <GraduationCap className="w-4 h-4" />
+                  <span className="text-[11px] font-black">Student</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={() => setRole('tutor')}
-                  className={`p-3 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
+                  className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
                     role === 'tutor'
-                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-md shadow-amber-500/20'
+                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-md'
                       : isDark ? 'bg-slate-900 border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-600'
                   }`}
                 >
-                  <BookOpen className="w-5 h-5" />
-                  <span className="text-xs font-black">Tutor Volunteer</span>
-                  <span className="text-[10px] opacity-80">Teach Peers & Share Gospel</span>
+                  <BookOpen className="w-4 h-4" />
+                  <span className="text-[11px] font-black">Peer Tutor</span>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setRole('worker')}
+                  className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
+                    role === 'worker'
+                      ? 'bg-emerald-600 text-white border-emerald-500 shadow-md font-black'
+                      : isDark ? 'bg-slate-900 border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-600'
+                  }`}
+                >
+                  <HeartHandshake className="w-4 h-4" />
+                  <span className="text-[11px] font-black">Youth Worker</span>
                 </button>
               </div>
             </div>
 
+            {/* Note for Youth Workers */}
+            {role === 'worker' && (
+              <div className={`p-3 rounded-xl border text-[11px] leading-relaxed flex items-start gap-2 ${
+                isDark ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-200' : 'bg-emerald-50 border-emerald-200 text-emerald-950'
+              }`}>
+                <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" />
+                <div>
+                  <strong>Admin Approval Required:</strong> Youth Worker accounts are granted access to student discipleship consoles once verified and approved by an Administrator.
+                </div>
+              </div>
+            )}
+
             <div>
-              <label className="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1">
+              <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                 Full Name *
               </label>
               <input
@@ -248,13 +273,13 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1">
+                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   Email Address *
                 </label>
                 <input
                   type="email"
                   required
-                  placeholder="student@school.edu.ph"
+                  placeholder="name@school.edu.ph"
                   value={registerEmail}
                   onChange={(e) => setRegisterEmail(e.target.value)}
                   className={`w-full px-3 py-2 rounded-xl border text-xs ${
@@ -263,7 +288,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 />
               </div>
               <div>
-                <label className="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1">
+                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   Password *
                 </label>
                 <input
@@ -281,13 +306,13 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1">
+                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   Iloilo Campus
                 </label>
                 <select
                   value={campusId}
                   onChange={(e) => setCampusId(e.target.value)}
-                  className={`w-full px-2 py-2 rounded-xl border text-xs ${
+                  className={`w-full px-2 py-2 rounded-xl border text-xs font-bold ${
                     isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 >
@@ -298,8 +323,8 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               </div>
 
               <div>
-                <label className="block text-[11px] font-black uppercase tracking-wider text-slate-400 mb-1">
-                  Degree / Major
+                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Degree / Role Status
                 </label>
                 <input
                   type="text"
@@ -317,7 +342,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               type="submit"
               className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-indigo-500/25 transition-all cursor-pointer mt-2"
             >
-              Complete Registration & Open Dashboard
+              {role === 'worker' ? 'Submit Youth Worker Application' : 'Create Account & Open Dashboard'}
             </button>
 
             <div className="text-center pt-1">

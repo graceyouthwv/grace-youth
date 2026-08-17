@@ -1,39 +1,36 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
-import { ShieldCheck, Users, BookOpen, Heart, Calendar, CheckCircle2, AlertCircle, Trash2, Send, Database, Sparkles, Filter, PlusCircle, UserCheck, UserPlus, Search, Award, Check, HeartHandshake, Music, Coffee, Tent } from 'lucide-react';
+import {
+  ShieldCheck,
+  Users,
+  BookOpen,
+  Heart,
+  Calendar,
+  CheckCircle2,
+  AlertCircle,
+  Trash2,
+  Send,
+  Database,
+  Sparkles,
+  Filter,
+  PlusCircle,
+  UserCheck,
+  UserPlus,
+  Search,
+  Award,
+  Check,
+  HeartHandshake,
+  Music,
+  Coffee,
+  Tent,
+  KeyRound,
+  Lock,
+  PhoneCall,
+  CheckCircle,
+  Eye
+} from 'lucide-react';
 import { CAMPUSES } from '../../data/campuses';
 import { AddUserModal } from './AddUserModal';
-
-const INITIAL_VOLUNTEER_APPS = [
-  {
-    id: 'vol-1',
-    name: 'Janice Nicole Palma',
-    email: 'janice@isufst.edu.ph',
-    contact: '0918-392-1144',
-    campusId: 'isufst',
-    campusName: 'ISUFST (Barotac Nuevo)',
-    roleArea: '🌱 Life Group Co-Facilitator',
-    yearLevel: '3rd Year',
-    availability: 'Tuesday & Thursday afternoons, Saturday fellowships',
-    bioNote: 'I completed our campus discipleship series and want to co-lead freshmen life groups for Fisheries students.',
-    appliedAt: '2 hours ago',
-    status: 'Pending Admin Review'
-  },
-  {
-    id: 'vol-2',
-    name: 'Marco Gabriel Santos',
-    email: 'marco@upv.edu.ph',
-    contact: '0927-449-8821',
-    campusId: 'upv',
-    campusName: 'UP Visayas (Miagao)',
-    roleArea: '🎸 Worship & Music Team',
-    yearLevel: '2nd Year',
-    availability: 'Friday nights & Sunday campus service',
-    bioNote: 'Acoustic guitarist and vocalist eager to lead worship at youth camps and campus welcoming jams.',
-    appliedAt: '1 day ago',
-    status: 'Pending Admin Review'
-  }
-];
 
 export const AdminPortal = () => {
   const {
@@ -46,36 +43,153 @@ export const AdminPortal = () => {
     registeredUsers,
     setRegisteredUsers,
     updateUserRole,
+    approveYouthWorker,
     lifeGroupRequests,
     approveLifeGroupRequest,
     currentUser,
+    setCurrentUser,
     claimRequest,
     cancelBooking,
+    campaigns,
     showToast,
     theme
   } = useApp();
 
   const isDark = theme === 'dark';
-  const [adminTab, setAdminTab] = useState('roles'); // 'roles' | 'volunteers' | 'tutors' | 'triage' | 'lg_requests' | 'gospel_sessions' | 'prayers'
+  const isAdminLoggedIn = currentUser && currentUser.role === 'leader';
+
+  // Admin Auth Form State (if not logged in as Admin)
+  const [adminPin, setAdminPin] = useState('');
+  const [adminEmail, setAdminEmail] = useState('graceyouth.wv@proton.me');
+  const [adminAuthError, setAdminAuthError] = useState('');
+
+  // Admin Dashboard Tabs
+  const [adminTab, setAdminTab] = useState('roles'); // 'roles' | 'workers' | 'tutors' | 'triage' | 'lg_requests' | 'campaigns' | 'pastoral' | 'prayers'
   const [userSearchQuery, setUserSearchQuery] = useState('');
   const [selectedCampusFilter, setSelectedCampusFilter] = useState('all');
   const [showAddUserModal, setShowAddUserModal] = useState(false);
   const [verifiedTutorIds, setVerifiedTutorIds] = useState(() => ['tut-1', 'tut-2', 'tut-3', 'tut-4', 'tut-5']);
-  
-  const [volunteerApps, setVolunteerApps] = useState(() => {
-    const saved = localStorage.getItem('gy_volunteer_apps');
-    return saved ? JSON.parse(saved) : INITIAL_VOLUNTEER_APPS;
-  });
+
+  // Handle In-Portal Admin Sign-In
+  const handleAdminSignIn = (e) => {
+    e.preventDefault();
+    setAdminAuthError('');
+
+    if (adminPin === 'graceyouth2026' || adminPin === 'password123' || adminPin === 'admin2026') {
+      const adminAccount = registeredUsers.find((u) => u.role === 'leader') || {
+        id: 'usr-admin-1',
+        name: 'Pastor Tim',
+        email: 'graceyouth.wv@proton.me',
+        role: 'leader',
+        roleLabel: 'Ministry Admin / Coordinator',
+        campusId: 'wvsu',
+        campusName: 'WVSU & Regional Network',
+        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+      };
+
+      setCurrentUser(adminAccount);
+      localStorage.setItem('gy_active_session', JSON.stringify(adminAccount));
+      showToast('🛡️ Admin Command Center unlocked! Soli Deo Gloria.', 'success');
+      setAdminPin('');
+    } else {
+      setAdminAuthError('Invalid Admin Master PIN. Please verify credentials.');
+      showToast('Authentication failed: Invalid PIN.', 'error');
+    }
+  };
+
+  // 1. IF NOT LOGGED IN AS ADMIN: RENDER THE STANDALONE ADMIN GATEWAY
+  if (!isAdminLoggedIn) {
+    return (
+      <div className="max-w-xl mx-auto py-8 sm:py-12">
+        <div className={`p-6 sm:p-8 rounded-3xl border shadow-2xl transition-all ${
+          isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+        }`}>
+          <div className="w-16 h-16 rounded-3xl bg-gradient-to-tr from-rose-600 via-pink-600 to-indigo-600 text-white flex items-center justify-center font-black shadow-lg mx-auto mb-4">
+            <ShieldCheck className="w-8 h-8" />
+          </div>
+
+          <div className="text-center mb-6">
+            <h2 className={`text-2xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Ministry Admin Sign In
+            </h2>
+            <p className={`text-xs mt-1 max-w-sm mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Separate operational gate for Grace Youth campus pastors, regional directors, and ministry staff.
+            </p>
+          </div>
+
+          {adminAuthError && (
+            <div className="mb-4 p-3.5 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{adminAuthError}</span>
+            </div>
+          )}
+
+          <form onSubmit={handleAdminSignIn} className="space-y-4">
+            <div>
+              <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                Staff / Pastor Email
+              </label>
+              <input
+                type="email"
+                required
+                value={adminEmail}
+                onChange={(e) => setAdminEmail(e.target.value)}
+                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                  isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
+                }`}
+              />
+            </div>
+
+            <div>
+              <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                Admin Master PIN *
+              </label>
+              <input
+                type="password"
+                required
+                placeholder="Enter Master Security Key..."
+                value={adminPin}
+                onChange={(e) => setAdminPin(e.target.value)}
+                className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm tracking-widest ${
+                  isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-300 text-slate-900'
+                }`}
+              />
+              <div className="flex items-center justify-between mt-1 text-[11px] text-slate-500">
+                <span>Demo PIN: <strong className="font-mono text-indigo-500">graceyouth2026</strong></span>
+                <button
+                  type="button"
+                  onClick={() => setAdminPin('graceyouth2026')}
+                  className="text-indigo-600 dark:text-indigo-400 font-bold hover:underline cursor-pointer"
+                >
+                  1-Tap Fill
+                </button>
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-rose-500/25 transition-all cursor-pointer flex items-center justify-center gap-2"
+            >
+              <KeyRound className="w-4 h-4" />
+              <span>Authorize & Enter Admin Hub</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
+  // 2. AUTHENTICATED SUPER ADMIN WORKSPACE
+  const pendingWorkers = registeredUsers.filter((u) => u.role === 'worker' && u.status === 'Pending Admin Approval');
+  const activeWorkers = registeredUsers.filter((u) => u.role === 'worker' && u.status !== 'Pending Admin Approval');
 
   const filteredUsers = registeredUsers.filter((u) => {
-    const matchesSearch = u.name.toLowerCase().includes(userSearchQuery.toLowerCase()) || u.email.toLowerCase().includes(userSearchQuery.toLowerCase());
+    const matchesSearch =
+      u.name.toLowerCase().includes(userSearchQuery.toLowerCase()) ||
+      u.email.toLowerCase().includes(userSearchQuery.toLowerCase());
     const matchesCampus = selectedCampusFilter === 'all' || u.campusId === selectedCampusFilter;
     return matchesSearch && matchesCampus;
   });
-
-  const pendingRequests = requests.filter(
-    (r) => selectedCampusFilter === 'all' || r.campusId === selectedCampusFilter
-  );
 
   const handleToggleVerifyTutor = (tutorId, tutorName) => {
     if (verifiedTutorIds.includes(tutorId)) {
@@ -83,15 +197,8 @@ export const AdminPortal = () => {
       showToast(`Verification revoked for ${tutorName}.`, 'info');
     } else {
       setVerifiedTutorIds((prev) => [...prev, tutorId]);
-      showToast(`✅ ${tutorName} is officially verified and certified for campus tutoring!`, 'success');
+      showToast(`✅ ${tutorName} is officially verified for peer tutoring!`, 'success');
     }
-  };
-
-  const handleApproveVolunteer = (app) => {
-    // Promote user if registered or add to staff
-    updateUserRole(app.id, 'worker');
-    setVolunteerApps((prev) => prev.filter((v) => v.id !== app.id));
-    showToast(`🎉 ${app.name} has been approved as an active Youth Worker / Volunteer!`, 'success');
   };
 
   const handleDeleteUser = (userId, userName) => {
@@ -103,17 +210,11 @@ export const AdminPortal = () => {
     showToast(`Account for ${userName} removed.`, 'info');
   };
 
-  const handleToggleGospelShared = (bookingId) => {
-    showToast(`🕊️ Gospel sharing milestone logged for session! Discipleship team notified.`, 'success');
-  };
-
   return (
     <div className="space-y-6">
       {/* Admin Header Banner */}
       <div className={`p-6 sm:p-8 rounded-3xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-6 transition-all ${
-        isDark
-          ? 'bg-slate-900 border-slate-800 text-white shadow-xl'
-          : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+        isDark ? 'bg-slate-900 border-slate-800 text-white shadow-xl' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
       }`}>
         <div className="flex items-center gap-4">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-rose-600 via-pink-600 to-indigo-600 text-white flex items-center justify-center font-black shadow-lg shrink-0">
@@ -150,11 +251,9 @@ export const AdminPortal = () => {
 
       {/* Metric Counters */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-        <div className={`p-4 sm:p-5 rounded-2xl border ${
-          isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
-        }`}>
+        <div className={`p-4 sm:p-5 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'}`}>
           <div className="flex items-center justify-between mb-2">
-            <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>People & Staff</span>
+            <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Total Accounts</span>
             <Users className="w-4 h-4 text-indigo-500" />
           </div>
           <div className={`text-2xl sm:text-3xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
@@ -162,21 +261,17 @@ export const AdminPortal = () => {
           </div>
         </div>
 
-        <div className={`p-4 sm:p-5 rounded-2xl border ${
-          isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
-        }`}>
+        <div className={`p-4 sm:p-5 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'}`}>
           <div className="flex items-center justify-between mb-2">
-            <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Volunteer Apps</span>
-            <HeartHandshake className="w-4 h-4 text-pink-500" />
+            <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Pending Workers</span>
+            <HeartHandshake className="w-4 h-4 text-emerald-500" />
           </div>
-          <div className={`text-2xl sm:text-3xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-            {volunteerApps.length}
+          <div className={`text-2xl sm:text-3xl font-black font-heading ${pendingWorkers.length ? 'text-emerald-500 animate-pulse' : isDark ? 'text-white' : 'text-slate-900'}`}>
+            {pendingWorkers.length}
           </div>
         </div>
 
-        <div className={`p-4 sm:p-5 rounded-2xl border ${
-          isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
-        }`}>
+        <div className={`p-4 sm:p-5 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'}`}>
           <div className="flex items-center justify-between mb-2">
             <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Verified Tutors</span>
             <Award className="w-4 h-4 text-amber-500" />
@@ -186,12 +281,10 @@ export const AdminPortal = () => {
           </div>
         </div>
 
-        <div className={`p-4 sm:p-5 rounded-2xl border ${
-          isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
-        }`}>
+        <div className={`p-4 sm:p-5 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'}`}>
           <div className="flex items-center justify-between mb-2">
             <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Life Group Queue</span>
-            <Sparkles className="w-4 h-4 text-emerald-500" />
+            <Sparkles className="w-4 h-4 text-pink-500" />
           </div>
           <div className={`text-2xl sm:text-3xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
             {lifeGroupRequests?.length || 0}
@@ -211,18 +304,23 @@ export const AdminPortal = () => {
               : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
           }`}
         >
-          👥 People & Roles ({registeredUsers.length})
+          👥 People & Staff ({registeredUsers.length})
         </button>
 
         <button
-          onClick={() => setAdminTab('volunteers')}
-          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
-            adminTab === 'volunteers'
+          onClick={() => setAdminTab('workers')}
+          className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+            adminTab === 'workers'
               ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
               : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
           }`}
         >
-          🤝 Volunteer Workers ({volunteerApps.length})
+          <span>✝️ Youth Worker Approvals</span>
+          {pendingWorkers.length > 0 && (
+            <span className="px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950 font-black text-[10px]">
+              {pendingWorkers.length}
+            </span>
+          )}
         </button>
 
         <button
@@ -233,7 +331,7 @@ export const AdminPortal = () => {
               : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
           }`}
         >
-          👨‍🏫 Verify Peer Tutors ({tutors.length})
+          👨‍🏫 Peer Tutors ({tutors.length})
         </button>
 
         <button
@@ -259,14 +357,14 @@ export const AdminPortal = () => {
         </button>
 
         <button
-          onClick={() => setAdminTab('gospel_sessions')}
+          onClick={() => setAdminTab('campaigns')}
           className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer whitespace-nowrap ${
-            adminTab === 'gospel_sessions'
+            adminTab === 'campaigns'
               ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
               : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
           }`}
         >
-          ✝️ Gospel Sessions ({myBookings.length})
+          🏕️ Camps & Sponsorship ({campaigns.length})
         </button>
 
         <button
@@ -281,7 +379,7 @@ export const AdminPortal = () => {
         </button>
       </div>
 
-      {/* Tab 1: People & Roles Management */}
+      {/* TAB 1: ALL PEOPLE & ROLES */}
       {adminTab === 'roles' && (
         <div className="space-y-4">
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
@@ -333,6 +431,11 @@ export const AdminPortal = () => {
                       }`}>
                         {user.role === 'worker' ? 'Youth Worker' : user.role === 'leader' ? 'Admin' : user.role}
                       </span>
+                      {user.status === 'Pending Admin Approval' && (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-600 border border-amber-500/30">
+                          Pending Approval
+                        </span>
+                      )}
                     </div>
                     <div className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                       {user.email} • <span className="font-bold">{user.campusName}</span>
@@ -343,7 +446,7 @@ export const AdminPortal = () => {
                 {/* Role Switcher & Delete */}
                 <div className="flex items-center gap-2.5 w-full md:w-auto justify-between md:justify-end">
                   <div className="flex items-center gap-2">
-                    <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Change Role:</span>
+                    <span className={`text-xs font-bold ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>Role:</span>
                     <select
                       value={user.role}
                       onChange={(e) => updateUserRole(user.id, e.target.value)}
@@ -374,153 +477,165 @@ export const AdminPortal = () => {
         </div>
       )}
 
-      {/* Tab 2: Volunteer Youth Worker Applications */}
-      {adminTab === 'volunteers' && (
+      {/* TAB 2: YOUTH WORKER APPROVALS & CREATION */}
+      {adminTab === 'workers' && (
         <div className="space-y-4">
-          <div className={`p-4 rounded-2xl border text-xs ${
-            isDark ? 'bg-indigo-950/30 border-indigo-500/30 text-indigo-200' : 'bg-indigo-50 border-indigo-200 text-indigo-950'
+          <div className={`p-4 rounded-2xl border text-xs leading-relaxed ${
+            isDark ? 'bg-emerald-950/30 border-emerald-500/30 text-emerald-200' : 'bg-emerald-50 border-emerald-200 text-emerald-950'
           }`}>
-            🤝 <strong>Ministry Servants Queue:</strong> College students and partners applying to serve as Life Group leaders, worship team members, camp counselors, or exam care outreach workers.
+            ✝️ <strong>Campus Youth Worker Governance:</strong> Youth Workers lead discipleship, facilitate Life Groups, and provide confidential pastoral counseling. Anyone applying as a Youth Worker from the client app must be approved here before they can log in!
           </div>
 
-          <div className="space-y-3">
-            {volunteerApps.length > 0 ? (
-              volunteerApps.map((app) => (
-                <div
-                  key={app.id}
-                  className={`p-5 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-                  }`}
-                >
-                  <div className="space-y-1.5 flex-1">
-                    <div className="flex items-center gap-2">
-                      <span className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                        {app.name}
-                      </span>
-                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-pink-100 dark:bg-pink-950/60 text-pink-700 dark:text-pink-300 border border-pink-200 dark:border-pink-500/30">
-                        {app.roleArea}
-                      </span>
-                      <span className="text-[10px] text-slate-400 font-bold">({app.campusName})</span>
-                    </div>
+          {/* Pending Worker Approvals */}
+          <div>
+            <h3 className={`text-sm font-black uppercase tracking-wider mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Pending Applications ({pendingWorkers.length})
+            </h3>
 
-                    <div className={`text-xs ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                      Email: <strong>{app.email}</strong> • Mobile/Handle: <strong>{app.contact || 'Not provided'}</strong> • Year: {app.yearLevel}
-                    </div>
-
-                    <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                      🕒 Availability: {app.availability}
-                    </div>
-
-                    <p className={`text-xs italic p-2.5 rounded-xl border mt-1 ${
-                      isDark ? 'bg-slate-950/60 border-slate-800 text-slate-300' : 'bg-slate-50 border-slate-200 text-slate-700'
-                    }`}>
-                      "{app.bioNote}"
-                    </p>
-                  </div>
-
-                  <div className="flex items-center gap-2 shrink-0">
-                    <button
-                      onClick={() => handleApproveVolunteer(app)}
-                      className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs shadow-lg hover:scale-105 transition-all cursor-pointer flex items-center gap-1.5"
-                    >
-                      <CheckCircle2 className="w-4 h-4" />
-                      <span>Approve as Youth Worker</span>
-                    </button>
-                  </div>
-                </div>
-              ))
-            ) : (
-              <div className={`p-8 text-center rounded-3xl border border-dashed text-xs ${
-                isDark ? 'bg-slate-900/40 border-slate-800 text-slate-500' : 'bg-white border-slate-200 text-slate-500'
-              }`}>
-                No pending volunteer applications at this time.
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Tab 3: Tutor Verification */}
-      {adminTab === 'tutors' && (
-        <div className="space-y-4">
-          <div className="space-y-3">
-            {tutors.map((tutor) => {
-              const isVerified = verifiedTutorIds.includes(tutor.id);
-              return (
-                <div
-                  key={tutor.id}
-                  className={`p-4 sm:p-5 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-                  }`}
-                >
-                  <div className="flex items-center gap-3.5">
-                    <img src={tutor.avatar} alt={tutor.name} className="w-12 h-12 rounded-2xl object-cover ring-2 ring-indigo-500/20" />
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                          {tutor.name}
-                        </span>
-                        {isVerified ? (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/30 flex items-center gap-1">
-                            <Check className="w-3 h-3" /> Verified Tutor
-                          </span>
-                        ) : (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300">
-                            Pending Review
-                          </span>
-                        )}
-                      </div>
-                      <div className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                        {tutor.role} • <span className="font-bold">{tutor.campusName}</span>
-                      </div>
-                      <div className="text-xs text-indigo-600 dark:text-indigo-400 font-bold mt-1">
-                        Teaches: {tutor.subjects.join(', ')}
-                      </div>
-                    </div>
-                  </div>
-
-                  <button
-                    onClick={() => handleToggleVerifyTutor(tutor.id, tutor.name)}
-                    className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
-                      isVerified
-                        ? isDark
-                          ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 hover:bg-rose-950/40 hover:text-rose-300 hover:border-rose-500/40'
-                          : 'bg-emerald-100 text-emerald-900 border border-emerald-300 hover:bg-rose-100 hover:text-rose-900'
-                        : 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
+            <div className="space-y-3">
+              {pendingWorkers.length > 0 ? (
+                pendingWorkers.map((worker) => (
+                  <div
+                    key={worker.id}
+                    className={`p-5 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
+                      isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
                     }`}
                   >
-                    <Award className="w-3.5 h-3.5" />
-                    <span>{isVerified ? '✓ Certified (Click to Revoke)' : 'Approve & Certify Tutor'}</span>
-                  </button>
+                    <div className="flex items-center gap-3.5">
+                      <img src={worker.avatar} alt={worker.name} className="w-12 h-12 rounded-2xl object-cover ring-2 ring-emerald-500/30" />
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                            {worker.name}
+                          </span>
+                          <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-amber-500/20 text-amber-600 border border-amber-500/30">
+                            Awaiting Approval
+                          </span>
+                        </div>
+                        <div className={`text-xs mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
+                          Email: <strong>{worker.email}</strong> • Campus: <strong>{worker.campusName}</strong>
+                        </div>
+                        <div className={`text-xs italic mt-1 text-slate-400`}>
+                          "{worker.bioNote || 'Applying as campus youth missionary and life group facilitator.'}"
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 shrink-0">
+                      <button
+                        onClick={() => approveYouthWorker(worker.id)}
+                        className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs shadow-lg hover:scale-105 transition-all cursor-pointer flex items-center gap-1.5"
+                      >
+                        <CheckCircle2 className="w-4 h-4" />
+                        <span>✓ Approve & Activate Account</span>
+                      </button>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className={`p-6 text-center rounded-2xl border border-dashed text-xs ${
+                  isDark ? 'bg-slate-900/40 border-slate-800 text-slate-500' : 'bg-white border-slate-200 text-slate-500'
+                }`}>
+                  No pending youth worker applications.
                 </div>
-              );
-            })}
+              )}
+            </div>
+          </div>
+
+          {/* Active Verified Youth Workers */}
+          <div className="pt-4">
+            <h3 className={`text-sm font-black uppercase tracking-wider mb-2 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Active Youth Workers ({activeWorkers.length})
+            </h3>
+
+            <div className="space-y-3">
+              {activeWorkers.map((worker) => (
+                <div
+                  key={worker.id}
+                  className={`p-4 rounded-2xl border flex items-center justify-between gap-4 ${
+                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <img src={worker.avatar} alt={worker.name} className="w-10 h-10 rounded-xl object-cover ring-2 ring-emerald-500/20" />
+                    <div>
+                      <div className="font-extrabold text-sm">{worker.name}</div>
+                      <div className="text-xs text-slate-400">{worker.email} • {worker.campusName}</div>
+                    </div>
+                  </div>
+
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-500/10 text-emerald-600 border border-emerald-500/20 flex items-center gap-1">
+                    <Check className="w-3 h-3" /> Active Staff
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       )}
 
-      {/* Tab 4: Request Triage */}
+      {/* TAB 3: TUTOR VERIFICATION */}
+      {adminTab === 'tutors' && (
+        <div className="space-y-3">
+          {tutors.map((tutor) => {
+            const isVerified = verifiedTutorIds.includes(tutor.id);
+            return (
+              <div
+                key={tutor.id}
+                className={`p-4 sm:p-5 rounded-2xl border flex flex-col md:flex-row items-start md:items-center justify-between gap-4 ${
+                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+                }`}
+              >
+                <div className="flex items-center gap-3.5">
+                  <img src={tutor.avatar} alt={tutor.name} className="w-12 h-12 rounded-2xl object-cover ring-2 ring-indigo-500/20" />
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <span className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                        {tutor.name}
+                      </span>
+                      {isVerified ? (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-500/30 flex items-center gap-1">
+                          <Check className="w-3 h-3" /> Verified Tutor
+                        </span>
+                      ) : (
+                        <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border border-amber-300">
+                          Pending Review
+                        </span>
+                      )}
+                    </div>
+                    <div className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                      {tutor.role} • <span className="font-bold">{tutor.campusName}</span>
+                    </div>
+                    <div className="text-xs text-indigo-600 dark:text-indigo-400 font-bold mt-1">
+                      Teaches: {tutor.subjects.join(', ')}
+                    </div>
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => handleToggleVerifyTutor(tutor.id, tutor.name)}
+                  className={`px-4 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                    isVerified
+                      ? isDark
+                        ? 'bg-emerald-950/80 text-emerald-300 border border-emerald-500/40 hover:bg-rose-950/40 hover:text-rose-300 hover:border-rose-500/40'
+                        : 'bg-emerald-100 text-emerald-900 border border-emerald-300 hover:bg-rose-100 hover:text-rose-900'
+                      : 'bg-gradient-to-r from-emerald-600 to-teal-600 text-white shadow-md'
+                  }`}
+                >
+                  <Award className="w-3.5 h-3.5" />
+                  <span>{isVerified ? '✓ Certified (Click to Revoke)' : 'Approve & Certify Tutor'}</span>
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      )}
+
+      {/* TAB 4: ACADS TRIAGE */}
       {adminTab === 'triage' && (
         <div className="space-y-4">
-          <div className="flex items-center justify-between">
-            <span className={`text-xs font-black uppercase tracking-widest ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Active Student Requests Needing Tutor Dispatch:
-            </span>
-            <select
-              value={selectedCampusFilter}
-              onChange={(e) => setSelectedCampusFilter(e.target.value)}
-              className={`px-3 py-1.5 rounded-xl border text-xs ${
-                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-              }`}
-            >
-              {CAMPUSES.map((c) => (
-                <option key={c.id} value={c.id}>{c.shortName}</option>
-              ))}
-            </select>
-          </div>
-
           <div className="space-y-3">
-            {pendingRequests.map((req) => (
+            {requests.map((req) => (
               <div
                 key={req.id}
                 className={`p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
@@ -558,7 +673,7 @@ export const AdminPortal = () => {
         </div>
       )}
 
-      {/* Tab 5: Life Group Proposals */}
+      {/* TAB 5: LIFE GROUP PROPOSALS */}
       {adminTab === 'lg_requests' && (
         <div className="space-y-4">
           <div className="space-y-3">
@@ -611,54 +726,51 @@ export const AdminPortal = () => {
         </div>
       )}
 
-      {/* Tab 6: Gospel Sessions */}
-      {adminTab === 'gospel_sessions' && (
-        <div className="space-y-3">
-          {myBookings.map((bk) => (
-            <div
-              key={bk.id}
-              className={`p-5 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
-                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-              }`}
-            >
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    {bk.subject}
-                  </span>
-                  <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-500/30 px-2 py-0.2 rounded-full">
-                    {bk.status}
-                  </span>
+      {/* TAB 6: CAMPS & SPONSORSHIP MANAGER */}
+      {adminTab === 'campaigns' && (
+        <div className="space-y-4">
+          <div className="space-y-3">
+            {campaigns.map((camp) => (
+              <div
+                key={camp.id}
+                className={`p-5 rounded-2xl border ${
+                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+                }`}
+              >
+                <div className="flex items-start justify-between gap-4 mb-3">
+                  <div>
+                    <h3 className="font-extrabold text-base">{camp.title}</h3>
+                    <div className="text-xs text-slate-400 mt-0.5">Campaign Goal: ₱{camp.targetAmount.toLocaleString()} • Deadline: {camp.endDate}</div>
+                  </div>
+                  <div className="text-right">
+                    <div className="text-lg font-black text-pink-500">₱{camp.raisedAmount.toLocaleString()}</div>
+                    <div className="text-[11px] text-slate-500">{camp.donorsCount} Donors</div>
+                  </div>
                 </div>
-                <p className={`text-xs mt-1 ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-                  Assigned Tutor: <strong>{bk.tutorName}</strong> • {bk.day} ({bk.time}) • {bk.mode}
-                </p>
-              </div>
 
-              <div className="flex items-center gap-2">
-                <button
-                  onClick={() => handleToggleGospelShared(bk.id)}
-                  className={`px-4 py-2 rounded-xl border font-black text-xs cursor-pointer ${
-                    isDark ? 'bg-slate-800 border-slate-700 text-emerald-400' : 'bg-emerald-50 border-emerald-200 text-emerald-700'
-                  }`}
-                >
-                  ✓ Mark Gospel Shared
-                </button>
-                <button
-                  onClick={() => cancelBooking(bk.id)}
-                  className={`p-2 rounded-xl border cursor-pointer ${
-                    isDark ? 'bg-slate-800 border-slate-700 text-rose-400' : 'bg-rose-50 border-rose-200 text-rose-600'
-                  }`}
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <div className="pt-3 border-t border-slate-800">
+                  <div className="text-xs font-bold text-slate-400 mb-2">Recent GCash / Maya Verified Donors:</div>
+                  <div className="space-y-1.5">
+                    {(camp.recentDonors || []).map((donor, idx) => (
+                      <div key={idx} className="p-2 rounded-xl bg-slate-950/40 border border-slate-800 flex items-center justify-between text-xs">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-white">{donor.name}</span>
+                          {donor.refNumber && (
+                            <span className="font-mono text-[10px] text-emerald-400">Ref: #{donor.refNumber}</span>
+                          )}
+                        </div>
+                        <span className="font-black text-pink-400">+₱{donor.amount.toLocaleString()}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Tab 7: Prayer Moderation */}
+      {/* TAB 7: PRAYER MODERATION */}
       {adminTab === 'prayers' && (
         <div className="space-y-3">
           {prayers.map((prayer) => (

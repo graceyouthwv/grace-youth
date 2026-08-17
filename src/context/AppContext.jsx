@@ -8,12 +8,10 @@ import { DAILY_DEVOTIONALS } from '../data/devotionals';
 import { INITIAL_REVIEWERS } from '../data/reviewers';
 import { INITIAL_CAMPAIGNS } from '../data/campaigns';
 import { triggerConfetti } from '../utils/helpers';
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 const AppContext = createContext();
 
-// Clean State Version Key for Production Reset
-const STORAGE_VERSION = 'gy_clean_v3_pure';
+const STORAGE_VERSION = 'gy_clean_v4_roles';
 
 const GUEST_USER = {
   id: 'guest',
@@ -39,6 +37,8 @@ export const DEMO_ACCOUNTS = [
     campusId: 'upv',
     campusName: 'UP Visayas (Miagao)',
     yearLevel: '2nd Year',
+    isApproved: true,
+    status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
     bio: 'UPV Bio sophomore. Seeking God in the midst of lab practicals and organic chemistry!'
   },
@@ -52,6 +52,8 @@ export const DEMO_ACCOUNTS = [
     campusId: 'upv',
     campusName: 'UP Visayas (Miagao)',
     yearLevel: '4th Year',
+    isApproved: true,
+    status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
     bio: 'Calculus tutor and life group co-facilitator. Passionate about sharing Jesus before problem sets.'
   },
@@ -65,6 +67,8 @@ export const DEMO_ACCOUNTS = [
     campusId: 'isufst',
     campusName: 'ISUFST & Iloilo Campuses',
     yearLevel: 'Staff',
+    isApproved: true,
+    status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
     bio: 'Full-time campus youth missionary leading discipleship and pastoral care across Iloilo schools.'
   },
@@ -78,6 +82,8 @@ export const DEMO_ACCOUNTS = [
     campusId: 'wvsu',
     campusName: 'WVSU & Regional Network',
     yearLevel: 'Staff',
+    isApproved: true,
+    status: 'Active',
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
     bio: 'Regional coordinator supervising peer tutorials, discipleship staff, and campus outreach in Iloilo.'
   }
@@ -157,7 +163,7 @@ export const AppProvider = ({ children }) => {
 
   const [campaigns, setCampaigns] = useState(() => {
     const saved = localStorage.getItem('gy_campaigns');
-    return saved && JSON.parse(saved)?.length ? JSON.parse(saved) : INITIAL_CAMPAIGNS;
+    return saved ? JSON.parse(saved) : INITIAL_CAMPAIGNS;
   });
 
   const [myBookings, setMyBookings] = useState(() => {
@@ -207,10 +213,17 @@ export const AppProvider = ({ children }) => {
         showToast('Incorrect password. Please try again.', 'error');
         return false;
       }
+
+      // Check if Youth Worker requires approval
+      if (user.role === 'worker' && user.status === 'Pending Admin Approval') {
+        showToast('⏳ Your Youth Worker account is pending verification and approval by Ministry Leadership.', 'error');
+        return false;
+      }
+
       setCurrentUser(user);
       localStorage.setItem('gy_active_session', JSON.stringify(user));
       showToast(`Welcome back, ${user.name}! (${user.roleLabel})`, 'success');
-      setActiveTab('portal');
+      setActiveTab(user.role === 'leader' ? 'admin' : 'portal');
       triggerConfetti();
       return true;
     } else {
@@ -228,11 +241,17 @@ export const AppProvider = ({ children }) => {
       return false;
     }
 
-    const role = userData.role === 'tutor' ? 'tutor' : 'student';
-    const roleLabel =
-      role === 'tutor'
-        ? `Volunteer Peer Tutor (${userData.program || 'Student'})`
-        : `Student (${userData.program || 'College Member'})`;
+    const isWorkerApp = userData.role === 'worker';
+    const isTutorApp = userData.role === 'tutor';
+
+    const role = isWorkerApp ? 'worker' : isTutorApp ? 'tutor' : 'student';
+    const status = isWorkerApp ? 'Pending Admin Approval' : 'Active';
+    const isApproved = !isWorkerApp;
+
+    let roleLabel = 'Student Member';
+    if (isWorkerApp) roleLabel = 'Campus Youth Worker (Pending Approval)';
+    else if (isTutorApp) roleLabel = `Volunteer Peer Tutor (${userData.program || 'Student'})`;
+    else roleLabel = `Student (${userData.program || 'College Member'})`;
 
     const newUser = {
       id: `usr-${Date.now()}`,
@@ -241,18 +260,29 @@ export const AppProvider = ({ children }) => {
       password: userData.password,
       role,
       roleLabel,
+      status,
+      isApproved,
       campusId: userData.campusId || 'upv',
       campusName: userData.campusName || 'UP Visayas',
       program: userData.program || '',
       yearLevel: userData.yearLevel || '1st Year',
+      bioNote: userData.bioNote || '',
       avatar:
-        role === 'tutor'
+        role === 'worker'
+          ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
+          : role === 'tutor'
           ? 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80'
           : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-      bio: role === 'tutor' ? 'Volunteer peer tutor.' : 'College student.'
+      bio: isWorkerApp ? 'Applying as campus youth missionary.' : 'College student.'
     };
 
     setRegisteredUsers((prev) => [...prev, newUser]);
+
+    if (isWorkerApp) {
+      showToast('🕊️ Youth Worker application submitted! Once verified by an Admin, you will be able to log in.', 'info');
+      return true;
+    }
+
     setCurrentUser(newUser);
     localStorage.setItem('gy_active_session', JSON.stringify(newUser));
 
@@ -285,6 +315,26 @@ export const AppProvider = ({ children }) => {
     return true;
   };
 
+  const approveYouthWorker = (userId) => {
+    setRegisteredUsers((prev) =>
+      prev.map((u) => {
+        if (u.id === userId) {
+          const updated = {
+            ...u,
+            role: 'worker',
+            roleLabel: 'Campus Youth Worker / Missionary',
+            status: 'Active',
+            isApproved: true
+          };
+          showToast(`✅ ${u.name} is now approved and activated as an official Youth Worker!`, 'success');
+          return updated;
+        }
+        return u;
+      })
+    );
+    triggerConfetti();
+  };
+
   const updateUserRole = async (userId, newRole) => {
     let updatedRoleLabel = 'Student';
     if (newRole === 'leader') updatedRoleLabel = 'Ministry Admin / Coordinator';
@@ -298,7 +348,7 @@ export const AppProvider = ({ children }) => {
       prev.map((u) => {
         if (u.id === userId) {
           targetUserName = u.name;
-          const updated = { ...u, role: newRole, roleLabel: updatedRoleLabel };
+          const updated = { ...u, role: newRole, roleLabel: updatedRoleLabel, isApproved: true, status: 'Active' };
           if (currentUser.id === userId) {
             setCurrentUser(updated);
             localStorage.setItem('gy_active_session', JSON.stringify(updated));
@@ -579,6 +629,7 @@ export const AppProvider = ({ children }) => {
             name: donationData.name,
             amount: donationData.amount,
             message: donationData.message,
+            refNumber: donationData.refNumber,
             time: 'Just now'
           };
           return {
@@ -612,6 +663,7 @@ export const AppProvider = ({ children }) => {
         registeredUsers,
         setRegisteredUsers,
         updateUserRole,
+        approveYouthWorker,
         login,
         register,
         logout,
@@ -631,6 +683,7 @@ export const AppProvider = ({ children }) => {
         prayers,
         events,
         reviewers,
+        setReviewers,
         campaigns,
         myBookings,
         myGroups,
