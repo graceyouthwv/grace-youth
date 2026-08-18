@@ -1391,7 +1391,7 @@ export const AdminPortal = () => {
           <div className={`p-4 rounded-2xl border text-xs leading-relaxed ${
             isDark ? 'bg-pink-950/30 border-pink-500/30 text-pink-200' : 'bg-pink-50 border-pink-200 text-pink-950'
           }`}>
-            🤝 <strong>Campus Ministry Volunteer Queue:</strong> College students applying to serve in Worship & Music, Youth Camps, Exam Care & Cold Brew Outreach, Life Groups, 24/7 Prayer, or Academic Tutoring. Review applications and approve them into active volunteer service!
+            🤝 <strong>Campus Ministry Volunteer Queue:</strong> College students applying to serve in Worship & Music, Youth Camps, Exam Care & Cold Brew Outreach, Life Groups, Prayer Intercession, or Academic Tutoring. Review applications and approve them into active volunteer service!
           </div>
 
           <div className="space-y-3">

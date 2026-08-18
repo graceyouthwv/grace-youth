@@ -42,7 +42,7 @@ export const PrayerWall = () => {
               : 'bg-rose-50 text-rose-700 border-rose-200'
           }`}>
             <Heart className="w-3.5 h-3.5 text-rose-500 fill-rose-500" />
-            <span>{isHlg ? '24/7 Pangamuyo sang mga Estudyante' : '24/7 Student Prayer Movement'}</span>
+            <span>{isHlg ? 'Pangamuyo sang mga Estudyante' : 'Student Prayer Movement'}</span>
           </div>
           <h2 className={`text-2xl sm:text-3xl font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
             {isHlg ? 'Wall sang Pangamuyo kag Pagdayaw' : 'Campus Prayer & Praise Wall'}

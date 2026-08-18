@@ -34,7 +34,7 @@ export const TRANSLATIONS = {
     hero_title_2: 'THRIVE IN',
     hero_title_faith: 'FAITH.',
     hero_subtitle:
-      'Connecting college and university students across the Philippines with free peer tutoring, intentional discipleship Life Groups, and 24/7 pastoral care in Christ.',
+      'Connecting college and university students across the Philippines with free peer tutoring, intentional discipleship Life Groups, and confidential pastoral care in Christ.',
     hero_cta_tutor: 'Find a Free Peer Tutor',
     hero_cta_group: 'Join a Campus Life Group',
     hero_free_notice: '100% Free Ministry • No Subscription • Student-Led',
@@ -57,10 +57,10 @@ export const TRANSLATIONS = {
     devo_reflection_title: 'Campus Reflection',
 
     // Crisis Bar / Pastoral Care
-    crisis_badge: '24/7 PASTORAL CARE & PRAYER',
+    crisis_badge: 'PASTORAL CARE & PRAYER SUPPORT',
     crisis_title: 'Struggling with exam stress, burnout, or personal challenges?',
     crisis_desc: 'Our certified campus youth pastors & student leaders are here to listen, pray, and walk with you confidentially.',
-    crisis_call_btn: 'Call 24/7 Pastoral Care',
+    crisis_call_btn: 'Connect with Pastoral Care',
     crisis_sms_btn: 'SMS / Text a Pastor',
     crisis_chat_btn: 'Open Anonymous Prayer Chat',
 
@@ -90,7 +90,7 @@ export const TRANSLATIONS = {
     camps_attendees: 'Confirmed Attendees',
 
     // Prayer Wall
-    prayer_heading: '24/7 Campus Prayer & Praise Wall',
+    prayer_heading: 'Campus Student Prayer & Praise Wall',
     prayer_subheading: 'Stand in the gap for fellow students across ISUFST, UPV, CPU, WVSU, ISAT-U, and USA.',
     prayer_post_btn: 'Post Prayer Request / Praise',
     prayer_praying_btn: 'I am Praying for You',
@@ -144,7 +144,7 @@ export const TRANSLATIONS = {
     hero_title_2: 'MAG-TUMAN SA',
     hero_title_faith: 'PAGTO-O.',
     hero_subtitle:
-      'Ginasugpon ang mga estudyante sa mga unibersidad sa Pilipinas kag online sa libre nga peer tutoring, Life Groups sa pagtubo sa Ginoo, kag 24/7 nga pastoral nga pag-ulikid kay Kristo.',
+      'Ginasugpon ang mga estudyante sa mga unibersidad sa Pilipinas kag online sa libre nga peer tutoring, Life Groups sa pagtubo sa Ginoo, kag pastoral nga pag-ulikid kay Kristo.',
     hero_cta_tutor: 'Mangita sang Libre nga Tutor',
     hero_cta_group: 'Mag-upod sa Life Group',
     hero_free_notice: '100% Libre nga Serbisyo sang Ministry • Wala Bayad • Ginapangunahan sang Kabataan',
@@ -167,7 +167,7 @@ export const TRANSLATIONS = {
     devo_reflection_title: 'Palandongon sa Adlaw-adlaw',
 
     // Crisis Bar / Pastoral Care (Hiligaynon)
-    crisis_badge: '24/7 NGA PANGAMUYO KAG PAG-ULIKID SANG PASTOR',
+    crisis_badge: 'PANGAMUYO KAG PAG-ULIKID SANG PASTOR',
     crisis_title: 'Nabudlayan ka bala sa exam, stress, ukon may ginabatyag sa kabuhi?',
     crisis_desc: 'Wala ka nagaisahanon. Ang aton mga youth worker kag pastor handa magpamati kag magpangamuyo upod sa imo.',
     crisis_coffee: 'Makig-istorya (Coffee Chat)',
@@ -201,7 +201,7 @@ export const TRANSLATIONS = {
     camps_donors: 'Mga Maalwan nga Nagdonar',
 
     // Prayer Wall (Hiligaynon)
-    prayer_heading: '24/7 Wall sang Pangamuyo kag Pagdayaw',
+    prayer_heading: 'Wall sang Pangamuyo kag Pagdayaw',
     prayer_subheading: 'Magtindog sa pagpangamuyo para sa aton mga estudyante sa ISUFST, UPV, CPU, WVSU, ISAT-U, kag USA.',
     prayer_post_btn: 'Mag-post sang Pangabay sa Pangamuyo',
     prayer_praying_btn: 'Nagapangamuyo Ako Para sa Imo ❤️',

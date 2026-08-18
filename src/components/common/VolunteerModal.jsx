@@ -30,7 +30,7 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
     { id: 'worship', title: '🎸 Worship & Music Team', desc: 'Acoustic guitar, vocals, or sound for campus fellowships & camps' },
     { id: 'camp', title: '🏕️ Youth Camp Counselor & Logistics', desc: 'Camp retreat facilitator, games, and spiritual counseling' },
     { id: 'coffee', title: '☕ Exam Outreach & Care Team', desc: 'Serve free cold brew, snacks, and prayer cards during finals' },
-    { id: 'prayer', title: '🙏 24/7 Prayer Wall Warrior', desc: 'Intercede and pray for students posting on the wall' },
+    { id: 'prayer', title: '🙏 Campus Prayer Intercessor', desc: 'Intercede and pray for students posting on the wall' },
     { id: 'tutor', title: '👨‍🏫 Academic Peer Tutor', desc: 'Review freshmen in STEM, Nursing, Business, or Arts' }
   ];
 

@@ -32,8 +32,8 @@ export const QuickStats = () => {
     },
     {
       title: isHlg ? 'Pangamuyo & Pag-atipan' : 'Prayer & Pastoral Care',
-      desc: isHlg ? 'Kompidensyal nga pangamuyo kag pastoral counsel' : 'Confidential prayer wall, 24/7 care & academic stress support',
-      stat: prayers.length > 0 ? `${prayers.length} Requests Prayed` : '24/7 Confidential',
+      desc: isHlg ? 'Kompidensyal nga pangamuyo kag pastoral counsel' : 'Confidential prayer wall, pastoral counsel & academic stress support',
+      stat: prayers.length > 0 ? `${prayers.length} Requests Prayed` : 'Confidential Care',
       icon: Heart,
       tab: 'home',
       badge: 'Pastoral Care',

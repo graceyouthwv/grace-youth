@@ -289,7 +289,7 @@ export const App = () => {
                 <li>• Major University Hubs & Campuses</li>
                 <li>• Online Collegiate Circles (Discord/Meet)</li>
                 <li>• Volunteer Peer Tutors & Mentors</li>
-                <li>• 24/7 Pastoral Prayer & Care</li>
+                <li>• Pastoral Care & Counseling</li>
               </ul>
             </div>
 
@@ -298,7 +298,7 @@ export const App = () => {
                 Get Involved & Connect
               </h5>
               <p className="mb-1.5 opacity-80 text-xs">
-                Free Peer Tutoring • Weekly Life Groups • Annual Youth Camps • 24/7 Prayer Wall
+                Free Peer Tutoring • Weekly Life Groups • Annual Youth Camps • Student Prayer Wall
               </p>
               <div className="font-bold text-pink-500 text-xs">
                 graceyouth.wv@proton.me

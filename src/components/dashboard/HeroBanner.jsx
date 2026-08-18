@@ -75,7 +75,7 @@ export const HeroBanner = () => {
                   </span>
                 </h1>
                 <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-xl pt-2">
-                  Free 1-on-1 peer tutoring with video calls, intentional college Life Groups, and 24/7 pastoral care — built by and for Christian students across the Philippines.
+                  Free 1-on-1 peer tutoring with video calls, intentional college Life Groups, and confidential pastoral care — built by and for Christian students across the Philippines.
                 </p>
               </div>
 
