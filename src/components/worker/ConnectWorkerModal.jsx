@@ -3,6 +3,7 @@ import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
 import { getCartoonAvatar } from '../../data/avatars';
+import { HeartHandshake, PhoneCall, MessageSquare, Coffee, Send, Sparkles, CheckCircle2, ShieldCheck, Heart } from 'lucide-react';
 
 const YOUTH_WORKERS = [
   {
