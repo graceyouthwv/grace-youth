@@ -28,7 +28,18 @@ import { SessionRoomModal } from '../tutor/SessionRoomModal';
 import { UploadCloud, FileUp, Eye, MessageSquare, Video } from 'lucide-react';
 
 export const StudentPortal = () => {
-  const { currentUser, myBookings, myGroups, bibleStudies, prayers, cancelBooking, setActiveTab, showToast, theme } = useApp();
+  const {
+    currentUser,
+    myBookings,
+    myGroups,
+    bibleStudies,
+    prayers,
+    volunteerApplications,
+    cancelBooking,
+    setActiveTab,
+    showToast,
+    theme
+  } = useApp();
   const [showVolunteerModal, setShowVolunteerModal] = useState(false);
   const [showUploadSongModal, setShowUploadSongModal] = useState(false);
   const [selectedSongForView, setSelectedSongForView] = useState(null);
@@ -46,12 +57,22 @@ export const StudentPortal = () => {
   const myJoinedGroups = bibleStudies.filter((g) => myGroups.includes(g.id));
   const myPrayerItems = prayers.filter((p) => p.author === currentUser.name || (!p.isAnonymous && p.author.includes(currentUser.name.split(' ')[0])));
 
-  // Mock volunteer assignments for active volunteer members
+  // Check if current user has an active volunteer record
+  const myVolunteerApp = volunteerApplications?.find(
+    (a) =>
+      (a.email && currentUser.email && a.email.toLowerCase() === currentUser.email.toLowerCase()) ||
+      (a.name && currentUser.name && a.name.toLowerCase() === currentUser.name.toLowerCase()) ||
+      currentUser.isVolunteer
+  );
+
+  const isApprovedVolunteer = currentUser.isVolunteer || myVolunteerApp?.status === 'Approved';
+  const isPendingVolunteer = myVolunteerApp && myVolunteerApp.status === 'Pending';
+
   const volunteerTrack = {
-    team: '🎸 Campus Worship & Music Team',
-    role: 'Acoustic Guitar & Backing Vocals',
+    team: myVolunteerApp?.roleTitle || '🎸 Campus Worship & Music Team',
+    role: myVolunteerApp?.role || 'Acoustic Guitar & Backing Vocals',
     nextDuty: 'Thursday Campus Worship Night • 5:00 PM @ UPV Gazebo',
-    status: 'Scheduled'
+    status: myVolunteerApp?.status || 'Scheduled'
   };
 
   return (
@@ -225,134 +246,155 @@ export const StudentPortal = () => {
             )}
           </div>
 
-          {/* Section 2: Volunteer Ministry Track & Serving Roster */}
-          <div className={`p-6 rounded-3xl border transition-all ${
-            isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
-          }`}>
-            <div className="flex items-center justify-between mb-4">
-              <div className="flex items-center gap-2">
-                <div className={`p-2 rounded-xl border ${
-                  isDark ? 'bg-pink-500/10 text-pink-400 border-pink-500/20' : 'bg-pink-50 text-pink-600 border-pink-200'
-                }`}>
-                  <Music className="w-4 h-4" />
-                </div>
-                <div>
-                  <h3 className={`font-extrabold text-base font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    My Ministry Volunteer Track
-                  </h3>
-                  <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    Serving God and Fellow Students across Campus
-                  </p>
-                </div>
-              </div>
-
-              <span className={`text-xs font-black px-2.5 py-1 rounded-xl border ${
-                isDark ? 'text-pink-400 bg-pink-950/60 border-pink-500/30' : 'text-pink-700 bg-pink-50 border-pink-200'
-              }`}>
-                Active Volunteer
-              </span>
-            </div>
-
-            <div className={`p-4 rounded-2xl border space-y-3 ${
-              isDark ? 'bg-slate-950/50 border-slate-800' : 'bg-slate-50/70 border-slate-200'
+          {/* Section 2: Volunteer Ministry Track (Only for Verified Volunteers) */}
+          {isApprovedVolunteer ? (
+            <div className={`p-6 rounded-3xl border transition-all ${
+              isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
             }`}>
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
-                <div>
-                  <span className="font-extrabold text-sm text-pink-600 dark:text-pink-400 block">
-                    {volunteerTrack.team}
-                  </span>
-                  <div className={`text-xs font-bold mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                    Role: {volunteerTrack.role}
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-2">
+                  <div className={`p-2 rounded-xl border ${
+                    isDark ? 'bg-pink-500/10 text-pink-400 border-pink-500/20' : 'bg-pink-50 text-pink-600 border-pink-200'
+                  }`}>
+                    <Music className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className={`font-extrabold text-base font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                      My Ministry Volunteer Track
+                    </h3>
+                    <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                      Serving God and Fellow Students across Campus
+                    </p>
                   </div>
                 </div>
 
-                <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-black uppercase tracking-wider">
-                  {volunteerTrack.status}
+                <span className={`text-xs font-black px-2.5 py-1 rounded-xl border ${
+                  isDark ? 'text-pink-400 bg-pink-950/60 border-pink-500/30' : 'text-pink-700 bg-pink-50 border-pink-200'
+                }`}>
+                  Active Volunteer
                 </span>
               </div>
 
-              <div className={`p-3 rounded-xl border text-xs space-y-1 ${
-                isDark ? 'bg-black/40 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-700'
+              <div className={`p-4 rounded-2xl border space-y-3 ${
+                isDark ? 'bg-slate-950/50 border-slate-800' : 'bg-slate-50/70 border-slate-200'
               }`}>
-                <div className="flex items-center gap-1.5 font-medium">
-                  <Calendar className="w-3.5 h-3.5 text-pink-500 shrink-0" />
-                  <span>Next Roster: <strong>{volunteerTrack.nextDuty}</strong></span>
-                </div>
-              </div>
-
-              {/* Worship Setlist / Volunteer Resources */}
-              <div className={`pt-3 border-t space-y-3 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
-                <div className="text-[11px] font-black uppercase tracking-wider flex flex-wrap items-center justify-between gap-2">
-                  <div className={`flex items-center gap-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                    <Music className="w-3.5 h-3.5 text-pink-500" />
-                    <span>Campus Setlist & PDF Chords ({musicSetlist.length}):</span>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+                  <div>
+                    <span className="font-extrabold text-sm text-pink-600 dark:text-pink-400 block">
+                      {volunteerTrack.team}
+                    </span>
+                    <div className={`text-xs font-bold mt-0.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                      Role: {volunteerTrack.role}
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2">
-                    <button
-                      onClick={() => setShowUploadSongModal(true)}
-                      className={`px-2.5 py-1 rounded-lg font-bold text-[11px] border cursor-pointer flex items-center gap-1 transition-all ${
-                        isDark ? 'bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 border-pink-500/30' : 'bg-pink-50 hover:bg-pink-100 text-pink-700 border-pink-200'
-                      }`}
-                    >
-                      <FileUp className="w-3 h-3" />
-                      <span>+ Upload Song / PDF</span>
-                    </button>
+                  <span className="px-2.5 py-0.5 bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 rounded-full text-[10px] font-black uppercase tracking-wider">
+                    {volunteerTrack.status}
+                  </span>
+                </div>
 
-                    <button
-                      onClick={() => showToast('📥 Complete worship setlist ready in app viewer!', 'success')}
-                      className={`flex items-center gap-1 text-[11px] font-bold cursor-pointer transition-colors ${
-                        isDark ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-800'
-                      }`}
-                    >
-                      <FileText className="w-3 h-3" />
-                      <span>Setlist Overview</span>
-                    </button>
+                <div className={`p-3 rounded-xl border text-xs space-y-1 ${
+                  isDark ? 'bg-black/40 border-slate-800 text-slate-300' : 'bg-white border-slate-200 text-slate-700'
+                }`}>
+                  <div className="flex items-center gap-1.5 font-medium">
+                    <Calendar className="w-3.5 h-3.5 text-pink-500 shrink-0" />
+                    <span>Next Roster: <strong>{volunteerTrack.nextDuty}</strong></span>
                   </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                  {musicSetlist.map((item) => (
-                    <div
-                      key={item.id}
-                      onClick={() => setSelectedSongForView(item)}
-                      className={`p-3.5 rounded-2xl border text-xs flex items-center justify-between gap-2 group transition-all cursor-pointer ${
-                        isDark
-                          ? 'bg-slate-900 border-slate-800 text-white hover:border-pink-500/50'
-                          : 'bg-white border-slate-200 text-slate-900 shadow-xs hover:border-pink-300'
-                      }`}
-                    >
-                      <div className="min-w-0 flex-1">
-                        <div className={`font-extrabold truncate flex items-center gap-1.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                          <span>{item.song}</span>
-                        </div>
-                        <div className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                          {item.artist} • <span className="text-pink-600 dark:text-pink-400 font-bold">{item.key}</span> • {item.tempo}
-                        </div>
-                      </div>
+                {/* Worship Setlist / Volunteer Resources */}
+                <div className={`pt-3 border-t space-y-3 ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
+                  <div className="text-[11px] font-black uppercase tracking-wider flex flex-wrap items-center justify-between gap-2">
+                    <div className={`flex items-center gap-1.5 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                      <Music className="w-3.5 h-3.5 text-pink-500" />
+                      <span>Campus Setlist & PDF Chords ({musicSetlist.length}):</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => setShowUploadSongModal(true)}
+                        className={`px-2.5 py-1 rounded-lg font-bold text-[11px] border cursor-pointer flex items-center gap-1 transition-all ${
+                          isDark ? 'bg-pink-500/20 hover:bg-pink-500/30 text-pink-300 border-pink-500/30' : 'bg-pink-50 hover:bg-pink-100 text-pink-700 border-pink-200'
+                        }`}
+                      >
+                        <FileUp className="w-3 h-3" />
+                        <span>+ Upload Song / PDF</span>
+                      </button>
 
                       <button
-                        type="button"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedSongForView(item);
-                        }}
-                        className={`px-3 py-1.5 rounded-xl border transition-all cursor-pointer shrink-0 flex items-center gap-1 font-bold text-[11px] ${
-                          isDark
-                            ? 'bg-pink-600/20 hover:bg-pink-600 text-pink-300 hover:text-white border-pink-500/30'
-                            : 'bg-pink-50 hover:bg-pink-600 text-pink-700 hover:text-white border-pink-200 shadow-xs'
+                        onClick={() => showToast('📥 Complete worship setlist ready in app viewer!', 'success')}
+                        className={`flex items-center gap-1 text-[11px] font-bold cursor-pointer transition-colors ${
+                          isDark ? 'text-indigo-400 hover:text-indigo-300' : 'text-indigo-600 hover:text-indigo-800'
                         }`}
-                        title="View PDF / Chords"
                       >
-                        <Eye className="w-3.5 h-3.5" />
-                        <span>View</span>
+                        <FileText className="w-3 h-3" />
+                        <span>Setlist Overview</span>
                       </button>
                     </div>
-                  ))}
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {musicSetlist.map((item) => (
+                      <div
+                        key={item.id}
+                        onClick={() => setSelectedSongForView(item)}
+                        className={`p-3.5 rounded-2xl border text-xs flex items-center justify-between gap-2 group transition-all cursor-pointer ${
+                          isDark
+                            ? 'bg-slate-900 border-slate-800 text-white hover:border-pink-500/50'
+                            : 'bg-white border-slate-200 text-slate-900 shadow-xs hover:border-pink-300'
+                        }`}
+                      >
+                        <div className="min-w-0 flex-1">
+                          <div className={`font-extrabold truncate flex items-center gap-1.5 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                            <span>{item.song}</span>
+                          </div>
+                          <div className={`text-[11px] truncate mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                            {item.artist} • <span className="text-pink-600 dark:text-pink-400 font-bold">{item.key}</span> • {item.tempo}
+                          </div>
+                        </div>
+
+                        <button
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedSongForView(item);
+                          }}
+                          className={`px-3 py-1.5 rounded-xl border transition-all cursor-pointer shrink-0 flex items-center gap-1 font-bold text-[11px] ${
+                            isDark
+                              ? 'bg-pink-600/20 hover:bg-pink-600 text-pink-300 hover:text-white border-pink-500/30'
+                              : 'bg-pink-50 hover:bg-pink-600 text-pink-700 hover:text-white border-pink-200 shadow-xs'
+                          }`}
+                          title="View PDF / Chords"
+                        >
+                          <Eye className="w-3.5 h-3.5" />
+                          <span>View</span>
+                        </button>
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          ) : isPendingVolunteer ? (
+            <div className={`p-5 rounded-3xl border transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 ${
+              isDark ? 'bg-amber-950/30 border-amber-500/30 text-amber-200' : 'bg-amber-50 border-amber-200 text-amber-900'
+            }`}>
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-amber-500/20 text-amber-500">
+                  <Clock className="w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-sm">Volunteer Application Under Review</h4>
+                  <p className="text-xs opacity-80 mt-0.5">
+                    Your application for <strong>{myVolunteerApp.roleTitle || 'Campus Ministry Volunteer'}</strong> is awaiting leadership approval.
+                  </p>
+                </div>
+              </div>
+              <span className="px-3 py-1 rounded-xl text-xs font-bold bg-amber-500/20 text-amber-700 dark:text-amber-300 border border-amber-500/30">
+                Pending Approval
+              </span>
+            </div>
+          ) : null}
 
           {/* Section 3: My Campus Life Group */}
           <div className={`p-6 rounded-3xl border transition-all ${
