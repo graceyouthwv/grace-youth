@@ -3,8 +3,9 @@ import { useApp } from '../../context/AppContext';
 import { TutorCard } from './TutorCard';
 import { CampusSelector } from '../common/CampusSelector';
 
+import { AuthModal } from '../auth/AuthModal';
+
 const RequestBoard = lazy(() => import('./RequestBoard').then(m => ({ default: m.RequestBoard })));
-const TutorVolunteerModal = lazy(() => import('./TutorVolunteerModal').then(m => ({ default: m.TutorVolunteerModal })));
 const ReviewerVault = lazy(() => import('./ReviewerVault').then(m => ({ default: m.ReviewerVault })));
 const SmartMatchHub = lazy(() => import('../matching/SmartMatchHub').then(m => ({ default: m.SmartMatchHub })));
 import {
@@ -33,6 +34,8 @@ export const TutorialHub = () => {
     deliveryModeFilter,
     setDeliveryModeFilter,
     currentUser,
+    setActiveTab,
+    showToast,
     language,
     theme
   } = useApp();
@@ -40,7 +43,7 @@ export const TutorialHub = () => {
   const [subTab, setSubTab] = useState('tutors'); // 'tutors' | 'matching' | 'requests' | 'reviewers'
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Subjects');
-  const [showVolunteerModal, setShowVolunteerModal] = useState(false);
+  const [showApplyModal, setShowApplyModal] = useState(false);
   const [showDetailedRegionBar, setShowDetailedRegionBar] = useState(false);
 
   const isDark = theme === 'dark';
@@ -189,13 +192,24 @@ export const TutorialHub = () => {
           </button>
         </div>
 
-        {/* Volunteer Tutor CTA */}
+        {/* Apply as Peer Tutor CTA */}
         <button
-          onClick={() => setShowVolunteerModal(true)}
+          onClick={() => {
+            if (currentUser.role === 'tutor') {
+              if (currentUser.isApproved) {
+                setActiveTab('portal');
+                showToast('👋 You are already a certified Peer Tutor! Opened your Console.', 'info');
+              } else {
+                showToast('⏳ Your Peer Tutor application is currently under verification in the Admin Portal.', 'info');
+              }
+            } else {
+              setShowApplyModal(true);
+            }
+          }}
           className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-md hover:scale-105 active:scale-95 transition-all w-full sm:w-auto cursor-pointer"
         >
           <PlusCircle className="w-4 h-4 text-slate-950" />
-          <span className="text-slate-950 font-black">{isHlg ? 'Mag-Volunteer bilang Tutor' : 'Volunteer as Peer Tutor'}</span>
+          <span className="text-slate-950 font-black">{isHlg ? 'Mag-Apply bilang Tutor' : 'Apply to be a Peer Tutor'}</span>
         </button>
       </div>
 
@@ -315,15 +329,17 @@ export const TutorialHub = () => {
         {subTab === 'matching' && <SmartMatchHub />}
         {subTab === 'requests' && <RequestBoard />}
         {subTab === 'reviewers' && <ReviewerVault />}
-
-        {/* Volunteer Modal */}
-        {showVolunteerModal && (
-          <TutorVolunteerModal
-            isOpen={showVolunteerModal}
-            onClose={() => setShowVolunteerModal(false)}
-          />
-        )}
       </Suspense>
+
+      {/* Auth Modal for Peer Tutor Application & Registration */}
+      {showApplyModal && (
+        <AuthModal
+          isOpen={showApplyModal}
+          onClose={() => setShowApplyModal(false)}
+          initialMode="register"
+          initialRole="tutor"
+        />
+      )}
     </div>
   );
 };

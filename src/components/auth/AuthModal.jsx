@@ -19,9 +19,17 @@ import {
   ChevronLeft
 } from 'lucide-react';
 
-export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
+export const AuthModal = ({ isOpen, onClose, initialMode = 'login', initialRole = 'student' }) => {
   const { login, register, resetUserPassword, registeredUsers, showToast, theme } = useApp();
   const [mode, setMode] = useState(initialMode); // 'login' | 'register' | 'forgot'
+  const [role, setRole] = useState(initialRole); // 'student' | 'tutor' | 'worker'
+
+  React.useEffect(() => {
+    if (isOpen) {
+      setMode(initialMode);
+      if (initialRole) setRole(initialRole);
+    }
+  }, [isOpen, initialMode, initialRole]);
 
   // Sign In Form State
   const [loginEmail, setLoginEmail] = useState('');
@@ -37,7 +45,6 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [name, setName] = useState('');
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
-  const [role, setRole] = useState('student'); // 'student' | 'tutor' | 'worker'
   const [regionId, setRegionId] = useState('r6');
   const [campusId, setCampusId] = useState('upv');
   const [customCampus, setCustomCampus] = useState('');
