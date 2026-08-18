@@ -160,6 +160,65 @@ export const AppProvider = ({ children }) => {
     checkVersionAndGet('gy_tutors', INITIAL_TUTORS)
   );
 
+  // Sync approved certified tutors from registeredUsers into tutors directory
+  useEffect(() => {
+    const approvedUserTutors = (registeredUsers || []).filter(
+      (u) => u.role === 'tutor' && (u.isApproved === true || u.status === 'Active')
+    );
+
+    if (approvedUserTutors.length > 0) {
+      setTutors((prevTutors) => {
+        const tutorMap = new Map();
+        (prevTutors || []).forEach((t) => tutorMap.set((t.email || t.id || t.name).toLowerCase(), t));
+
+        approvedUserTutors.forEach((u) => {
+          const key = (u.email || u.id || u.name).toLowerCase();
+          const existing = tutorMap.get(key);
+          if (existing) {
+            tutorMap.set(key, {
+              ...existing,
+              name: u.name,
+              email: u.email,
+              isApproved: true,
+              status: 'Active',
+              badge: 'Verified Peer Tutor',
+              subjects: u.subjects?.length ? u.subjects : existing.subjects,
+              campusId: u.campusId || existing.campusId,
+              campusName: u.campusName || existing.campusName,
+              preferredMode: u.preferredMode || existing.preferredMode || 'Hybrid'
+            });
+          } else {
+            tutorMap.set(key, {
+              id: u.id || `tut-${Date.now()}`,
+              name: u.name,
+              email: u.email,
+              avatar: u.avatar || getRoleCartoonAvatar('tutor', u.name),
+              role: u.roleLabel || `Volunteer Peer Tutor (${u.program || 'Academics'})`,
+              campusId: u.campusId || 'upv',
+              campusName: u.campusName || 'UP Visayas (Miagao / Iloilo)',
+              subjects: u.subjects?.length ? u.subjects : ['General Academics', u.program || 'STEM & Math'],
+              category: 'STEM & Math',
+              rating: 5.0,
+              sessionsGiven: 4,
+              isApproved: true,
+              status: 'Active',
+              badge: 'Verified Peer Tutor',
+              bio: u.bio || 'Verified volunteer peer tutor ready to help batchmates succeed.',
+              preferredMode: u.preferredMode || 'Hybrid',
+              isOnlineNationwide: true,
+              slots: [
+                { id: `slot-${Date.now()}-1`, day: 'Tuesday', time: '4:00 PM - 5:30 PM', mode: 'In-Person' },
+                { id: `slot-${Date.now()}-2`, day: 'Thursday', time: '5:00 PM - 6:30 PM', mode: 'Online (Video Room)' }
+              ]
+            });
+          }
+        });
+
+        return Array.from(tutorMap.values());
+      });
+    }
+  }, [registeredUsers]);
+
   const [requests, setRequests] = useState(() =>
     checkVersionAndGet('gy_requests', INITIAL_REQUESTS)
   );
