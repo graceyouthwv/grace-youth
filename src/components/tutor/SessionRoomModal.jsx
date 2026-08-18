@@ -15,8 +15,9 @@ import {
   Lock,
   Maximize2,
   Minimize2,
-  Link,
-  Check
+  Check,
+  RefreshCw,
+  Tv
 } from 'lucide-react';
 import { triggerConfetti } from '../../utils/helpers';
 
@@ -29,10 +30,15 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  // Custom or auto-generated meeting link (defaults to a deterministic Google Meet / Room)
-  const defaultMeetUrl = `https://meet.google.com/new`;
-  const [meetingLink, setMeetingLink] = useState(session?.meetingLink || defaultMeetUrl);
-  const [isEditingLink, setIsEditingLink] = useState(false);
+  // Deterministic room name for student and tutor
+  const cleanSubject = (session?.subject || 'study').replace(/[^a-zA-Z0-9]/g, '');
+  const cleanId = (session?.id || 'session').replace(/[^a-zA-Z0-9]/g, '');
+  const rawRoomId = `GY_${cleanId}_${cleanSubject}`;
+
+  // 100% Free Open-Source WebRTC In-App Embed (No 5-minute demo limit, No accounts, Unlimited P2P)
+  const embedUrl = `https://vdo.ninja/?room=${rawRoomId}&label=${encodeURIComponent(
+    currentUser.name || 'GraceYouth Member'
+  )}&webcam&autostart`;
 
   const [notes, setNotes] = useState(
     '1. Reviewed Formula: d/dx(x^n) = n*x^(n-1)\n2. Chain Rule: d/dx(f(g(x))) = f\'(g(x)) * g\'(x)\n3. Practice Problem #4 from Reviewer Vault.'
@@ -90,9 +96,9 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard?.writeText(meetingLink);
+    navigator.clipboard?.writeText(embedUrl);
     setCopied(true);
-    showToast('📋 Meeting link copied to clipboard!', 'success');
+    showToast('📋 Private study room link copied to clipboard!', 'success');
     setTimeout(() => setCopied(false), 3000);
   };
 
@@ -113,13 +119,13 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="📹 Live 1-on-1 Study Room"
-      maxWidth={isFullscreen ? 'max-w-7xl' : 'max-w-4xl'}
+      title="📹 Live 1-on-1 Video Study Room"
+      maxWidth={isFullscreen ? 'max-w-7xl' : 'max-w-5xl'}
     >
       <div className="space-y-4 text-xs sm:text-sm">
         {/* Top Session Status Bar */}
         <div
-          className={`p-4 rounded-3xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
+          className={`p-3.5 sm:p-4 rounded-3xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
             isDark
               ? 'bg-slate-900 border-slate-800 text-white'
               : 'bg-indigo-50/80 border-indigo-200 text-slate-900'
@@ -133,7 +139,7 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
               <div className="flex items-center gap-2 flex-wrap">
                 <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 flex items-center gap-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-                  Unlimited 1-on-1 Call
+                  100% Free In-App WebRTC • Unlimited
                 </span>
                 <span className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
                   <Clock className="w-3.5 h-3.5" />
@@ -164,7 +170,7 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
                   ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
                   : 'bg-white border-slate-300 text-slate-600 hover:text-slate-900'
               }`}
-              title={isFullscreen ? 'Exit Fullscreen' : 'Expand Room'}
+              title={isFullscreen ? 'Exit Fullscreen' : 'Expand Video Room'}
             >
               {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
             </button>
@@ -190,7 +196,7 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
                 🔒 Private 1-on-1 Study Room
               </h4>
               <p className="text-xs text-slate-300 mt-1 max-w-md mx-auto leading-relaxed">
-                This session is reserved for the booked <strong>Student</strong> (
+                This session is strictly reserved for the booked <strong>Student</strong> (
                 <em>{session.studentName || 'Student'}</em>) and assigned <strong>Peer Tutor</strong>{' '}
                 (<em>{session.tutorName || 'Tutor'}</em>).
               </p>
@@ -200,100 +206,51 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
-            {/* Left Column: Video Call Launcher & Link Hub */}
-            <div className="lg:col-span-7 space-y-4">
-              <div
-                className={`p-6 rounded-3xl border text-center space-y-4 ${
-                  isDark
-                    ? 'bg-slate-900/80 border-slate-800'
-                    : 'bg-white border-slate-200 shadow-sm'
-                }`}
-              >
-                <div className="w-14 h-14 rounded-2xl bg-indigo-600/10 text-indigo-600 dark:text-indigo-400 mx-auto flex items-center justify-center">
-                  <Video className="w-7 h-7" />
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            {/* Left/Main Column: In-App Embedded Video Window */}
+            <div className="lg:col-span-8 space-y-3">
+              <div className="relative w-full rounded-3xl overflow-hidden border border-slate-800 bg-slate-950 shadow-2xl aspect-video lg:aspect-auto lg:h-[490px]">
+                <iframe
+                  src={embedUrl}
+                  title="Grace Youth In-App Peer Video Call"
+                  allow="camera; microphone; fullscreen; display-capture; autoplay"
+                  className="w-full h-full border-0"
+                />
+              </div>
+
+              {/* In-Call Quick Controls */}
+              <div className="flex flex-wrap items-center justify-between text-xs text-slate-400 px-1 gap-2">
+                <div className="flex items-center gap-2">
+                  <span className="flex items-center gap-1 text-emerald-500 font-semibold text-xs">
+                    <ShieldCheck className="w-3.5 h-3.5" /> Peer-to-Peer Encrypted
+                  </span>
+                  <span>•</span>
+                  <span>No 5-min timeout • Unlimited Free Call</span>
                 </div>
-
-                <div className="space-y-1">
-                  <h4 className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    1-on-1 HD Video & Screen Sharing
-                  </h4>
-                  <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto leading-relaxed">
-                    100% Free & Unlimited Duration. Open the video room in a separate window or tab so you can share your screen while keeping your study notes open here.
-                  </p>
-                </div>
-
-                {/* Main Launch Button */}
-                <a
-                  href={meetingLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center justify-center gap-2 w-full py-3.5 px-6 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-sm shadow-lg shadow-indigo-500/30 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
-                >
-                  <Video className="w-4 h-4" />
-                  <span>Launch Google Meet (Unlimited Free Call)</span>
-                  <ExternalLink className="w-4 h-4 ml-1" />
-                </a>
-
-                {/* Meeting Link Sharing */}
-                <div className="pt-2 border-t border-slate-100 dark:border-slate-800 space-y-2">
-                  <div className="flex items-center justify-between gap-2 text-xs">
-                    <span className="text-slate-400 font-medium flex items-center gap-1">
-                      <Link className="w-3.5 h-3.5" />
-                      <span>Room Link:</span>
-                    </span>
-
-                    <button
-                      onClick={handleCopyLink}
-                      className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline flex items-center gap-1 cursor-pointer"
-                    >
-                      {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
-                      <span>{copied ? 'Copied!' : 'Copy Room Link'}</span>
-                    </button>
-                  </div>
-
-                  {isEditingLink ? (
-                    <div className="flex gap-2">
-                      <input
-                        type="url"
-                        value={meetingLink}
-                        onChange={(e) => setMeetingLink(e.target.value)}
-                        placeholder="Paste Zoom / Google Meet / Teams link..."
-                        className={`w-full px-3 py-2 rounded-xl border text-xs ${
-                          isDark
-                            ? 'bg-slate-950 border-slate-800 text-white'
-                            : 'bg-slate-50 border-slate-200 text-slate-900'
-                        }`}
-                      />
-                      <button
-                        onClick={() => setIsEditingLink(false)}
-                        className="px-3 py-1 rounded-xl bg-indigo-600 text-white text-xs font-bold shrink-0 cursor-pointer"
-                      >
-                        Save
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-between gap-2 p-2 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 text-[11px] text-slate-500 dark:text-slate-400 font-mono truncate">
-                      <span className="truncate">{meetingLink}</span>
-                      <button
-                        onClick={() => setIsEditingLink(true)}
-                        className="text-indigo-500 font-sans font-bold hover:underline shrink-0 text-xs cursor-pointer"
-                      >
-                        Change Link
-                      </button>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex items-center justify-center gap-2 text-[11px] text-slate-400 pt-1">
-                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
-                  <span>No 5-minute timeout • 100% Free • Screen share ready</span>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={handleCopyLink}
+                    className="text-xs text-indigo-600 dark:text-indigo-400 font-bold hover:underline flex items-center gap-1 cursor-pointer"
+                  >
+                    {copied ? <Check className="w-3 h-3 text-emerald-500" /> : <Copy className="w-3 h-3" />}
+                    <span>{copied ? 'Copied Room Link' : 'Copy Room Link'}</span>
+                  </button>
+                  <a
+                    href={embedUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-xs text-slate-400 hover:text-white flex items-center gap-1"
+                    title="Pop out in separate window"
+                  >
+                    <span>Pop out</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </a>
                 </div>
               </div>
             </div>
 
             {/* Right Column: In-Call Study Sidecar Tools */}
-            <div className="lg:col-span-5 space-y-3 flex flex-col">
+            <div className="lg:col-span-4 space-y-3 flex flex-col">
               {/* Tab Selector */}
               <div
                 className={`flex items-center p-1 rounded-2xl border ${
@@ -312,7 +269,7 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
                   }`}
                 >
                   <BookOpen className="w-3.5 h-3.5" />
-                  <span>Goals ({Object.values(checklist).filter(Boolean).length}/6)</span>
+                  <span>Goals</span>
                 </button>
 
                 <button
@@ -348,7 +305,7 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
 
               {/* Sidecar Content Container */}
               <div
-                className={`p-4 rounded-3xl border flex flex-col justify-between ${
+                className={`flex-1 p-4 rounded-3xl border flex flex-col justify-between ${
                   isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
                 }`}
               >
@@ -357,7 +314,7 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
                   <div className="space-y-2.5">
                     <div className="flex items-center justify-between pb-1 border-b border-slate-100 dark:border-slate-800">
                       <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-500">
-                        ✝️ Session Framework:
+                        ✝️ Study Framework:
                       </span>
                       <span className="text-[10px] font-bold text-slate-400">
                         {Object.values(checklist).filter(Boolean).length}/6 Checked
@@ -366,12 +323,12 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
 
                     <div className="space-y-1.5">
                       {[
-                        { key: 'openingPrayer', label: '1. Opening Prayer & Academic Catch-up' },
-                        { key: 'academicGoal', label: '2. Clarify Lesson Topic & Difficulties' },
-                        { key: 'conceptClarified', label: '3. Explain Core Concepts & Formulas' },
-                        { key: 'practiceSolved', label: '4. Solve 2-3 Practice Problems Together' },
-                        { key: 'gospelShared', label: '5. Share Gospel Truth & Encouragement' },
-                        { key: 'closingPrayer', label: '6. Closing Prayer over Exam Peace' }
+                        { key: 'openingPrayer', label: '1. Opening Prayer & Catch-up' },
+                        { key: 'academicGoal', label: '2. Clarify Lesson Topic' },
+                        { key: 'conceptClarified', label: '3. Explain Core Concepts' },
+                        { key: 'practiceSolved', label: '4. Solve 2 Practice Problems' },
+                        { key: 'gospelShared', label: '5. Gospel Encouragement' },
+                        { key: 'closingPrayer', label: '6. Closing Prayer for Peace' }
                       ].map((item) => (
                         <label
                           key={item.key}
@@ -401,15 +358,15 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
 
                 {/* TAB 2: LIVE SCRATCHPAD */}
                 {activeRoomTab === 'notes' && (
-                  <div className="space-y-2 flex flex-col">
+                  <div className="space-y-2 flex flex-col h-full">
                     <label className="text-[11px] font-bold uppercase tracking-wider text-indigo-500">
-                      📝 Study Scratchpad & Equations:
+                      📝 In-Call Scratchpad:
                     </label>
                     <textarea
-                      rows={9}
+                      rows={10}
                       value={notes}
                       onChange={(e) => setNotes(e.target.value)}
-                      className={`w-full p-3 rounded-2xl border font-mono text-xs leading-relaxed resize-none ${
+                      className={`w-full flex-1 p-3 rounded-2xl border font-mono text-xs leading-relaxed resize-none ${
                         isDark
                           ? 'bg-slate-950 border-slate-800 text-slate-200 focus:border-indigo-500'
                           : 'bg-slate-50 border-slate-200 text-slate-900 focus:border-indigo-500'
@@ -417,7 +374,7 @@ export const SessionRoomModal = ({ isOpen, onClose, session }) => {
                       placeholder="Jot down formulas, code snippets, or practice notes..."
                     />
                     <div className="text-[10px] text-slate-400 text-right">
-                      Auto-saved in browser session
+                      Saved in browser
                     </div>
                   </div>
                 )}
