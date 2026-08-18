@@ -11,13 +11,18 @@ import {
   Zap,
   Users,
   Layers,
-  Database,
+  Brain,
   Award,
   Send,
   MessageSquare,
   ChevronRight,
   BookOpen,
-  Laptop
+  Laptop,
+  Compass,
+  TrendingUp,
+  Cpu,
+  Target,
+  FileCheck
 } from 'lucide-react';
 import { Modal } from '../common/Modal';
 
@@ -31,76 +36,76 @@ export const PartnersHub = () => {
     contactPerson: '',
     email: '',
     phone: '',
-    role: 'College Administrator / Dean',
+    role: 'College Student / Peer Tutor',
     message: ''
   });
 
   const handleDemoSubmit = (e) => {
     e.preventDefault();
-    if (!demoForm.institutionName.trim() || !demoForm.email.trim()) {
-      showToast('Please provide your institution name and contact email.', 'error');
+    if (!demoForm.contactPerson.trim() || !demoForm.email.trim()) {
+      showToast('Please provide your name and contact email.', 'error');
       return;
     }
-    showToast(`✓ Demo request sent for ${demoForm.institutionName}! SmartPath Technologies will contact you shortly.`, 'success');
+    showToast(`✓ Inquiry received! SmartPath Technologies will reach out to you shortly.`, 'success');
     setShowDemoModal(false);
     setDemoForm({
       institutionName: '',
       contactPerson: '',
       email: '',
       phone: '',
-      role: 'College Administrator / Dean',
+      role: 'College Student / Peer Tutor',
       message: ''
     });
   };
 
-  const SMARTPATH_COLLEGE_MODULES = [
+  const COPILOT_CAPABILITIES = [
     {
-      icon: GraduationCap,
-      title: 'Student Information System (SIS)',
-      tag: 'Admissions & Records',
-      description: 'Comprehensive student lifecycle management from online application and entrance evaluation to graduation clearance and alumni tracking.',
-      color: 'from-blue-600 to-indigo-600'
+      icon: Brain,
+      title: 'Metacognitive Self-Assessment & Reflection',
+      tag: 'Metacognition Engine',
+      description: 'Prompts students to monitor their own comprehension, calibrate confidence levels, and identify hidden conceptual blindspots before exams.',
+      color: 'from-violet-600 to-indigo-600'
     },
     {
-      icon: Layers,
-      title: 'Automated Enrollment & Curricula',
-      tag: 'Academic Automation',
-      description: 'Intelligent course prerequisite checking, block and irregular sectioning, credit transfers, and instant certificate of matriculation (COM) generation.',
-      color: 'from-indigo-600 to-violet-600'
+      icon: Cpu,
+      title: 'AI Academic Success Copilot',
+      tag: 'Personalized AI Mentor',
+      description: 'Intelligent multi-step concept decomposition, Socratic dialogue, active recall generation, and personalized problem-solving guidance tailored to collegiate syllabi.',
+      color: 'from-indigo-600 to-blue-600'
     },
     {
-      icon: Award,
-      title: 'Faculty Grading & Deans Portal',
-      tag: 'Scholastic Records',
-      description: 'Secure grade encoding, automated GPA calculation, Dean’s List ranking, and 1-click CHED/PRC-compliant Official Transcript of Records (OTR).',
+      icon: Target,
+      title: 'Prerequisite & Skill Gap Mastery',
+      tag: 'Knowledge Mapping',
+      description: 'Pinpoints foundational gaps in prerequisite collegiate subjects (Engineering Math, Organic Chem, Anatomy & Physiology, Financial Accounting, Algorithms).',
       color: 'from-emerald-600 to-teal-600'
     },
     {
-      icon: Zap,
-      title: 'Assessment, Cashiering & UniFAST',
-      tag: 'Finance & Billing',
-      description: 'Full CHED UniFAST Free Higher Education billing automation, customizable tuition fee templates, scholarship tagging, and multi-channel payment reconciliation.',
+      icon: TrendingUp,
+      title: 'Evidence-Based Study & Spaced Retrieval',
+      tag: 'Cognitive Optimization',
+      description: 'Automates scientifically-proven retrieval intervals, interleaving revision cycles, and active recall flash-drills to prevent cognitive overload.',
       color: 'from-amber-600 to-orange-600'
     },
     {
-      icon: Database,
-      title: 'Accreditation & Analytics Engine',
-      tag: 'Institutional Intelligence',
-      description: 'Executive dashboards with real-time student retention, enrollment heatmaps, demographic analytics, and audit-ready data for PACUCOA, ALCUCOA, and ISO certifications.',
+      icon: Users,
+      title: 'Campus Peer Tutoring & Discipleship Bridge',
+      tag: 'Collaborative Learning',
+      description: 'Integrates seamlessly with peer tutoring sessions and ministry life-group study circles across UPV, CPU, ISUFST, WVSU, ISAT-U, and USA.',
       color: 'from-pink-600 to-rose-600'
     },
     {
-      icon: Laptop,
-      title: 'Cloud LMS & Student Mobile App',
-      tag: 'Digital Learning',
-      description: 'Seamlessly integrated syllabus distribution, grade inquiries, assignment submissions, digital student IDs, and campus ministry announcement feeds.',
+      icon: FileCheck,
+      title: 'Comprehensive Mastery Analytics',
+      tag: 'Student Self-Efficacy',
+      description: 'Interactive analytics tracking metacognitive growth, study discipline, retention curves, and topic mastery milestones.',
       color: 'from-cyan-600 to-blue-600'
     }
   ];
 
   return (
     <div className="space-y-8 animate-tab-in pb-12">
-      {/* 1. HERO DEDICATION BANNER */}
+      {/* 1. HERO DEDICATION & PARTNER SPOTLIGHT */}
       <div className={`p-6 sm:p-10 rounded-3xl border relative overflow-hidden transition-all shadow-xl ${
         isDark
           ? 'bg-gradient-to-br from-indigo-950/80 via-slate-900 to-[#0c101d] border-indigo-500/30 text-white'
@@ -115,9 +120,14 @@ export const PartnersHub = () => {
             <span>MINISTRY PARTNERSHIP SPOTLIGHT</span>
           </div>
 
-          <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight font-heading leading-tight">
-            Empowering Higher Education & Campus Ministry
-          </h1>
+          <div className="space-y-1">
+            <div className="text-xs font-black uppercase tracking-widest text-indigo-400">
+              Technology Partner: SmartPath Technologies
+            </div>
+            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight font-heading leading-tight">
+              Empowering Students in Academics & Faith
+            </h1>
+          </div>
 
           {/* User Specific Dedication Statement */}
           <div className={`p-4 sm:p-5 rounded-2xl border ${
@@ -133,7 +143,7 @@ export const PartnersHub = () => {
           </div>
 
           <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-            Through technological innovation, Christian servant-leadership, and kingdom stewardship, SmartPath Technologies provides digital platforms that help academic institutions thrive while championing student discipleship.
+            Through technological innovation, Christian servant-leadership, and kingdom stewardship, SmartPath Technologies provides digital platforms that empower college students to excel in their academic journey while fostering Christ-centered discipleship.
           </p>
 
           <div className="pt-2 flex flex-wrap items-center gap-3">
@@ -141,8 +151,8 @@ export const PartnersHub = () => {
               onClick={() => setShowDemoModal(true)}
               className="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-400/20 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
             >
-              <GraduationCap className="w-4 h-4 text-slate-950" />
-              <span>Inquire for SmartPath College</span>
+              <Brain className="w-4 h-4 text-slate-950" />
+              <span>Inquire about SmartPath College</span>
             </button>
 
             <a
@@ -153,41 +163,45 @@ export const PartnersHub = () => {
                 isDark ? 'bg-slate-900 border-slate-700 text-slate-200 hover:text-white hover:bg-slate-800' : 'bg-white border-slate-300 text-slate-700 hover:text-slate-950 hover:bg-slate-50'
               }`}
             >
-              <span>Visit SmartPath Technologies</span>
+              <span>Visit SmartPath Tech</span>
               <ExternalLink className="w-3.5 h-3.5" />
             </a>
           </div>
         </div>
       </div>
 
-      {/* 2. FLAGSHIP PRODUCT SHOWCASE: SMARTPATH COLLEGE */}
+      {/* 2. FEATURED SOFTWARE PRODUCT: SMARTPATH COLLEGE */}
       <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
-          <div>
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
+          <div className="max-w-2xl space-y-1.5">
             <div className="flex items-center gap-2 text-xs font-black text-indigo-500 uppercase tracking-widest">
-              <Building2 className="w-4 h-4" />
-              <span>Flagship Enterprise Software</span>
+              <Sparkles className="w-4 h-4 text-amber-500" />
+              <span>A Software Product of SmartPath Technologies</span>
             </div>
-            <h2 className={`text-xl sm:text-3xl font-black font-heading mt-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              SmartPath College™ Management Platform
+            <h2 className={`text-xl sm:text-3xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              SmartPath College™
             </h2>
-            <p className={`text-xs sm:text-sm mt-1 max-w-2xl ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Next-generation cloud campus enterprise resource planning (ERP) built specifically for Philippine colleges, state universities, and private higher education institutions.
+            {/* Tagline requirement */}
+            <div className="inline-block px-3 py-1 rounded-xl bg-indigo-500/10 border border-indigo-500/20 text-indigo-600 dark:text-indigo-300 text-xs sm:text-sm font-bold">
+              ✨ &ldquo;An AI-Powered Academic Success & Metacognitive Copilot for Higher Education Students.&rdquo;
+            </div>
+            <p className={`text-xs sm:text-sm mt-1 leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              <strong>SmartPath College</strong> is an intelligent metacognitive software product developed by SmartPath Tech. Designed specifically for collegiate learners, it equips students to master complex coursework, build self-regulated study habits, and unlock high academic performance.
             </p>
           </div>
 
           <button
             onClick={() => setShowDemoModal(true)}
-            className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs transition-all self-start sm:self-auto cursor-pointer"
+            className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs transition-all self-start sm:self-auto cursor-pointer shadow-sm shrink-0"
           >
-            Request Institutional Demo →
+            Inquire for Product Access →
           </button>
         </div>
 
-        {/* Modules Grid */}
+        {/* Copilot Capabilities Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {SMARTPATH_COLLEGE_MODULES.map((module, idx) => {
-            const Icon = module.icon;
+          {COPILOT_CAPABILITIES.map((capability, idx) => {
+            const Icon = capability.icon;
             return (
               <div
                 key={idx}
@@ -197,27 +211,27 @@ export const PartnersHub = () => {
               >
                 <div className="space-y-3">
                   <div className="flex items-center justify-between">
-                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${module.color} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
+                    <div className={`w-12 h-12 rounded-2xl bg-gradient-to-tr ${capability.color} text-white flex items-center justify-center shadow-md group-hover:scale-110 transition-transform`}>
                       <Icon className="w-6 h-6" />
                     </div>
                     <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full border ${
                       isDark ? 'bg-slate-800 border-slate-700 text-indigo-300' : 'bg-indigo-50 border-indigo-200 text-indigo-700'
                     }`}>
-                      {module.tag}
+                      {capability.tag}
                     </span>
                   </div>
 
                   <h3 className={`text-base font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    {module.title}
+                    {capability.title}
                   </h3>
 
                   <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                    {module.description}
+                    {capability.description}
                   </p>
                 </div>
 
                 <div className="pt-4 border-t border-slate-800/20 dark:border-slate-800 flex items-center text-xs font-bold text-indigo-500 group-hover:text-indigo-400">
-                  <span>Learn module capabilities</span>
+                  <span>How it aids metacognition</span>
                   <ChevronRight className="w-3.5 h-3.5 ml-1 group-hover:translate-x-1 transition-transform" />
                 </div>
               </div>
@@ -237,7 +251,7 @@ export const PartnersHub = () => {
           </div>
 
           <h3 className="text-xl sm:text-2xl font-black font-heading">
-            Why SmartPath Technologies Supports Grace Youth
+            Why SmartPath Tech Backs Campus Ministry
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
@@ -248,7 +262,7 @@ export const PartnersHub = () => {
               <div className="text-xs space-y-0.5">
                 <strong className={isDark ? 'text-white' : 'text-slate-900'}>Empowering Student Tutors</strong>
                 <p className={isDark ? 'text-slate-400' : 'text-slate-600'}>
-                  Backing free academic peer tutoring across STEM, Nursing, and Business colleges.
+                  Supporting collegiate peer tutors across STEM, Nursing, Fisheries, Agriculture, Education, and Accountancy.
                 </p>
               </div>
             </div>
@@ -260,7 +274,7 @@ export const PartnersHub = () => {
               <div className="text-xs space-y-0.5">
                 <strong className={isDark ? 'text-white' : 'text-slate-900'}>Campus Discipleship Fellowship</strong>
                 <p className={isDark ? 'text-slate-400' : 'text-slate-600'}>
-                  Providing technology backing for life groups, youth retreats, and gospel mentorship.
+                  Supporting weekly life groups, citywide youth retreats, and gospel mentorship programs.
                 </p>
               </div>
             </div>
@@ -272,7 +286,7 @@ export const PartnersHub = () => {
               <div className="text-xs space-y-0.5">
                 <strong className={isDark ? 'text-white' : 'text-slate-900'}>Western Visayas Youth Mission</strong>
                 <p className={isDark ? 'text-slate-400' : 'text-slate-600'}>
-                  Bridging campuses from UPV and CPU to ISUFST and WVSU under the banner of Christ.
+                  Uniting university campuses from UPV and CPU to ISUFST, WVSU, ISAT-U, and USA under Christ.
                 </p>
               </div>
             </div>
@@ -284,7 +298,7 @@ export const PartnersHub = () => {
               <div className="text-xs space-y-0.5">
                 <strong className={isDark ? 'text-white' : 'text-slate-900'}>100% Free Ministry Policy</strong>
                 <p className={isDark ? 'text-slate-400' : 'text-slate-600'}>
-                  Ensuring all spiritual care and tutoring remains completely free for every student.
+                  Ensuring all campus discipleship care, counseling, and tutoring remains completely free.
                 </p>
               </div>
             </div>
@@ -302,7 +316,7 @@ export const PartnersHub = () => {
             Interested in Partnering with Grace Youth?
           </h3>
           <p className={`text-xs max-w-xl mx-auto ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-            We welcome Christian organizations, alumni tech innovators, and local mission advocates to collaborate in raising the next generation of Christ-centered leaders.
+            We welcome Christian organizations, tech innovators, and local mission advocates to collaborate in raising the next generation of Christ-centered student leaders.
           </p>
         </div>
 
@@ -317,30 +331,30 @@ export const PartnersHub = () => {
         </button>
       </div>
 
-      {/* DEMO / INQUIRY MODAL */}
+      {/* PRODUCT / PARTNER INQUIRY MODAL */}
       <Modal
         isOpen={showDemoModal}
         onClose={() => setShowDemoModal(false)}
-        title="Inquire for SmartPath College™ / Ministry Partnership"
+        title="Inquire: SmartPath College™ / SmartPath Tech"
       >
         <form onSubmit={handleDemoSubmit} className="space-y-4">
           <div className="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-500/30 text-xs text-indigo-900 dark:text-indigo-200 flex items-start gap-2">
             <Sparkles className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
             <span>
-              Connect directly with the <strong>SmartPath Technologies</strong> solutions team for institutional demo scheduling, college ERP consultations, or ministry partnership inquiries.
+              Get in touch with <strong>SmartPath Technologies</strong> regarding <strong>SmartPath College™</strong> (AI-Powered Academic Success & Metacognitive Copilot for Higher Education Students) or ministry collaboration.
             </span>
           </div>
 
           <div className="space-y-1">
             <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              Institution / Organization Name *
+              Your Name *
             </label>
             <input
               type="text"
               required
-              placeholder="e.g. West Visayas State University, St. Paul College..."
-              value={demoForm.institutionName}
-              onChange={(e) => setDemoForm({ ...demoForm, institutionName: e.target.value })}
+              placeholder="Full Name"
+              value={demoForm.contactPerson}
+              onChange={(e) => setDemoForm({ ...demoForm, contactPerson: e.target.value })}
               className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
                 isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
               }`}
@@ -350,14 +364,13 @@ export const PartnersHub = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Contact Person *
+                University / Campus / Organization
               </label>
               <input
                 type="text"
-                required
-                placeholder="Full Name / Designation"
-                value={demoForm.contactPerson}
-                onChange={(e) => setDemoForm({ ...demoForm, contactPerson: e.target.value })}
+                placeholder="e.g. UPV, CPU, ISUFST, WVSU..."
+                value={demoForm.institutionName}
+                onChange={(e) => setDemoForm({ ...demoForm, institutionName: e.target.value })}
                 className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
                   isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                 }`}
@@ -366,7 +379,7 @@ export const PartnersHub = () => {
 
             <div className="space-y-1">
               <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Role / Title
+                Role / Track
               </label>
               <select
                 value={demoForm.role}
@@ -375,13 +388,12 @@ export const PartnersHub = () => {
                   isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                 }`}
               >
-                <option>College President / VP Academics</option>
-                <option>College Administrator / Dean</option>
-                <option>Registrar / Admissions Officer</option>
-                <option>IT / MIS Director</option>
-                <option>Faculty / Department Chair</option>
+                <option>College Student / Learner</option>
+                <option>Volunteer Peer Tutor</option>
+                <option>College Faculty / Educator</option>
+                <option>Academic Administrator / Dean</option>
                 <option>Kingdom Partner / Sponsor</option>
-                <option>Student Leader / Other</option>
+                <option>Campus Youth Worker</option>
               </select>
             </div>
           </div>
@@ -389,12 +401,12 @@ export const PartnersHub = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Official Email Address *
+                Email Address *
               </label>
               <input
                 type="email"
                 required
-                placeholder="admin@college.edu.ph"
+                placeholder="name@university.edu.ph"
                 value={demoForm.email}
                 onChange={(e) => setDemoForm({ ...demoForm, email: e.target.value })}
                 className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
@@ -421,11 +433,11 @@ export const PartnersHub = () => {
 
           <div className="space-y-1">
             <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              Inquiry Details / Specific Modules Needed
+              Message / Academic Focus Area
             </label>
             <textarea
               rows={3}
-              placeholder="Tell us about your campus requirements (e.g., SIS enrollment, grading portal, UniFAST cashiering, or ministry partnership)..."
+              placeholder="Tell us about your collegiate learning needs or partnership interest..."
               value={demoForm.message}
               onChange={(e) => setDemoForm({ ...demoForm, message: e.target.value })}
               className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
@@ -449,7 +461,7 @@ export const PartnersHub = () => {
               className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
             >
               <Send className="w-3.5 h-3.5 text-slate-950" />
-              <span>Submit Inquiries</span>
+              <span>Send Inquiries</span>
             </button>
           </div>
         </form>

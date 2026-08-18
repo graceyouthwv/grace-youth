@@ -212,6 +212,10 @@ export const TRANSLATIONS = {
     reviewers_subheading: 'Mga pormula, mock exams, kag summary notes nga gin-share sang aton mga student leaders.',
     reviewers_download: 'I-Download ang PDF Reviewer',
 
+    // Partners (Hiligaynon)
+    partners_heading: 'Aton mga Kaupod sa Ministry & Teknolohiya',
+    partners_subheading: 'Ginahatagan importansya ang SmartPath Technologies kag ang ila produkto nga SmartPath College para sa kauswagan sang kabataan.',
+
     // Footer (Hiligaynon)
     footer_tagline: 'Nagapabakod sa mga estudyante sa Iloilo agud magmadinalag-on sa academics kag mag-uswag sa pagtuo kay Kristo. 100% libre nga ministry.',
     footer_campuses_title: 'Mga Unibersidad sa Iloilo',
