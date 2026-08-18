@@ -28,20 +28,20 @@ export const TRANSLATIONS = {
     explore_tutors: 'Explore Tutors →',
 
     // Hero Banner
-    hero_badge: 'ISUFST • UPV • CPU • WVSU • ISAT-U • USA',
+    hero_badge: '🇵🇭 Philippine Collegiate Ministry & Online Network',
     hero_title_1: 'EXCEL IN',
     hero_title_acads: 'ACADEMICS.',
     hero_title_2: 'THRIVE IN',
     hero_title_faith: 'FAITH.',
     hero_subtitle:
-      'Connecting college students across Iloilo with free peer tutoring, intentional discipleship Life Groups, and 24/7 pastoral care in Christ.',
+      'Connecting college and university students across the Philippines with free peer tutoring, intentional discipleship Life Groups, and 24/7 pastoral care in Christ.',
     hero_cta_tutor: 'Find a Free Peer Tutor',
     hero_cta_group: 'Join a Campus Life Group',
     hero_free_notice: '100% Free Ministry • No Subscription • Student-Led',
 
     // Quick Stats
     stat_students: 'Students Reached',
-    stat_students_desc: 'Across 6 Iloilo universities',
+    stat_students_desc: 'Across Philippine campuses & online',
     stat_tutors: 'Verified Peer Tutors',
     stat_tutors_desc: 'STEM, Nursing, Business & Arts',
     stat_lifegroups: 'Active Life Groups',
@@ -138,20 +138,20 @@ export const TRANSLATIONS = {
     explore_tutors: 'Tan-awa ang mga Tutors →',
 
     // Hero Banner (Hiligaynon)
-    hero_badge: 'ISUFST • UPV • CPU • WVSU • ISAT-U • USA',
+    hero_badge: '🇵🇭 Collegiate Ministry & Online Network sang Kabataan',
     hero_title_1: 'MAG-EXCEL SA',
     hero_title_acads: 'EKSAMEN & ACADS.',
     hero_title_2: 'MAG-TUMAN SA',
     hero_title_faith: 'PAGTO-O.',
     hero_subtitle:
-      'Ginasugpon ang mga estudyante sa bilog nga Iloilo sa libre nga peer tutoring, Life Groups sa pagtubo sa Ginoo, kag 24/7 nga pastoral nga pag-ulikid kay Kristo.',
+      'Ginasugpon ang mga estudyante sa mga unibersidad sa Pilipinas kag online sa libre nga peer tutoring, Life Groups sa pagtubo sa Ginoo, kag 24/7 nga pastoral nga pag-ulikid kay Kristo.',
     hero_cta_tutor: 'Mangita sang Libre nga Tutor',
     hero_cta_group: 'Mag-upod sa Life Group',
     hero_free_notice: '100% Libre nga Serbisyo sang Ministry • Wala Bayad • Ginapangunahan sang Kabataan',
 
     // Quick Stats (Hiligaynon)
     stat_students: 'Estudyante nga Nalab-ot',
-    stat_students_desc: 'Sa 6 ka unibersidad sa Iloilo',
+    stat_students_desc: 'Sa mga unibersidad kag online network',
     stat_tutors: 'Rehistrado nga Tutors',
     stat_tutors_desc: 'STEM, Nursing, Business & Arts',
     stat_lifegroups: 'Aktibo nga Life Groups',

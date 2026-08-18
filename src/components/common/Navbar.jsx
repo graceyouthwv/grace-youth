@@ -114,7 +114,7 @@ export const Navbar = () => {
                     GRACE YOUTH
                   </span>
                   <span className="hidden xl:inline-block px-2 py-0.2 text-[9px] font-black uppercase tracking-wider bg-pink-500/10 text-pink-500 rounded-full border border-pink-500/20">
-                    Iloilo Campuses
+                    Campus Ministry 🇵🇭
                   </span>
                 </div>
                 <p className={`text-[10px] sm:text-[11px] hidden sm:block font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>

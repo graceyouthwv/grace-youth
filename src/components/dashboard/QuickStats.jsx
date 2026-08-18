@@ -34,9 +34,9 @@ export const QuickStats = () => {
       bg: isDark ? 'bg-rose-400/10 border-rose-400/20' : 'bg-rose-50 border-rose-200'
     },
     {
-      label: isHlg ? 'Unibersidad sa Iloilo' : 'Iloilo Campuses',
-      value: `${CAMPUSES.filter((c) => c.id !== 'all').length}`,
-      subtext: 'ISUFST, UPV, CPU, WVSU, ISAT-U, USA',
+      label: isHlg ? 'Rehiyon & Campuses' : 'Regions & Campuses',
+      value: '17 Regions',
+      subtext: isHlg ? 'Nasyonal & Online Circles' : 'Nationwide & Online Circles',
       icon: School,
       iconColor: 'text-violet-500',
       bg: isDark ? 'bg-violet-400/10 border-violet-400/20' : 'bg-violet-50 border-violet-200'

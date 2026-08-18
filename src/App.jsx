@@ -249,10 +249,10 @@ export const App = () => {
                 </span>
               </div>
               <p className="leading-relaxed max-w-md text-xs">
-                Empowering college students across Iloilo to excel in academics and thrive in faith. 100% free ministry service.
+                Empowering college and university students across the Philippines to excel in academics and thrive in faith. 100% free ministry service.
               </p>
               <div className="font-mono text-[11px] opacity-75">
-                Iloilo Province & City • ISUFST • UPV • CPU • WVSU • ISAT-U • USA
+                Philippines Nationwide 🇵🇭 • All 17 Regions • On-Campus & Online Circles
               </div>
 
               {/* Dedicated Partner Note */}
@@ -262,21 +262,21 @@ export const App = () => {
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-300 text-[11px] font-bold hover:scale-105 transition-transform cursor-pointer"
                 >
                   <Sparkles className="w-3 h-3 text-amber-500" />
-                  <span>Proud Ministry Partner: <strong>SmartPath Technologies</strong> (SmartPath College)</span>
+                  <span>Proud Ministry Partner: <strong>SmartPath Technologies</strong> (SmartPath Campus™)</span>
                 </button>
               </div>
             </div>
 
             <div>
               <h5 className={`font-black uppercase tracking-wider mb-2 font-heading ${isDark ? 'text-slate-200' : 'text-slate-900'}`}>
-                Campuses Served
+                Ministry Reach
               </h5>
               <ul className="space-y-1 opacity-80 text-xs">
-                <li>• ISUFST (Barotac Nuevo & Tiwi)</li>
-                <li>• UP Visayas (Miagao & Iloilo)</li>
-                <li>• Central Philippine University</li>
-                <li>• West Visayas State University</li>
-                <li>• ISAT-U & San Agustin</li>
+                <li>• All 17 Philippine Regions</li>
+                <li>• Major University Hubs & Campuses</li>
+                <li>• Online Collegiate Circles (Discord/Meet)</li>
+                <li>• Volunteer Peer Tutors & Mentors</li>
+                <li>• 24/7 Pastoral Prayer & Care</li>
               </ul>
             </div>
 

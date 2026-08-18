@@ -82,7 +82,7 @@ export const HeroBanner = () => {
           {/* Campus Filter inside Hero */}
           <div className={`pt-6 border-t ${isDark ? 'border-slate-800' : 'border-slate-200'}`}>
             <p className={`text-[11px] font-black uppercase tracking-widest mb-2.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              {language === 'hlg' ? 'Pilion ang imo Unibersidad sa Iloilo:' : 'Filter by Your University:'}
+              {language === 'hlg' ? 'Pilion ang imo Rehiyon & Campus:' : 'Filter by Your Region & Campus:'}
             </p>
             <div className={`p-2 rounded-2xl border ${isDark ? 'bg-slate-950/80 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
               <CampusSelector />
