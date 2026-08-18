@@ -12,17 +12,18 @@ import { Sparkles, BookOpen, School, Loader2 } from 'lucide-react';
 import { CAMPUSES } from './data/campuses';
 import { getRegionById } from './data/regions';
 import { getTranslation } from './data/translations';
+import { lazyRetry } from './utils/helpers';
 
-// Dynamic Code Splitting for heavy views & portals
-const AdminPortal = lazy(() => import('./components/admin/AdminPortal').then(m => ({ default: m.AdminPortal })));
-const YouthWorkerPortal = lazy(() => import('./components/worker/YouthWorkerPortal').then(m => ({ default: m.YouthWorkerPortal })));
-const TutorPortal = lazy(() => import('./components/tutor/TutorPortal').then(m => ({ default: m.TutorPortal })));
-const StudentPortal = lazy(() => import('./components/student/StudentPortal').then(m => ({ default: m.StudentPortal })));
-const ReviewerVault = lazy(() => import('./components/tutorials/ReviewerVault').then(m => ({ default: m.ReviewerVault })));
-const FundraisingHub = lazy(() => import('./components/giving/FundraisingHub').then(m => ({ default: m.FundraisingHub })));
-const BibleStudyHub = lazy(() => import('./components/discipleship/BibleStudyHub').then(m => ({ default: m.BibleStudyHub })));
-const PartnersHub = lazy(() => import('./components/partners/PartnersHub').then(m => ({ default: m.PartnersHub })));
-const EventList = lazy(() => import('./components/events/EventList').then(m => ({ default: m.EventList })));
+// Dynamic Code Splitting for heavy views & portals with auto deployment retry
+const AdminPortal = lazy(() => lazyRetry(() => import('./components/admin/AdminPortal').then(m => ({ default: m.AdminPortal }))));
+const YouthWorkerPortal = lazy(() => lazyRetry(() => import('./components/worker/YouthWorkerPortal').then(m => ({ default: m.YouthWorkerPortal }))));
+const TutorPortal = lazy(() => lazyRetry(() => import('./components/tutor/TutorPortal').then(m => ({ default: m.TutorPortal }))));
+const StudentPortal = lazy(() => lazyRetry(() => import('./components/student/StudentPortal').then(m => ({ default: m.StudentPortal }))));
+const ReviewerVault = lazy(() => lazyRetry(() => import('./components/tutorials/ReviewerVault').then(m => ({ default: m.ReviewerVault }))));
+const FundraisingHub = lazy(() => lazyRetry(() => import('./components/giving/FundraisingHub').then(m => ({ default: m.FundraisingHub }))));
+const BibleStudyHub = lazy(() => lazyRetry(() => import('./components/discipleship/BibleStudyHub').then(m => ({ default: m.BibleStudyHub }))));
+const PartnersHub = lazy(() => lazyRetry(() => import('./components/partners/PartnersHub').then(m => ({ default: m.PartnersHub }))));
+const EventList = lazy(() => lazyRetry(() => import('./components/events/EventList').then(m => ({ default: m.EventList }))));
 
 // Accessible, sleek loading fallback
 const TabLoadingFallback = ({ isDark }) => (

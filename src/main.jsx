@@ -16,6 +16,25 @@ class ErrorBoundary extends React.Component {
 
   componentDidCatch(error, errorInfo) {
     console.error('Grace Youth caught error:', error, errorInfo);
+    const errorStr = String(error?.message || error || '');
+    if (
+      (errorStr.includes('MIME type') ||
+        errorStr.includes('dynamically imported module') ||
+        errorStr.includes('Loading chunk') ||
+        errorStr.includes('Failed to fetch')) &&
+      typeof window !== 'undefined'
+    ) {
+      let alreadyReloaded = false;
+      try {
+        alreadyReloaded = !!window.sessionStorage.getItem('gy_chunk_autorecover');
+      } catch (e) {}
+      if (!alreadyReloaded) {
+        try {
+          window.sessionStorage.setItem('gy_chunk_autorecover', 'true');
+        } catch (e) {}
+        window.location.href = window.location.pathname + '?t=' + Date.now();
+      }
+    }
   }
 
   render() {

@@ -96,3 +96,40 @@ export const processImageUpload = (file, maxWidth = 300, maxHeight = 300) => {
     reader.readAsDataURL(file);
   });
 };
+
+/**
+ * Retries dynamic import if chunk fails due to new deployment/cache invalidation
+ */
+export const lazyRetry = (componentImport) => {
+  return new Promise((resolve, reject) => {
+    componentImport()
+      .then((component) => {
+        try {
+          window.sessionStorage.removeItem('gy_chunk_retry');
+        } catch (e) {}
+        resolve(component);
+      })
+      .catch((error) => {
+        const errorStr = String(error?.message || error || '');
+        const isChunkError =
+          errorStr.includes('MIME type') ||
+          errorStr.includes('dynamically imported module') ||
+          errorStr.includes('Loading chunk') ||
+          errorStr.includes('Failed to fetch');
+
+        let alreadyRetried = false;
+        try {
+          alreadyRetried = !!window.sessionStorage.getItem('gy_chunk_retry');
+        } catch (e) {}
+
+        if (isChunkError && !alreadyRetried && typeof window !== 'undefined') {
+          try {
+            window.sessionStorage.setItem('gy_chunk_retry', 'true');
+          } catch (e) {}
+          window.location.href = window.location.pathname + '?t=' + Date.now();
+          return;
+        }
+        reject(error);
+      });
+  });
+};
