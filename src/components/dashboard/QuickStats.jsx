@@ -1,81 +1,78 @@
 import React from 'react';
-import { BookOpen, Users, Heart, School } from 'lucide-react';
+import { BookOpen, Users, Heart, GraduationCap, ArrowUpRight } from 'lucide-react';
 import { useApp } from '../../context/AppContext';
-import { CAMPUSES } from '../../data/campuses';
 
 export const QuickStats = () => {
-  const { tutors, bibleStudies, prayers, language, theme } = useApp();
+  const { tutors, bibleStudies, prayers, language, theme, setActiveTab } = useApp();
   const isDark = theme === 'dark';
   const isHlg = language === 'hlg' || language === 'hil';
 
-  const stats = [
+  const pillars = [
     {
-      label: isHlg ? 'Libre nga Peer Tutors' : 'Free Peer Tutors',
-      value: `${tutors.length}`,
-      subtext: isHlg ? 'Beripikado nga tutors' : 'Verified peer tutors',
+      title: isHlg ? 'Peer Tutoring' : 'Peer Tutoring',
+      desc: isHlg ? 'Libre nga pagtuon sa STEM, Math, Nursing & Board Prep' : '1-on-1 peer mentoring across STEM, Business, Nursing & Arts',
+      stat: tutors.length > 0 ? `${tutors.length} Mentors` : '100% Free',
       icon: BookOpen,
-      iconColor: 'text-amber-500',
-      bg: isDark ? 'bg-amber-400/10 border-amber-400/20' : 'bg-amber-50 border-amber-200'
+      tab: 'tutorials',
+      badge: 'Academic Support'
     },
     {
-      label: isHlg ? 'Campus Life Groups' : 'Campus Life Groups',
-      value: `${bibleStudies.length}`,
-      subtext: isHlg ? 'Grupo sang kabataan' : 'Grace Youth circles',
+      title: isHlg ? 'Campus Life Groups' : 'Campus Life Groups',
+      desc: isHlg ? 'Discipleship circles para sa pagtuon sa Bibliya' : 'Intentional discipleship circles & genuine community',
+      stat: bibleStudies.length > 0 ? `${bibleStudies.length} Circles` : 'Weekly Circles',
       icon: Users,
-      iconColor: 'text-emerald-500',
-      bg: isDark ? 'bg-emerald-400/10 border-emerald-400/20' : 'bg-emerald-50 border-emerald-200'
+      tab: 'discipleship',
+      badge: 'Fellowship'
     },
     {
-      label: isHlg ? 'Pangamuyo nga Ginbayaw' : 'Prayers Lifted Up',
-      value: `${prayers.reduce((acc, p) => acc + (p.prayedCount || 1), 0)}`,
-      subtext: isHlg ? 'Sang mga estudyante' : 'By campus warriors',
+      title: isHlg ? 'Pangamuyo & Pag-atipan' : 'Prayer & Pastoral Care',
+      desc: isHlg ? 'Kompidensyal nga pangamuyo kag pastoral counsel' : 'Confidential prayer wall & 24/7 pastoral counseling',
+      stat: prayers.length > 0 ? `${prayers.length} Requests` : '24/7 Available',
       icon: Heart,
-      iconColor: 'text-rose-500',
-      bg: isDark ? 'bg-rose-400/10 border-rose-400/20' : 'bg-rose-50 border-rose-200'
+      tab: 'home',
+      badge: 'Pastoral Care'
     },
     {
-      label: isHlg ? 'Rehiyon & Campuses' : 'Regions & Campuses',
-      value: '17 Regions',
-      subtext: isHlg ? 'Nasyonal & Online Circles' : 'Nationwide & Online Circles',
-      icon: School,
-      iconColor: 'text-violet-500',
-      bg: isDark ? 'bg-violet-400/10 border-violet-400/20' : 'bg-violet-50 border-violet-200'
+      title: isHlg ? '17 Rehiyon sa Pilipinas' : '17 Philippine Regions',
+      desc: isHlg ? 'Bukas sa tanan nga kolehiyo kag unibersidad' : 'Nationwide online network & campus presence',
+      stat: 'Nationwide',
+      icon: GraduationCap,
+      tab: 'partners',
+      badge: 'Collegiate'
     }
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
-      {stats.map((stat, idx) => {
-        const Icon = stat.icon;
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4 mb-8">
+      {pillars.map((pillar, idx) => {
+        const Icon = pillar.icon;
         return (
           <div
             key={idx}
-            className={`genz-card p-4 sm:p-5 flex flex-col justify-between border ${
-              isDark ? 'border-slate-800' : 'border-slate-200 bg-white shadow-xs'
-            }`}
+            onClick={() => setActiveTab(pillar.tab)}
+            className="group relative p-5 rounded-2xl border border-slate-200/80 dark:border-slate-800/80 bg-white dark:bg-slate-900/60 shadow-2xs hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 cursor-pointer flex flex-col justify-between"
           >
-            <div className="flex items-center justify-between mb-3">
-              <div className={`p-2.5 rounded-2xl border ${stat.bg}`}>
-                <Icon className={`w-5 h-5 ${stat.iconColor}`} />
-              </div>
-              <span className={`text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full border ${
-                isDark ? 'text-emerald-400 bg-emerald-950/60 border-emerald-500/30' : 'text-emerald-700 bg-emerald-50 border-emerald-300'
-              }`}>
-                {isHlg ? 'Aktibo' : 'Live'}
-              </span>
-            </div>
             <div>
-              <div className={`text-2xl sm:text-3xl font-black mb-0.5 tracking-tight font-heading ${
-                isDark ? 'text-white' : 'text-slate-900'
-              }`}>
-                {stat.value}
+              <div className="flex items-center justify-between mb-3.5">
+                <div className="w-10 h-10 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center transition-transform group-hover:scale-105">
+                  <Icon className="w-5 h-5" />
+                </div>
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                  {pillar.badge}
+                </span>
               </div>
-              <div className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-800'}`}>
-                {stat.label}
-              </div>
-              <div className={`text-[11px] mt-0.5 ${isDark ? 'text-slate-500' : 'text-slate-500 font-medium'}`}>
-                {stat.subtext}
-              </div>
+
+              <h3 className="font-bold text-sm sm:text-base text-slate-900 dark:text-white mb-1 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                {pillar.title}
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed font-normal">
+                {pillar.desc}
+              </p>
+            </div>
+
+            <div className="pt-4 mt-3 border-t border-slate-100 dark:border-slate-800/60 flex items-center justify-between text-xs font-semibold text-indigo-600 dark:text-indigo-400">
+              <span>{pillar.stat}</span>
+              <ArrowUpRight className="w-4 h-4 opacity-70 group-hover:opacity-100 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-all" />
             </div>
           </div>
         );
@@ -83,3 +80,4 @@ export const QuickStats = () => {
     </div>
   );
 };
+export default QuickStats;

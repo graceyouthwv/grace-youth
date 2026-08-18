@@ -18,9 +18,10 @@ import {
   Download,
   MessageSquare,
   Tent,
-  MoreVertical,
   ShieldCheck,
-  ChevronDown
+  ChevronDown,
+  Database,
+  Calendar
 } from 'lucide-react';
 import { ProfileModal } from '../profile/ProfileModal';
 import { MySessionsModal } from '../profile/MySessionsModal';
@@ -41,10 +42,7 @@ export const Navbar = () => {
     isAppInstalled,
     theme,
     toggleTheme,
-    logout,
-    registeredUsers,
-    setCurrentUser,
-    showToast
+    logout
   } = useApp();
 
   const isHlg = language === 'hlg' || language === 'hil';
@@ -59,8 +57,8 @@ export const Navbar = () => {
   const [showAdminLoginModal, setShowAdminLoginModal] = useState(false);
   const [authMode, setAuthMode] = useState('login');
 
-  // Desktop Sandwich Menu Dropdown State
-  const [desktopMenuOpen, setDesktopMenuOpen] = useState(false);
+  // Profile / More Dropdown State
+  const [menuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef(null);
 
   const isDark = theme === 'dark';
@@ -73,7 +71,7 @@ export const Navbar = () => {
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
-        setDesktopMenuOpen(false);
+        setMenuOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -90,49 +88,45 @@ export const Navbar = () => {
   const handleOpenAuth = (mode) => {
     setAuthMode(mode);
     setShowAuthModal(true);
-    setDesktopMenuOpen(false);
+    setMenuOpen(false);
   };
 
   return (
     <>
-      <header className={`sticky top-0 z-40 backdrop-blur-xl border-b transition-colors duration-300 ${
-        isDark ? 'bg-[#0c101d]/90 border-slate-800/80 text-white' : 'bg-white/90 border-slate-200 text-slate-900 shadow-xs'
-      }`}>
-        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between h-16 sm:h-20">
+      <header className="sticky top-0 z-40 backdrop-blur-xl border-b transition-colors duration-200 bg-white/90 dark:bg-[#0b0f19]/90 border-slate-200 dark:border-slate-800">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16 sm:h-18">
             {/* 1. BRAND LOGO */}
             <div
-              className="flex items-center gap-2.5 sm:gap-3 cursor-pointer group shrink-0"
+              className="flex items-center gap-3 cursor-pointer group shrink-0"
               onClick={() => setActiveTab('home')}
             >
-              <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-2xl bg-gradient-to-tr from-violet-600 via-indigo-600 to-pink-500 flex items-center justify-center text-white shadow-lg shadow-indigo-500/25 group-hover:scale-105 group-hover:rotate-3 transition-all">
-                <Sparkles className="w-5 h-5 text-amber-300" />
+              <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+                <Sparkles className="w-5 h-5" />
               </div>
               <div>
-                <div className="flex items-center gap-1.5">
-                  <span className={`font-extrabold text-base sm:text-lg tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                <div className="flex items-center gap-2">
+                  <span className="font-black text-base sm:text-lg tracking-tight font-heading text-slate-900 dark:text-white">
                     GRACE YOUTH
                   </span>
-                  <span className="hidden xl:inline-block px-2 py-0.2 text-[9px] font-black uppercase tracking-wider bg-pink-500/10 text-pink-500 rounded-full border border-pink-500/20">
-                    Campus Ministry 🇵🇭
+                  <span className="hidden xl:inline-block px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 rounded-full border border-indigo-200 dark:border-indigo-800">
+                    Collegiate
                   </span>
                 </div>
-                <p className={`text-[10px] sm:text-[11px] hidden sm:block font-medium ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                  Peer Acads • Life Groups • Camps
+                <p className="text-[11px] text-slate-500 dark:text-slate-400 font-medium hidden sm:block">
+                  Academics • Life Groups • Camps
                 </p>
               </div>
             </div>
 
-            {/* 2. DESKTOP CENTER NAVIGATION (Clean 5 Core Tabs) */}
-            <nav className={`hidden lg:flex items-center gap-1 p-1 rounded-2xl border transition-colors ${
-              isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-slate-100 border-slate-200'
-            }`}>
+            {/* 2. DESKTOP CENTER NAVIGATION */}
+            <nav className="hidden lg:flex items-center gap-1 p-1 rounded-2xl border bg-slate-100/80 dark:bg-slate-900/80 border-slate-200/80 dark:border-slate-800/80">
               <button
                 onClick={() => setActiveTab('home')}
-                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                   activeTab === 'home'
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
                 Feed
@@ -142,300 +136,251 @@ export const Navbar = () => {
               {!isGuest && (
                 <button
                   onClick={() => setActiveTab('portal')}
-                  className={`px-3 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
+                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                     activeTab === 'portal'
-                      ? isLeader ? 'bg-rose-600 text-white shadow-xs' : 'bg-indigo-600 text-white shadow-xs'
-                      : isWorker
-                      ? isDark ? 'text-emerald-400 hover:text-emerald-300 font-extrabold' : 'text-emerald-800 hover:text-emerald-950 font-extrabold'
-                      : isTutor
-                      ? isDark ? 'text-amber-400 hover:text-amber-300 font-extrabold' : 'text-amber-800 hover:text-amber-950 font-extrabold'
-                      : isLeader
-                      ? isDark ? 'text-rose-400 hover:text-rose-300 font-extrabold' : 'text-rose-800 hover:text-rose-950 font-extrabold'
-                      : isDark ? 'text-indigo-400 hover:text-indigo-300 font-extrabold' : 'text-indigo-800 hover:text-indigo-950 font-extrabold'
+                      ? 'bg-indigo-600 text-white shadow-xs'
+                      : 'text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-extrabold'
                   }`}
                 >
                   {isLeader
-                    ? t('nav_adminhub')
+                    ? t('nav_adminhub') || 'Admin Command'
                     : isWorker
-                    ? t('nav_workerhub')
+                    ? t('nav_workerhub') || 'Worker Console'
                     : isTutor
-                    ? t('nav_tutorhub')
-                    : t('nav_myhub')}
+                    ? t('nav_tutorhub') || 'Tutor Portal'
+                    : t('nav_myhub') || 'My Student Hub'}
                 </button>
               )}
 
               <button
                 onClick={() => setActiveTab('tutorials')}
-                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'tutorials'
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                <BookOpen className={`w-3.5 h-3.5 ${activeTab === 'tutorials' ? 'text-white' : 'text-amber-500'}`} />
-                <span>{t('nav_acads')}</span>
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>{t('nav_acads') || 'Peer Acads'}</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('discipleship')}
-                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'discipleship'
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                <Users className={`w-3.5 h-3.5 ${activeTab === 'discipleship' ? 'text-white' : 'text-emerald-500'}`} />
-                <span>{t('nav_groups')}</span>
+                <Users className="w-3.5 h-3.5" />
+                <span>{t('nav_groups') || 'Life Groups'}</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('giving')}
-                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'giving'
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
+                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                <Tent className={`w-3.5 h-3.5 ${activeTab === 'giving' ? 'text-white' : 'text-indigo-500'}`} />
-                <span>{t('nav_camps')}</span>
+                <Tent className="w-3.5 h-3.5" />
+                <span>{t('nav_camps') || 'Camps & Events'}</span>
               </button>
 
               <button
                 onClick={() => setActiveTab('partners')}
-                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'partners'
-                    ? 'bg-amber-500 text-slate-950 font-black shadow-xs'
-                    : isDark ? 'text-amber-400 hover:text-amber-300' : 'text-amber-800 hover:text-amber-950 font-bold'
+                    ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-white shadow-2xs'
+                    : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white'
                 }`}
               >
-                <Sparkles className={`w-3.5 h-3.5 ${activeTab === 'partners' ? 'text-slate-950' : 'text-amber-500'}`} />
-                <span>{t('nav_partners')}</span>
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>{t('nav_partners') || 'Partners'}</span>
               </button>
-
             </nav>
 
             {/* 3. RIGHT SIDE CONTROLS */}
-            <div className="flex items-center gap-2 sm:gap-2.5">
-              {/* INSTALL APP BUTTON: Only shown in web browser if NOT installed yet */}
+            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Language Switcher */}
+              <button
+                onClick={() => setLanguage(language === 'en' ? 'hlg' : 'en')}
+                className="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-2xs"
+                title="Toggle Language (English / Hiligaynon)"
+              >
+                <Languages className="w-3.5 h-3.5 text-indigo-500" />
+                <span>{language === 'en' ? 'HLG' : 'EN'}</span>
+              </button>
+
+              {/* Dark/Light Theme Toggle */}
+              <button
+                onClick={toggleTheme}
+                className="p-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer shadow-2xs"
+                title={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              >
+                {isDark ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
+              </button>
+
+              {/* Install PWA Button (if not installed) */}
               {!isAppInstalled && (
                 <button
                   onClick={() => setShowInstallModal(true)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black transition-all cursor-pointer border hover:scale-105 active:scale-95 ${
-                    isDark
-                      ? 'bg-gradient-to-r from-violet-600/20 to-pink-500/20 border-pink-500/30 text-pink-300 hover:bg-pink-500/30'
-                      : 'bg-pink-50 border-pink-200 text-pink-700 hover:bg-pink-100 shadow-xs'
-                  }`}
-                  title="Install Grace Youth App (PWA)"
+                  className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold transition-colors cursor-pointer shadow-2xs"
+                  title="Install App (PWA)"
                 >
-                  <Download className="w-3.5 h-3.5 text-pink-500 animate-bounce" />
-                  <span className="hidden sm:inline">Install App</span>
-                  <span className="sm:hidden">Install</span>
+                  <Download className="w-3.5 h-3.5 text-indigo-500" />
+                  <span>Install</span>
                 </button>
               )}
 
-              {/* USER AUTH / PROFILE CONTROLS */}
+              {/* USER AUTH / PROFILE BUTTON */}
               {isGuest ? (
-                <div className="flex items-center gap-1.5">
+                <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleOpenAuth('login')}
-                    className={`flex items-center gap-1 px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                      isDark ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white' : 'bg-slate-100 border-slate-200 text-slate-700'
-                    }`}
+                    className="px-3.5 py-2 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white transition-colors cursor-pointer"
                   >
-                    <LogIn className="w-3.5 h-3.5" />
-                    <span>Sign In</span>
+                    Sign In
                   </button>
                   <button
                     onClick={() => handleOpenAuth('register')}
-                    className="flex items-center gap-1 px-3 sm:px-3.5 py-2 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-extrabold text-xs shadow-md transition-all cursor-pointer"
+                    className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow-xs hover:shadow-sm transition-all cursor-pointer"
                   >
-                    <UserPlus className="w-3.5 h-3.5" />
-                    <span className="hidden sm:inline">Create Account</span>
-                    <span className="sm:hidden">Sign Up</span>
+                    Get Started
                   </button>
                 </div>
               ) : (
-                <div className="flex items-center gap-1.5">
-                  {/* Logged in Profile Button */}
+                <div className="relative" ref={menuRef}>
                   <button
-                    onClick={() => setShowProfileModal(true)}
-                    className={`flex items-center gap-2 p-1.5 sm:pl-2 sm:pr-3 rounded-2xl border transition-all cursor-pointer ${
-                      isDark ? 'bg-slate-900 border-slate-800 hover:border-pink-500/40' : 'bg-slate-100 border-slate-200 hover:border-indigo-400'
-                    }`}
+                    onClick={() => setMenuOpen(!menuOpen)}
+                    className="flex items-center gap-2 p-1.5 pr-2.5 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 hover:border-indigo-300 dark:hover:border-indigo-600 transition-all cursor-pointer shadow-2xs"
                   >
-                    <div className="relative">
-                      <img
-                        src={currentUser.avatar}
-                        alt={currentUser.name}
-                        className="w-7 h-7 rounded-xl object-cover ring-2 ring-pink-500/40"
-                      />
-                      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-500 rounded-full ring-2 ring-slate-900" />
-                    </div>
-                    <div className="hidden sm:block text-left">
-                      <div className={`text-xs font-extrabold leading-none ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                        {currentUser.name.split(' ')[0]}
-                      </div>
-                      <div className="text-[10px] text-pink-500 font-bold capitalize">
-                        {currentUser.role === 'worker' ? 'Youth Worker' : currentUser.role}
-                      </div>
-                    </div>
+                    <img
+                      src={currentUser.avatar}
+                      alt={currentUser.name}
+                      className="w-7 h-7 rounded-xl object-cover ring-1 ring-slate-200 dark:ring-slate-700"
+                    />
+                    <span className="text-xs font-bold text-slate-900 dark:text-white max-w-[90px] truncate hidden sm:inline-block">
+                      {currentUser.name.split(' ')[0]}
+                    </span>
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400" />
                   </button>
 
-                  {/* 1-Tap Sign Out for Mobile/Clean Header */}
-                  <button
-                    onClick={logout}
-                    className={`lg:hidden p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                      isDark ? 'bg-slate-900 border-slate-800 text-rose-400 hover:bg-rose-950/40' : 'bg-rose-50 border-rose-200 text-rose-600 hover:bg-rose-100'
-                    }`}
-                    title="Sign Out"
-                  >
-                    <LogOut className="w-4 h-4" />
-                  </button>
-                </div>
-              )}
+                  {/* Dropdown Menu */}
+                  {menuOpen && (
+                    <div className="absolute right-0 mt-2 w-56 p-2 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl space-y-1 z-50 animate-in fade-in slide-in-from-top-2 duration-150 text-xs font-semibold">
+                      <div className="px-3 py-2 border-b border-slate-100 dark:border-slate-800">
+                        <div className="font-bold text-slate-900 dark:text-white truncate">
+                          {currentUser.name}
+                        </div>
+                        <div className="text-[11px] text-slate-500 dark:text-slate-400 capitalize">
+                          {currentUser.role === 'worker' ? 'Youth Worker' : currentUser.role}
+                        </div>
+                      </div>
 
-              {/* 4. DESKTOP SANDWICH / MORE MENU (Holds Secondary Actions) */}
-              <div className="hidden lg:relative lg:block" ref={menuRef}>
-                <button
-                  onClick={() => setDesktopMenuOpen(!desktopMenuOpen)}
-                  className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
-                    desktopMenuOpen
-                      ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white border-transparent shadow-md'
-                      : isDark ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white' : 'bg-slate-100 border-slate-200 text-slate-700'
-                  }`}
-                  title="More Tools & Menu"
-                >
-                  <Menu className="w-4 h-4" />
-                  <span>Menu</span>
-                  <ChevronDown className="w-3 h-3 opacity-70" />
-                </button>
-
-                {/* Desktop Sandwich Dropdown Card */}
-                {desktopMenuOpen && (
-                  <div className={`absolute right-0 mt-2 w-64 p-3 rounded-2xl border shadow-2xl space-y-2 z-50 animate-in fade-in slide-in-from-top-2 duration-150 ${
-                    isDark ? 'bg-slate-900/95 border-slate-800 text-white backdrop-blur-xl' : 'bg-white border-slate-200 text-slate-900 shadow-xl'
-                  }`}>
-                    {/* Life Groups & Fellowship Circles */}
-                    <button
-                      onClick={() => {
-                        setActiveTab('discipleship');
-                        setDesktopMenuOpen(false);
-                      }}
-                      className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        isDark ? 'hover:bg-slate-800 text-emerald-300' : 'hover:bg-slate-100 text-emerald-800'
-                      }`}
-                    >
-                      <Users className="w-4 h-4 text-emerald-500" />
-                      <span>Life Groups & Circles</span>
-                    </button>
-
-                    {/* Ministry Partners */}
-                    <button
-                      onClick={() => {
-                        setActiveTab('partners');
-                        setDesktopMenuOpen(false);
-                      }}
-                      className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        isDark ? 'hover:bg-slate-800 text-amber-300' : 'hover:bg-slate-100 text-amber-800'
-                      }`}
-                    >
-                      <Sparkles className="w-4 h-4 text-amber-500" />
-                      <span>Our Partners (SmartPath)</span>
-                    </button>
-
-                    {/* Pastoral Care */}
-                    <button
-                      onClick={() => {
-                        setShowConnectWorkerModal(true);
-                        setDesktopMenuOpen(false);
-                      }}
-                      className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                        isDark ? 'hover:bg-slate-800 text-teal-300' : 'hover:bg-slate-100 text-teal-800'
-                      }`}
-                    >
-                      <HeartHandshake className="w-4 h-4 text-teal-500" />
-                      <span>Pastoral Care & Prayer Call</span>
-                    </button>
-
-                    <div className="border-t border-slate-800/60 my-1" />
-
-                    {/* Theme Toggle */}
-                    <div className="flex items-center justify-between p-2 rounded-xl text-xs">
-                      <span className={`font-bold ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>Theme Mode:</span>
                       <button
-                        onClick={toggleTheme}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold cursor-pointer ${
-                          isDark ? 'bg-slate-800 border-slate-700 text-amber-400' : 'bg-slate-100 border-slate-200 text-indigo-600'
-                        }`}
+                        onClick={() => {
+                          setShowProfileModal(true);
+                          setMenuOpen(false);
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                       >
-                        {isDark ? <Sun className="w-3.5 h-3.5" /> : <Moon className="w-3.5 h-3.5" />}
-                        <span>{isDark ? 'Light' : 'Dark'}</span>
+                        <User className="w-4 h-4 text-indigo-500" />
+                        <span>My Profile & Picture</span>
                       </button>
-                    </div>
 
-                    {/* Language Toggle */}
-                    <div className="flex items-center justify-between p-2 rounded-xl text-xs">
-                      <span className={`font-bold ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>Language:</span>
                       <button
-                        onClick={() => setLanguage(language === 'en' ? 'hlg' : 'en')}
-                        className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-xs font-bold cursor-pointer ${
-                          isDark ? 'bg-slate-800 border-slate-700 text-pink-400' : 'bg-slate-100 border-slate-200 text-pink-600'
-                        }`}
+                        onClick={() => {
+                          setShowSessionsModal(true);
+                          setMenuOpen(false);
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                       >
-                        <Languages className="w-3.5 h-3.5" />
-                        <span>{language === 'en' ? 'Hiligaynon' : 'English'}</span>
+                        <Calendar className="w-4 h-4 text-emerald-500" />
+                        <span>My Booked Sessions</span>
                       </button>
-                    </div>
 
+                      <button
+                        onClick={() => {
+                          setShowConnectWorkerModal(true);
+                          setMenuOpen(false);
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                      >
+                        <Heart className="w-4 h-4 text-rose-500" />
+                        <span>Pastoral Care & Counseling</span>
+                      </button>
 
-                    <div className="border-t border-slate-800/60 my-1" />
+                      <button
+                        onClick={() => {
+                          setShowDbModal(true);
+                          setMenuOpen(false);
+                        }}
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                      >
+                        <Database className="w-4 h-4 text-amber-500" />
+                        <span>Supabase Database Setup</span>
+                      </button>
 
-                    {/* Leadership & Staff Gateway */}
-                    <button
-                      onClick={() => {
-                        setShowAdminLoginModal(true);
-                        setDesktopMenuOpen(false);
-                      }}
-                      className={`w-full flex items-center justify-between p-2 rounded-xl text-[11px] font-bold cursor-pointer text-indigo-400 hover:text-indigo-200 ${
-                        isDark ? 'hover:bg-slate-800' : 'hover:bg-slate-100'
-                      }`}
-                    >
-                      <span className="flex items-center gap-2">
-                        <ShieldCheck className="w-3.5 h-3.5 text-indigo-500" />
-                        <span>Leadership & Staff Gateway</span>
-                      </span>
-                      <span className="font-mono text-[9px] uppercase tracking-wider text-indigo-400">Open &rarr;</span>
-                    </button>
+                      <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
 
-                    {/* Sign Out (if logged in) */}
-                    {!isGuest && (
                       <button
                         onClick={() => {
                           logout();
-                          setDesktopMenuOpen(false);
+                          setMenuOpen(false);
                         }}
-                        className="w-full flex items-center gap-2 p-2 rounded-xl text-xs font-bold text-rose-400 hover:bg-rose-950/40 cursor-pointer"
+                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
                       >
-                        <LogOut className="w-3.5 h-3.5" />
+                        <LogOut className="w-4 h-4" />
                         <span>Sign Out</span>
                       </button>
-                    )}
-                  </div>
-                )}
-              </div>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </div>
         </div>
       </header>
 
-      {/* Modals & Drawers */}
-      <ProfileModal isOpen={showProfileModal} onClose={() => setShowProfileModal(false)} />
-      <MySessionsModal isOpen={showSessionsModal} onClose={() => setShowSessionsModal(false)} />
-      <DbSchemaModal isOpen={showDbModal} onClose={() => setShowDbModal(false)} />
-      <AuthModal isOpen={showAuthModal} onClose={() => setShowAuthModal(false)} initialMode={authMode} />
-      <InstallModal isOpen={showInstallModal} onClose={() => setShowInstallModal(false)} />
-      <ConnectWorkerModal isOpen={showConnectWorkerModal} onClose={() => setShowConnectWorkerModal(false)} />
-      <AdminLoginModal isOpen={showAdminLoginModal} onClose={() => setShowAdminLoginModal(false)} />
+      {/* Modals */}
+      <ProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+      />
+
+      <MySessionsModal
+        isOpen={showSessionsModal}
+        onClose={() => setShowSessionsModal(false)}
+      />
+
+      <DbSchemaModal
+        isOpen={showDbModal}
+        onClose={() => setShowDbModal(false)}
+      />
+
+      <AuthModal
+        isOpen={showAuthModal}
+        onClose={() => setShowAuthModal(false)}
+        initialMode={authMode}
+      />
+
+      <InstallModal
+        isOpen={showInstallModal}
+        onClose={() => setShowInstallModal(false)}
+      />
+
+      <ConnectWorkerModal
+        isOpen={showConnectWorkerModal}
+        onClose={() => setShowConnectWorkerModal(false)}
+      />
+
+      <AdminLoginModal
+        isOpen={showAdminLoginModal}
+        onClose={() => setShowAdminLoginModal(false)}
+      />
     </>
   );
 };
+export default Navbar;
