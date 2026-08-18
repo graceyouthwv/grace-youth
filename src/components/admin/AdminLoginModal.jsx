@@ -20,8 +20,8 @@ import {
 
 export const AdminLoginModal = ({ isOpen, onClose }) => {
   const { registeredUsers, setCurrentUser, setActiveTab, showToast, theme } = useApp();
-  const [adminPin, setAdminPin] = useState('graceyouth2026');
-  const [adminEmail, setAdminEmail] = useState('graceyouth.wv@proton.me');
+  const [adminPin, setAdminPin] = useState('password123');
+  const [adminEmail, setAdminEmail] = useState('leader@graceyouth.ph');
   const [showPin, setShowPin] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [failedAttempts, setFailedAttempts] = useState(0);
@@ -55,19 +55,21 @@ export const AdminLoginModal = ({ isOpen, onClose }) => {
 
     // Root Admin fallback
     const isRootAdmin =
-      (cleanEmail === 'graceyouth.wv@proton.me' || cleanEmail.includes('admin') || cleanEmail.includes('pastortim')) &&
+      (cleanEmail === 'leader@graceyouth.ph' || cleanEmail === 'graceyouth.wv@proton.me' || cleanEmail.includes('admin')) &&
       (cleanPin === savedMasterPin || cleanPin === 'graceyouth2026' || cleanPin === 'password123');
 
     if (matchedUser || isRootAdmin) {
       const activeAccount = matchedUser || {
-        id: 'usr-admin-1',
-        name: 'Pastor Tim',
-        email: 'graceyouth.wv@proton.me',
+        id: 'usr-leader-demo',
+        name: 'Pastor Joshua Cruz',
+        email: 'leader@graceyouth.ph',
         role: 'leader',
-        roleLabel: 'Ministry Admin / Coordinator',
-        campusId: 'wvsu',
-        campusName: 'WVSU & Regional Network',
-        avatar: getRoleCartoonAvatar('leader', 'Pastor Tim')
+        roleLabel: 'Campus Youth Pastor & Lead Coordinator',
+        campusId: 'all',
+        campusName: 'All Campuses (Nationwide)',
+        avatar: getRoleCartoonAvatar('leader', 'Joshua'),
+        status: 'Active',
+        isApproved: true
       };
 
       setCurrentUser(activeAccount);
@@ -136,9 +138,9 @@ export const AdminLoginModal = ({ isOpen, onClose }) => {
             {/* 1. Admin / Pastor */}
             <button
               type="button"
-              onClick={() => handleFillRole('graceyouth.wv@proton.me', 'graceyouth2026')}
+              onClick={() => handleFillRole('leader@graceyouth.ph', 'password123')}
               className={`p-2.5 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
-                adminEmail === 'graceyouth.wv@proton.me'
+                adminEmail === 'leader@graceyouth.ph'
                   ? 'border-rose-500 bg-rose-500/10 text-rose-300 ring-2 ring-rose-500/30'
                   : isDark ? 'bg-slate-950 border-slate-800 text-slate-400 hover:text-white' : 'bg-white border-slate-200 text-slate-700'
               }`}

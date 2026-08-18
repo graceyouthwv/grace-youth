@@ -104,8 +104,30 @@ export const App = () => {
               </div>
             )}
 
-            {/* 2. ADMIN PORTAL DIRECT ROUTE */}
-            {activeTab === 'admin' && <AdminPortal />}
+            {/* 2. ADMIN PORTAL DIRECT ROUTE (Strict Role Enforcement) */}
+            {activeTab === 'admin' && (
+              currentUser.role === 'leader' || currentUser.role === 'council' ? (
+                <AdminPortal />
+              ) : (
+                <div className="p-8 text-center max-w-md mx-auto rounded-3xl border bg-slate-50 dark:bg-slate-900 border-slate-200 dark:border-slate-800 space-y-4 my-8">
+                  <div className="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 mx-auto flex items-center justify-center font-bold text-xl">
+                    🔒
+                  </div>
+                  <h3 className="text-base font-extrabold text-slate-900 dark:text-white font-heading">
+                    Restricted Area
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                    This portal is strictly for authorized Ministry Leaders. Your active account is logged in as a <strong>{currentUser.roleLabel || currentUser.role}</strong>.
+                  </p>
+                  <button
+                    onClick={() => setActiveTab('portal')}
+                    className="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold shadow-md cursor-pointer transition-all"
+                  >
+                    Return to My Hub &rarr;
+                  </button>
+                </div>
+              )
+            )}
 
             {/* 3. HOME PUBLIC FEED */}
             {activeTab === 'home' && (

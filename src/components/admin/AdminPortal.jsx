@@ -240,19 +240,21 @@ export const AdminPortal = () => {
     );
 
     const isRootAdmin =
-      (cleanEmail === 'graceyouth.wv@proton.me' || cleanEmail.includes('admin') || cleanEmail.includes('pastortim')) &&
+      (cleanEmail === 'leader@graceyouth.ph' || cleanEmail === 'graceyouth.wv@proton.me' || cleanEmail.includes('admin')) &&
       (cleanPin === savedMasterPin || cleanPin === 'graceyouth2026' || cleanPin === 'password123');
 
     if (matchedUser || isRootAdmin) {
       const activeAccount = matchedUser || {
-        id: 'usr-admin-1',
-        name: 'Pastor Tim',
-        email: 'graceyouth.wv@proton.me',
+        id: 'usr-leader-demo',
+        name: 'Pastor Joshua Cruz',
+        email: 'leader@graceyouth.ph',
         role: 'leader',
-        roleLabel: 'Ministry Admin / Coordinator',
-        campusId: 'wvsu',
-        campusName: 'WVSU & Regional Network',
-        avatar: getRoleCartoonAvatar('leader', 'Pastor Tim')
+        roleLabel: 'Campus Youth Pastor & Lead Coordinator',
+        campusId: 'all',
+        campusName: 'All Campuses (Nationwide)',
+        avatar: getRoleCartoonAvatar('leader', 'Joshua'),
+        status: 'Active',
+        isApproved: true
       };
 
       setCurrentUser(activeAccount);
