@@ -15,8 +15,11 @@ export const AdminDashboardModal = ({ isOpen, onClose }) => {
     setCurrentUser,
     claimRequest,
     cancelBooking,
+    theme,
     showToast
   } = useApp();
+
+  const isDark = theme === 'dark';
 
   const [adminTab, setAdminTab] = useState('triage'); // 'triage' | 'tutors' | 'gospel_sessions' | 'prayers'
   const [selectedCampusFilter, setSelectedCampusFilter] = useState('all');
@@ -137,25 +140,27 @@ export const AdminDashboardModal = ({ isOpen, onClose }) => {
               {pendingRequests.map((req) => (
                 <div
                   key={req.id}
-                  className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+                  className={`p-4 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
+                    isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200 shadow-xs'
+                  }`}
                 >
                   <div>
                     <div className="flex items-center gap-2 mb-1">
-                      <span className="text-xs font-extrabold text-white">{req.subject}</span>
-                      <span className="text-[10px] font-black text-amber-400 bg-amber-950/60 border border-amber-500/30 px-2 py-0.2 rounded-full">
+                      <span className={`text-xs font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>{req.subject}</span>
+                      <span className="text-[10px] font-black text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-500/30 px-2 py-0.5 rounded-full">
                         {req.urgency}
                       </span>
                     </div>
-                    <p className="text-xs text-slate-400">
+                    <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                       Student: <strong>{req.studentName}</strong> • {req.campusName} • {req.program}
                     </p>
-                    <p className="text-[11px] text-slate-500 italic mt-0.5">"{req.description}"</p>
+                    <p className={`text-[11px] italic mt-0.5 ${isDark ? 'text-slate-500' : 'text-slate-500'}`}>"{req.description}"</p>
                   </div>
 
                   <div className="flex items-center gap-2 shrink-0">
                     <button
                       onClick={() => claimRequest(req.id)}
-                      className="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-violet-600 to-indigo-600 text-white font-extrabold text-xs shadow-md cursor-pointer hover:scale-105"
+                      className="px-3.5 py-1.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-extrabold text-xs shadow-md cursor-pointer hover:scale-105 transition-all"
                     >
                       Assign Tutor
                     </button>
@@ -176,16 +181,18 @@ export const AdminDashboardModal = ({ isOpen, onClose }) => {
             {myBookings.map((bk) => (
               <div
                 key={bk.id}
-                className="p-4 rounded-2xl bg-slate-900/80 border border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+                className={`p-4 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200 shadow-xs'
+                }`}
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-extrabold text-white">{bk.subject}</span>
-                    <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-500/30 px-2 py-0.2 rounded-full">
+                    <span className={`text-xs font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>{bk.subject}</span>
+                    <span className="text-[10px] font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-500/30 px-2 py-0.5 rounded-full">
                       {bk.status}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-400 mt-0.5">
+                  <p className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                     Tutor: <strong>{bk.tutorName}</strong> • {bk.day} ({bk.time}) • {bk.mode}
                   </p>
                 </div>
@@ -193,13 +200,21 @@ export const AdminDashboardModal = ({ isOpen, onClose }) => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleToggleGospelShared(bk.id)}
-                    className="px-3 py-1.5 rounded-xl bg-slate-800 hover:bg-emerald-900/50 text-emerald-300 border border-slate-700 hover:border-emerald-500/50 font-bold text-xs cursor-pointer"
+                    className={`px-3 py-1.5 rounded-xl border font-bold text-xs cursor-pointer transition-all ${
+                      isDark
+                        ? 'bg-slate-800 hover:bg-emerald-900/50 text-emerald-300 border-slate-700'
+                        : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-200'
+                    }`}
                   >
                     ✓ Log Gospel Shared
                   </button>
                   <button
                     onClick={() => cancelBooking(bk.id)}
-                    className="p-2 rounded-xl bg-slate-800 hover:bg-rose-900/50 text-rose-400 border border-slate-700"
+                    className={`p-2 rounded-xl border transition-all ${
+                      isDark
+                        ? 'bg-slate-800 hover:bg-rose-900/50 text-rose-400 border-slate-700'
+                        : 'bg-rose-50 hover:bg-rose-100 text-rose-600 border-rose-200'
+                    }`}
                     title="Cancel Session"
                   >
                     <Trash2 className="w-3.5 h-3.5" />
@@ -220,20 +235,22 @@ export const AdminDashboardModal = ({ isOpen, onClose }) => {
             {tutors.map((tutor) => (
               <div
                 key={tutor.id}
-                className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between gap-3"
+                className={`p-3.5 rounded-2xl border flex items-center justify-between gap-3 ${
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200 shadow-xs'
+                }`}
               >
                 <div className="flex items-center gap-3">
                   <img src={tutor.avatar} alt={tutor.name} className="w-10 h-10 rounded-xl object-cover" />
                   <div>
-                    <div className="text-xs font-extrabold text-white">{tutor.name}</div>
-                    <div className="text-[11px] text-slate-400">{tutor.role} • {tutor.campusName}</div>
-                    <div className="text-[10px] text-violet-400">{tutor.subjects.join(', ')}</div>
+                    <div className={`text-xs font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>{tutor.name}</div>
+                    <div className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{tutor.role} • {tutor.campusName}</div>
+                    <div className="text-[10px] text-indigo-600 dark:text-indigo-400">{tutor.subjects.join(', ')}</div>
                   </div>
                 </div>
 
                 <button
                   onClick={() => handleVerifyTutor(tutor.id)}
-                  className="px-3 py-1.5 rounded-xl bg-emerald-950/80 text-emerald-400 border border-emerald-500/30 font-bold text-xs hover:bg-emerald-900 cursor-pointer"
+                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs shadow-xs cursor-pointer"
                 >
                   ✓ Verified Leader
                 </button>
@@ -252,20 +269,22 @@ export const AdminDashboardModal = ({ isOpen, onClose }) => {
             {prayers.map((prayer) => (
               <div
                 key={prayer.id}
-                className="p-3.5 rounded-2xl bg-slate-900/80 border border-slate-800 flex items-center justify-between gap-3"
+                className={`p-3.5 rounded-2xl border flex items-center justify-between gap-3 ${
+                  isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200 shadow-xs'
+                }`}
               >
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-extrabold text-white">{prayer.author}</span>
-                    <span className="text-[10px] text-slate-400">({prayer.campusName})</span>
-                    <span className="text-[10px] text-rose-400 bg-rose-950/60 px-2 py-0.2 rounded-full">
+                    <span className={`text-xs font-extrabold ${isDark ? 'text-white' : 'text-slate-900'}`}>{prayer.author}</span>
+                    <span className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>({prayer.campusName})</span>
+                    <span className="text-[10px] text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-rose-950/60 px-2 py-0.5 rounded-full border border-rose-200 dark:border-rose-500/30">
                       {prayer.category}
                     </span>
                   </div>
-                  <p className="text-xs text-slate-300 mt-1 italic">"{prayer.content}"</p>
+                  <p className={`text-xs mt-1 italic ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>"{prayer.content}"</p>
                 </div>
 
-                <span className="text-xs font-black text-rose-400 shrink-0">
+                <span className="text-xs font-black text-rose-600 dark:text-rose-400 shrink-0">
                   ❤️ {prayer.prayedCount} praying
                 </span>
               </div>

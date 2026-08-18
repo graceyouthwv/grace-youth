@@ -97,64 +97,64 @@ export const RequestBoard = () => {
           return (
             <div
               key={req.id}
-              className="genz-card p-5 border border-slate-800 flex flex-col justify-between"
+              className="genz-card p-5 border border-slate-200 dark:border-slate-800 flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-start justify-between gap-2 mb-2">
-                  <span className="text-[10px] font-black uppercase tracking-wider text-indigo-300 bg-indigo-950/60 border border-indigo-500/30 px-2.5 py-0.5 rounded-full">
+                  <span className="text-[10px] font-black uppercase tracking-wider text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200 dark:border-indigo-500/30 px-2.5 py-0.5 rounded-full">
                     {req.category}
                   </span>
                   <span
                     className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
                       isUrgent
-                        ? 'bg-rose-950/80 text-rose-300 border border-rose-500/40 animate-pulse'
-                        : 'bg-slate-800 text-slate-400'
+                        ? 'bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-300 dark:border-rose-500/40 animate-pulse'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                     }`}
                   >
                     {req.urgency}
                   </span>
                 </div>
 
-                <h4 className="font-extrabold text-base text-white mb-1 leading-snug font-heading">
+                <h4 className="font-extrabold text-base text-slate-900 dark:text-white mb-1 leading-snug font-heading">
                   {req.subject}
                 </h4>
 
-                <div className="text-xs text-slate-400 flex items-center gap-1 mb-3 font-medium">
-                  <MapPin className="w-3 h-3 text-pink-400" />
+                <div className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1 mb-3 font-medium">
+                  <MapPin className="w-3 h-3 text-pink-500 dark:text-pink-400" />
                   <span>{req.campusName} • {req.program}</span>
                 </div>
 
-                <p className="text-xs text-slate-300 bg-slate-900/80 p-3 rounded-2xl border border-slate-800 mb-3 italic leading-relaxed">
+                <p className="text-xs text-slate-700 dark:text-slate-300 bg-slate-50 dark:bg-slate-900/80 p-3 rounded-2xl border border-slate-200 dark:border-slate-800 mb-3 italic leading-relaxed">
                   "{req.description}"
                 </p>
 
-                <div className="text-[11px] text-slate-400 flex items-center gap-1.5 mb-2">
-                  <Clock className="w-3.5 h-3.5 text-slate-500" />
+                <div className="text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mb-2">
+                  <Clock className="w-3.5 h-3.5 text-slate-400" />
                   <span><strong>Schedule:</strong> {req.preferredSchedule}</span>
                 </div>
               </div>
 
               {/* Action Button */}
-              <div className="pt-3 border-t border-slate-800 mt-2 flex items-center justify-between">
-                <span className="text-[11px] text-slate-500 font-medium">
+              <div className="pt-3 border-t border-slate-200 dark:border-slate-800 mt-2 flex items-center justify-between">
+                <span className="text-[11px] text-slate-400 font-medium">
                   {req.createdAt}
                 </span>
 
                 {isClaimed ? (
-                  <span className="inline-flex items-center gap-1 text-xs font-black text-emerald-400 bg-emerald-950/60 px-2.5 py-1 rounded-xl border border-emerald-500/30">
+                  <span className="inline-flex items-center gap-1 text-xs font-black text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 px-2.5 py-1 rounded-xl border border-emerald-200 dark:border-emerald-500/30">
                     <CheckCircle className="w-3.5 h-3.5" />
                     <span>{req.status}</span>
                   </span>
                 ) : isOwnRequest ? (
-                  <span className="inline-flex items-center gap-1 text-xs font-bold text-slate-400 bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-700">
+                  <span className="inline-flex items-center gap-1 text-xs font-bold text-slate-600 dark:text-slate-400 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-xl border border-slate-200 dark:border-slate-700">
                     <span>👤 Posted by You</span>
                   </span>
                 ) : (
                   <button
                     onClick={() => claimRequest(req.id)}
-                    className="flex items-center gap-1.5 text-xs font-extrabold text-white bg-slate-800 hover:bg-indigo-600 px-3 py-1.5 rounded-xl border border-slate-700 transition-all cursor-pointer"
+                    className="flex items-center gap-1.5 text-xs font-extrabold text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white px-3 py-1.5 rounded-xl border border-slate-300 dark:border-slate-700 transition-all cursor-pointer"
                   >
-                    <Handshake className="w-3.5 h-3.5 text-amber-400" />
+                    <Handshake className="w-3.5 h-3.5 text-amber-500 dark:text-amber-400" />
                     <span>Offer to Tutor</span>
                   </button>
                 )}

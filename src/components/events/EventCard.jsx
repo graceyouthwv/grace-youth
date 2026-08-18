@@ -63,17 +63,17 @@ export const EventCard = ({ event }) => {
 
         {/* Content Body */}
         <div className="p-5">
-          <p className="text-xs text-slate-300 leading-relaxed mb-4">
+          <p className="text-xs text-slate-600 dark:text-slate-300 leading-relaxed mb-4">
             {event.description}
           </p>
 
-          <div className="space-y-1.5 bg-slate-900/80 p-3 rounded-2xl border border-slate-800 text-xs text-slate-300 mb-4">
+          <div className="space-y-1.5 p-3 rounded-2xl border text-xs mb-4 bg-slate-50 dark:bg-slate-900/80 border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300">
             <div className="flex items-center gap-2 font-medium">
-              <Clock className="w-3.5 h-3.5 text-pink-400 shrink-0" />
+              <Clock className="w-3.5 h-3.5 text-pink-500 dark:text-pink-400 shrink-0" />
               <span>{event.time}</span>
             </div>
             <div className="flex items-center gap-2 font-medium">
-              <MapPin className="w-3.5 h-3.5 text-pink-400 shrink-0" />
+              <MapPin className="w-3.5 h-3.5 text-pink-500 dark:text-pink-400 shrink-0" />
               <span className="line-clamp-1">{event.venue}</span>
             </div>
           </div>
@@ -81,15 +81,15 @@ export const EventCard = ({ event }) => {
           {/* Free Inclusions */}
           {event.freebies && (
             <div className="mb-2">
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 block mb-1.5 flex items-center gap-1">
-                <Gift className="w-3 h-3 text-amber-400" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400 block mb-1.5 flex items-center gap-1">
+                <Gift className="w-3 h-3 text-amber-500 dark:text-amber-400" />
                 <span>Free Inclusions:</span>
               </span>
               <div className="flex flex-wrap gap-1.5">
                 {event.freebies.map((freebie, idx) => (
                   <span
                     key={idx}
-                    className="text-[10px] font-bold bg-amber-400/10 text-amber-300 border border-amber-400/20 px-2.5 py-0.5 rounded-lg"
+                    className="text-[10px] font-bold bg-amber-500/10 text-amber-700 dark:text-amber-300 border border-amber-500/20 px-2.5 py-0.5 rounded-lg"
                   >
                     ✨ {freebie}
                   </span>
@@ -101,16 +101,16 @@ export const EventCard = ({ event }) => {
       </div>
 
       {/* Action Footer */}
-      <div className="p-4 bg-slate-900/60 border-t border-slate-800 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-1 text-xs font-bold text-slate-400">
-          <Users className="w-4 h-4 text-violet-400" />
+      <div className="p-4 border-t flex items-center justify-between gap-2 bg-slate-50/70 dark:bg-slate-900/60 border-slate-200 dark:border-slate-800">
+        <div className="flex items-center gap-1 text-xs font-bold text-slate-500 dark:text-slate-400">
+          <Users className="w-4 h-4 text-violet-500 dark:text-violet-400" />
           <span>{event.attendeesCount} Going</span>
         </div>
 
         <div className="flex items-center gap-2">
           <button
             onClick={() => generateCalendarICS(event)}
-            className="p-2.5 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors cursor-pointer"
+            className="p-2.5 rounded-2xl border transition-colors cursor-pointer bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700"
             title="Export Calendar (.ics)"
           >
             <Calendar className="w-4 h-4" />
