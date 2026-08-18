@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useApp } from '../../context/AppContext';
 import {
   Sparkles,
@@ -6,53 +6,20 @@ import {
   Play,
   Brain,
   BookOpen,
-  Camera,
   GraduationCap,
   Calculator,
-  LayoutDashboard,
   Zap,
   CheckCircle2,
   Image as ImageIcon,
   Video,
-  Layers,
-  ArrowRight,
-  ShieldCheck
+  ArrowRight
 } from 'lucide-react';
-import { Modal } from '../common/Modal';
+
+const APP_URL = 'https://app.smartpath.college';
 
 export const PartnersHub = () => {
   const { theme, showToast } = useApp();
   const isDark = theme === 'dark';
-
-  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
-  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'dashboard' | 'ai' | 'vault' | 'camera' | 'thesis' | 'tools'
-
-  const [studentForm, setStudentForm] = useState({
-    studentName: '',
-    email: '',
-    campus: 'UP Visayas',
-    program: 'BS Biology',
-    studentLevel: 'Undergraduate (Bachelor Degree)',
-    planType: 'Monthly Student Pass (₱149/mo)'
-  });
-
-  const handleStudentSubmit = (e) => {
-    e.preventDefault();
-    if (!studentForm.studentName.trim() || !studentForm.email.trim()) {
-      showToast('Please provide your name and student email.', 'error');
-      return;
-    }
-    showToast(`✓ Early Student Access registered for ${studentForm.studentName}! SmartPath Technologies will send your activation link.`, 'success');
-    setShowSubscriptionModal(false);
-    setStudentForm({
-      studentName: '',
-      email: '',
-      campus: 'UP Visayas',
-      program: 'BS Biology',
-      studentLevel: 'Undergraduate (Bachelor Degree)',
-      planType: 'Monthly Student Pass (₱149/mo)'
-    });
-  };
 
   const SHORT_FEATURES = [
     {
@@ -156,12 +123,12 @@ export const PartnersHub = () => {
         </a>
       </div>
 
-      {/* 2. PRODUCT TITLE & ACTION HEADER */}
+      {/* 2. PRODUCT TITLE & TOP DIRECT APP BUTTON */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <h2 className={`text-2xl sm:text-3xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              SmartPath College™
+              SmartPath Campus™
             </h2>
             <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-500 dark:text-amber-300 border border-amber-400/30">
               Student App
@@ -173,13 +140,16 @@ export const PartnersHub = () => {
           </p>
         </div>
 
-        <button
-          onClick={() => setShowSubscriptionModal(true)}
-          className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2 self-start sm:self-auto shrink-0"
+        {/* TOP DIRECT ACCESS BUTTON */}
+        <a
+          href={APP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all flex items-center gap-2 self-start sm:self-auto shrink-0"
         >
           <Zap className="w-4 h-4 text-slate-950 fill-slate-950" />
-          <span>Get Student Access →</span>
-        </button>
+          <span>Open SmartPath Campus™ →</span>
+        </a>
       </div>
 
       {/* 3. VIDEO SHOWCASE PLACEHOLDER */}
@@ -212,7 +182,7 @@ export const PartnersHub = () => {
             </div>
 
             <h3 className="text-lg sm:text-2xl font-black text-white font-heading">
-              SmartPath College™ Product Showcase
+              SmartPath Campus™ Product Showcase
             </h3>
             <p className="text-xs text-slate-300">
               Watch how undergraduate and graduate students use the AI Metacognitive Copilot, audio trans vault, and thesis studio.
@@ -285,13 +255,13 @@ export const PartnersHub = () => {
             </h3>
           </div>
           <span className="text-xs text-slate-400">
-            Preview of SmartPath College™ mobile & web app screens
+            Preview of SmartPath Campus™ mobile & web app screens
           </span>
         </div>
 
         {/* 6-Card Screenshot Grid Placeholders */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {SCREENSHOT_PLACEHOLDERS.map((item, idx) => (
+          {SCREENSHOT_PLACEHOLDERS.map((item) => (
             <div
               key={item.id}
               className={`rounded-2xl border overflow-hidden transition-all group ${
@@ -332,145 +302,35 @@ export const PartnersHub = () => {
         </div>
       </div>
 
-      {/* INDIVIDUAL STUDENT SUBSCRIPTION MODAL */}
-      <Modal
-        isOpen={showSubscriptionModal}
-        onClose={() => setShowSubscriptionModal(false)}
-        title="Get SmartPath College™ Student Access"
-      >
-        <form onSubmit={handleStudentSubmit} className="space-y-3.5">
-          <div className="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-500/30 text-xs text-indigo-900 dark:text-indigo-200 flex items-start gap-2">
-            <Sparkles className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-            <span>
-              Subscribe to <strong>SmartPath College™</strong> (The AI Metacognitive Copilot for Undergraduate & Graduate Students) with an individual student plan.
+      {/* 6. BOTTOM DIRECT APP CTA STRIP */}
+      <div className={`p-5 sm:p-6 rounded-3xl border flex flex-col sm:flex-row items-center justify-between gap-4 ${
+        isDark ? 'bg-indigo-950/40 border-indigo-500/30' : 'bg-indigo-50 border-indigo-200 shadow-xs'
+      }`}>
+        <div className="text-center sm:text-left space-y-1">
+          <div className="flex items-center justify-center sm:justify-start gap-2">
+            <h3 className={`text-base sm:text-lg font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+              Ready to experience SmartPath Campus™?
+            </h3>
+            <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400">
+              Live Web App
             </span>
           </div>
+          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+            Open the app directly and start with your AI Metacognitive Copilot today.
+          </p>
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Student Full Name *
-              </label>
-              <input
-                type="text"
-                required
-                placeholder="e.g. Bea Claridad"
-                value={studentForm.studentName}
-                onChange={(e) => setStudentForm({ ...studentForm, studentName: e.target.value })}
-                className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
-                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-                }`}
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Student Email Address *
-              </label>
-              <input
-                type="email"
-                required
-                placeholder="bea@upv.edu.ph"
-                value={studentForm.email}
-                onChange={(e) => setStudentForm({ ...studentForm, email: e.target.value })}
-                className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
-                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-                }`}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                University / Campus
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. UP Visayas, CPU, WVSU, ISUFST..."
-                value={studentForm.campus}
-                onChange={(e) => setStudentForm({ ...studentForm, campus: e.target.value })}
-                className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
-                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-                }`}
-              />
-            </div>
-
-            <div className="space-y-1">
-              <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Degree Program / Major
-              </label>
-              <input
-                type="text"
-                placeholder="e.g. BS Biology, BS Nursing, BS Civil Eng..."
-                value={studentForm.program}
-                onChange={(e) => setStudentForm({ ...studentForm, program: e.target.value })}
-                className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
-                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-                }`}
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Academic Level
-              </label>
-              <select
-                value={studentForm.studentLevel}
-                onChange={(e) => setStudentForm({ ...studentForm, studentLevel: e.target.value })}
-                className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
-                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-                }`}
-              >
-                <option>Undergraduate (1st / 2nd Year)</option>
-                <option>Undergraduate (3rd / 4th Year - Graduating)</option>
-                <option>Graduate (Master's - MS / MA / MBA)</option>
-                <option>Postgraduate (Doctor of Medicine / Law)</option>
-                <option>Doctorate (PhD Research Scholar)</option>
-              </select>
-            </div>
-
-            <div className="space-y-1">
-              <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Student Subscription Plan
-              </label>
-              <select
-                value={studentForm.planType}
-                onChange={(e) => setStudentForm({ ...studentForm, planType: e.target.value })}
-                className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
-                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-                }`}
-              >
-                <option>Free Student Trial (7 Days Full Access)</option>
-                <option>Monthly Student Pass (₱149 / month)</option>
-                <option>Semestral Scholar Pass (₱599 / semester)</option>
-                <option>Annual Academic Pass (₱1,199 / year)</option>
-              </select>
-            </div>
-          </div>
-
-          <div className="pt-1 flex items-center justify-end gap-2">
-            <button
-              type="button"
-              onClick={() => setShowSubscriptionModal(false)}
-              className={`px-3.5 py-2 rounded-xl text-xs font-bold border cursor-pointer ${
-                isDark ? 'border-slate-800 text-slate-400 hover:text-white' : 'border-slate-200 text-slate-600 hover:text-slate-950'
-              }`}
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
-            >
-              <Zap className="w-3.5 h-3.5 text-slate-950 fill-slate-950" />
-              <span>Get Student Access</span>
-            </button>
-          </div>
-        </form>
-      </Modal>
+        <a
+          href={APP_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-sm shadow-lg hover:scale-105 active:scale-95 transition-all flex items-center gap-2 shrink-0"
+        >
+          <Zap className="w-4 h-4 text-slate-950 fill-slate-950" />
+          <span>Open SmartPath Campus™ App</span>
+          <ExternalLink className="w-4 h-4" />
+        </a>
+      </div>
     </div>
   );
 };
