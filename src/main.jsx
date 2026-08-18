@@ -67,7 +67,9 @@ class ErrorBoundary extends React.Component {
             )}
             <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
               <button
-                onClick={() => window.location.reload()}
+                onClick={() => {
+                  window.location.href = window.location.pathname + '?t=' + Date.now();
+                }}
                 style={{
                   padding: '10px 20px',
                   borderRadius: '12px',
@@ -83,8 +85,16 @@ class ErrorBoundary extends React.Component {
               </button>
               <button
                 onClick={() => {
-                  localStorage.clear();
-                  window.location.reload();
+                  try {
+                    localStorage.clear();
+                    sessionStorage.clear();
+                    if ('caches' in window) {
+                      caches.keys().then((names) => {
+                        names.forEach((name) => caches.delete(name));
+                      });
+                    }
+                  } catch (e) {}
+                  window.location.href = window.location.pathname + '?t=' + Date.now();
                 }}
                 style={{
                   padding: '10px 20px',
