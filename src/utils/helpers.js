@@ -46,3 +46,53 @@ export const generateCalendarICS = (event) => {
   link.click();
   document.body.removeChild(link);
 };
+
+/**
+ * Resizes and compresses client-uploaded image files into a clean base64 data URL
+ */
+export const processImageUpload = (file, maxWidth = 300, maxHeight = 300) => {
+  return new Promise((resolve, reject) => {
+    if (!file) {
+      reject(new Error('No file selected.'));
+      return;
+    }
+    if (!file.type || !file.type.startsWith('image/')) {
+      reject(new Error('Please upload a valid image file (PNG, JPG, JPEG, WebP).'));
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        let width = img.width;
+        let height = img.height;
+
+        if (width > height) {
+          if (width > maxWidth) {
+            height = Math.round((height * maxWidth) / width);
+            width = maxWidth;
+          }
+        } else {
+          if (height > maxHeight) {
+            width = Math.round((width * maxHeight) / height);
+            height = maxHeight;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        resolve(dataUrl);
+      };
+      img.onerror = () => reject(new Error('Unable to decode image file.'));
+      img.src = event.target.result;
+    };
+    reader.onerror = () => reject(new Error('Error reading image file.'));
+    reader.readAsDataURL(file);
+  });
+};

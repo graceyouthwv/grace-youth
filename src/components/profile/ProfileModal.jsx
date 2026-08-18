@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
-import { LogOut, User, Mail, School, ShieldCheck, BookOpen, Heart, ArrowRight, HeartHandshake, Edit3 } from 'lucide-react';
+import { LogOut, User, Mail, School, ShieldCheck, BookOpen, Heart, ArrowRight, HeartHandshake, Edit3, Camera } from 'lucide-react';
 import { VolunteerModal } from '../common/VolunteerModal';
 import { EditProfileModal } from './EditProfileModal';
 
@@ -36,11 +36,20 @@ export const ProfileModal = ({ isOpen, onClose }) => {
             isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'
           }`}>
             <div className="flex items-center gap-3.5">
-              <img
-                src={currentUser.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'}
-                alt={currentUser.name}
-                className="w-14 h-14 rounded-2xl object-cover ring-2 ring-indigo-500/40 shrink-0"
-              />
+              <div
+                onClick={() => setShowEditProfileModal(true)}
+                className="relative group cursor-pointer shrink-0"
+                title="Click to Change Profile Picture"
+              >
+                <img
+                  src={currentUser.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'}
+                  alt={currentUser.name}
+                  className="w-14 h-14 rounded-2xl object-cover ring-2 ring-indigo-500/40 group-hover:scale-105 transition-transform"
+                />
+                <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center shadow-md border-2 border-white dark:border-slate-900 transition-transform group-hover:scale-110">
+                  <Camera className="w-3 h-3" />
+                </div>
+              </div>
               <div>
                 <h3 className={`font-extrabold text-base font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
                   {currentUser.name}
@@ -59,10 +68,9 @@ export const ProfileModal = ({ isOpen, onClose }) => {
               className={`p-2 rounded-xl border text-xs font-bold transition-all cursor-pointer flex items-center gap-1 shrink-0 ${
                 isDark ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700' : 'bg-white border-slate-300 text-slate-700 hover:bg-slate-100 shadow-xs'
               }`}
-              title="Edit Profile"
+              title="Edit Profile & Picture"
             >
               <Edit3 className="w-3.5 h-3.5" />
-              <span>Edit</span>
             </button>
           </div>
 
