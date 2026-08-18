@@ -31,6 +31,7 @@ export const TutorialHub = () => {
     selectedCampus,
     deliveryModeFilter,
     setDeliveryModeFilter,
+    currentUser,
     language,
     theme
   } = useApp();
