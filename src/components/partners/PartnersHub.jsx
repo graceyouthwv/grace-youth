@@ -106,7 +106,7 @@ export const PartnersHub = () => {
             <Sparkles className="w-4 h-4" />
           </span>
           <p className="text-xs sm:text-sm italic font-medium leading-snug">
-            “Our ministry partner, <strong className="text-indigo-600 dark:text-amber-300 font-black">SmartPath Technologies</strong>, is wholeheartedly committed to support the campus ministry across Western Visayas for the Glory of God.”
+            “Our ministry partner, <strong className="text-indigo-600 dark:text-amber-300 font-black">SmartPath Technologies</strong>, is wholeheartedly committed to support the campus ministry across the Philippines for the Glory of God.”
           </p>
         </div>
 

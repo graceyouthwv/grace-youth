@@ -37,10 +37,15 @@ export const GroupCard = ({ group }) => {
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
             
-            <div className="absolute top-3 left-3">
+            <div className="absolute top-3 left-3 flex items-center gap-1.5 flex-wrap">
               <span className="px-3 py-1 rounded-full text-[10px] font-black bg-black/70 backdrop-blur-md text-white border border-white/30 shadow-xs" style={{ color: '#ffffff' }}>
                 {group.campusName}
               </span>
+              {(group.meetingType === 'Online' || group.isOpenNationwide) && (
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-black bg-emerald-600/90 backdrop-blur-md text-white border border-emerald-400/40 shadow-xs">
+                  💻 Online (Nationwide)
+                </span>
+              )}
             </div>
 
             {/* Edit Group Trigger: ONLY Youth Worker or Admin */}

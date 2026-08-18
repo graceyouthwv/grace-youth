@@ -21,11 +21,13 @@ import { AdminPortal } from './components/admin/AdminPortal';
 import { PartnersHub } from './components/partners/PartnersHub';
 import { Sparkles, BookOpen, School, ShieldCheck, Building2 } from 'lucide-react';
 import { CAMPUSES } from './data/campuses';
+import { getRegionById } from './data/regions';
 import { getTranslation } from './data/translations';
 
 export const App = () => {
-  const { activeTab, setActiveTab, selectedCampus, currentUser, language, theme } = useApp();
+  const { activeTab, setActiveTab, selectedRegion, selectedCampus, setSelectedRegion, setSelectedCampus, currentUser, language, theme } = useApp();
   const currentCampusObj = CAMPUSES.find((c) => c.id === selectedCampus);
+  const currentRegionObj = getRegionById(selectedRegion);
   const isDark = theme === 'dark';
   const t = (key) => getTranslation(key, language);
 
@@ -38,23 +40,39 @@ export const App = () => {
 
       {/* Main App Container */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 w-full flex-1">
-        {/* Selected Campus Badge Pill (on public views) */}
-        {selectedCampus !== 'all' && activeTab !== 'portal' && (
+        {/* Selected Region / Campus Badge Pill (on public views) */}
+        {(selectedRegion !== 'all' || selectedCampus !== 'all') && activeTab !== 'portal' && (
           <div className={`mb-6 p-3.5 rounded-2xl flex items-center justify-between gap-3 text-xs sm:text-sm border transition-colors animate-tab-in ${
             isDark ? 'bg-slate-900/90 border-slate-800 text-slate-200' : 'bg-white border-slate-200 text-slate-800 shadow-xs'
           }`}>
-            <div className="flex items-center gap-2 font-bold">
+            <div className="flex items-center gap-2 font-bold flex-wrap">
               <School className="w-4 h-4 text-pink-500 shrink-0" />
               <span>
-                Filtering campus hub for: <strong className={isDark ? 'text-white' : 'text-slate-900'}>{currentCampusObj?.name}</strong>
+                Filtering for: <strong className={isDark ? 'text-white' : 'text-slate-900'}>
+                  {selectedCampus !== 'all' ? currentCampusObj?.name : currentRegionObj?.name}
+                </strong>
+                <span className="ml-1.5 text-[11px] font-normal text-slate-400">
+                  (Includes Online Nationwide Sessions)
+                </span>
               </span>
             </div>
-            <button
-              onClick={() => setActiveTab('tutorials')}
-              className="text-xs font-black text-pink-500 hover:text-pink-400 shrink-0 cursor-pointer"
-            >
-              Explore Tutors &rarr;
-            </button>
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => {
+                  setSelectedRegion('all');
+                  setSelectedCampus('all');
+                }}
+                className="text-xs font-bold text-slate-400 hover:text-slate-200 cursor-pointer"
+              >
+                Reset to All PH
+              </button>
+              <button
+                onClick={() => setActiveTab('tutorials')}
+                className="text-xs font-black text-pink-500 hover:text-pink-400 cursor-pointer"
+              >
+                Explore Tutors &rarr;
+              </button>
+            </div>
           </div>
         )}
 

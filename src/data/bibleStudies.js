@@ -1,17 +1,24 @@
+// src/data/bibleStudies.js
+// Campus Life Groups & Discipleship Circles with Online Nationwide & Regional Scope
+
 export const INITIAL_BIBLE_STUDIES = [
   {
     id: 'bs-grace-youth',
-    title: 'Grace Youth',
+    title: 'Grace Youth Campus Circle',
     campusId: 'all',
-    campusName: 'All Iloilo Campuses (ISUFST, UPV, CPU, WVSU, ISAT-U, USA)',
+    campusName: 'All Campuses (Online & Western Visayas)',
+    regionId: 'r6',
+    regionName: 'Region VI (Western Visayas & Nationwide)',
+    meetingType: 'Hybrid', // 'Online' | 'In-Person' | 'Hybrid'
+    isOpenNationwide: true,
     facilitator: 'Kuya Daniel Chavez',
     schedule: 'Every Friday, 5:00 PM - 6:30 PM',
-    location: 'Campus Hub & Online (Hybrid)',
+    location: 'Campus Hub & Online (Google Meet - Nationwide)',
     topicCategory: 'Campus Faith, Purpose & Discipleship',
     currentMembers: 3,
     maxCapacity: 50,
-    description: 'The official campus life group and discipleship family of Grace Youth. We meet weekly for heartfelt prayer, Bible reflections, authentic friendship, and encouragement throughout the semester.',
-    tags: ['Grace Youth', 'Discipleship', 'Campus Life', 'All Welcome'],
+    description: 'The official campus life group and discipleship family of Grace Youth. We meet weekly for heartfelt prayer, Bible reflections, authentic friendship, and encouragement throughout the semester. Open to all students nationwide via Online!',
+    tags: ['Grace Youth', 'Discipleship', 'Online Nationwide', 'All Welcome'],
     image: 'https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&auto=format&fit=crop&q=80',
     members: [
       {
@@ -85,12 +92,79 @@ export const INITIAL_BIBLE_STUDIES = [
         author: 'Kuya Daniel Chavez',
         authorRole: 'Youth Worker',
         authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-        request: 'Praise report! Our midterm coffee giveaway at UPV Miagao and CPU reached over 120 students with free reviewers and gospel tracts!',
+        request: 'Praise report! Our nationwide campus initiative reached over 250 students across Luzon, Visayas, and Mindanao with free academic reviewers and prayer support!',
         category: 'Praise & Thanksgiving',
         createdAt: '2 days ago',
         prayedCount: 14,
         isAnswered: true,
-        encouragements: ['Praise God for the fruit in Western Visayas!']
+        encouragements: ['Praise God for the fruit across the Philippines!']
+      }
+    ]
+  },
+  {
+    id: 'bs-online-ph',
+    title: 'PH Online Collegiate Fellowship',
+    campusId: 'all',
+    campusName: 'All Philippine Universities (Nationwide)',
+    regionId: 'all',
+    regionName: 'All Philippines (Nationwide)',
+    meetingType: 'Online',
+    isOpenNationwide: true,
+    facilitator: 'Ate Keziah & Kuya Nathaniel',
+    schedule: 'Every Saturday, 7:30 PM - 9:00 PM',
+    location: 'Online via Discord & Google Meet',
+    topicCategory: 'Navigating University Life & Christian Purpose',
+    currentMembers: 18,
+    maxCapacity: 60,
+    description: 'A vibrant virtual discipleship hub connecting college & university students across NCR, Luzon, Visayas, and Mindanao. We share devotions, pray for academic breakthroughs, and grow together.',
+    tags: ['Online Only', 'Nationwide', 'Discord Community', 'Prayer & Life'],
+    image: 'https://images.unsplash.com/photo-1517486808906-6ca8b3f04846?w=800&auto=format&fit=crop&q=80',
+    members: [
+      {
+        id: 'mem-on-1',
+        name: 'Nathaniel Ray Santos',
+        email: 'nathaniel@graceyouth.ph',
+        campus: 'UP Diliman',
+        role: 'Facilitator',
+        yearLevel: '4th Year',
+        avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+        joinedAt: 'Jan 2026'
+      },
+      {
+        id: 'mem-on-2',
+        name: 'Keziah Hope Tan',
+        email: 'keziah@graceyouth.ph',
+        campus: 'USC Cebu',
+        role: 'Co-Facilitator',
+        yearLevel: '3rd Year',
+        avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+        joinedAt: 'Jan 2026'
+      }
+    ],
+    chatMessages: [
+      {
+        id: 'msg-on-1',
+        senderId: 'usr-on-1',
+        senderName: 'Nathaniel Ray Santos',
+        senderAvatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+        senderRole: 'Facilitator',
+        message: 'Welcome to our nationwide Saturday online circle! All college students from any region are warmly welcome. Drop a hi! 👋',
+        timestamp: '2 days ago',
+        tag: 'Announcement'
+      }
+    ],
+    groupPrayers: [
+      {
+        id: 'g-pray-on-1',
+        author: 'Keziah Hope Tan',
+        authorRole: 'Student Member',
+        authorAvatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=150&auto=format&fit=crop&q=80',
+        request: 'Praying for students in midterms season nationwide, especially those juggling dorm finances and heavy thesis revisions.',
+        category: 'Academics & Exams',
+        createdAt: '1 day ago',
+        prayedCount: 9,
+        isAnswered: false,
+        encouragements: ['Standing with you in prayer from Cebu!']
       }
     ]
   }
@@ -100,7 +174,7 @@ export const DISCIPLESHIP_STAGES = [
   {
     step: 1,
     title: 'Connect & Community',
-    desc: 'Join a weekly campus life group circle in your university.'
+    desc: 'Join a weekly campus or online life group circle anywhere in the Philippines.'
   },
   {
     step: 2,
@@ -110,11 +184,11 @@ export const DISCIPLESHIP_STAGES = [
   {
     step: 3,
     title: 'Equipping & Leadership',
-    desc: 'Learn to co-facilitate small groups, share the Gospel, and pray for peers.'
+    desc: 'Learn to co-facilitate small groups, share the Gospel, and mentor peers.'
   },
   {
     step: 4,
-    title: 'Campus Multiplication',
-    desc: 'Launch new peer circles and disciple the next generation of freshmen.'
+    title: 'Campus & Online Multiplication',
+    desc: 'Launch new peer circles and disciple the next generation of students.'
   }
 ];

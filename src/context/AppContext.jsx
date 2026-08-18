@@ -9,13 +9,15 @@ import { INITIAL_REVIEWERS } from '../data/reviewers';
 import { INITIAL_CAMPAIGNS } from '../data/campaigns';
 import { INITIAL_CURRICULUM_SERIES, INITIAL_STUDENT_PROGRESS } from '../data/curriculum';
 import { DEMO_ACCOUNTS } from '../data/demoAccounts';
+import { PH_REGIONS, getRegionById } from '../data/regions';
+import { CAMPUSES } from '../data/campuses';
 import { triggerConfetti } from '../utils/helpers';
 
-export { DEMO_ACCOUNTS };
+export { DEMO_ACCOUNTS, PH_REGIONS, getRegionById };
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v13_life_group_prayers';
+const STORAGE_VERSION = 'gy_clean_v14_philippines_nationwide';
 
 const GUEST_USER = {
   id: 'guest',
@@ -24,10 +26,12 @@ const GUEST_USER = {
   role: 'guest',
   roleLabel: 'Guest Visitor',
   campusId: 'all',
-  campusName: 'All Iloilo Campuses',
+  campusName: 'All Campuses (Nationwide)',
+  regionId: 'all',
+  regionName: 'All Philippines (Nationwide)',
   email: '',
   avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-  bio: 'Exploring Grace Youth campus tutorials and community.'
+  bio: 'Exploring Grace Youth campus tutorials and community across the Philippines.'
 };
 
 const DEFAULT_BOOKINGS = [
@@ -83,6 +87,30 @@ export const AppProvider = ({ children }) => {
     const saved = localStorage.getItem('gy_theme');
     return saved || 'light';
   });
+
+  // Philippines Region Selector State ('all' or 'r6', 'ncr', 'r7', etc.)
+  const [selectedRegion, setSelectedRegionState] = useState(() => {
+    const saved = localStorage.getItem('gy_selected_region');
+    return saved || 'all';
+  });
+
+  const setSelectedRegion = (regionId) => {
+    setSelectedRegionState(regionId);
+    try {
+      localStorage.setItem('gy_selected_region', regionId);
+    } catch (e) {}
+
+    // If active campus is not in this new region, reset campus to 'all'
+    if (regionId !== 'all') {
+      const campusObj = CAMPUSES.find((c) => c.id === selectedCampus);
+      if (campusObj && campusObj.regionId !== regionId && campusObj.id !== 'all') {
+        setSelectedCampus('all');
+      }
+    }
+  };
+
+  // Modality Filter State: 'all' | 'online' | 'f2f'
+  const [deliveryModeFilter, setDeliveryModeFilter] = useState('all');
 
   const [selectedCampus, setSelectedCampus] = useState('all');
   const [language, setLanguage] = useState('en');
@@ -1269,6 +1297,12 @@ export const AppProvider = ({ children }) => {
         logout,
         theme,
         toggleTheme,
+        selectedRegion,
+        setSelectedRegion,
+        deliveryModeFilter,
+        setDeliveryModeFilter,
+        phRegions: PH_REGIONS,
+        getRegionById,
         selectedCampus,
         setSelectedCampus,
         language,

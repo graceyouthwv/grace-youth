@@ -9,6 +9,7 @@ export const BookingModal = ({ isOpen, onClose, tutor }) => {
 
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [selectedSubject, setSelectedSubject] = useState('');
+  const [selectedMode, setSelectedMode] = useState('Online (Google Meet / Zoom / Discord)');
   const [studentNote, setStudentNote] = useState('');
   const [studentContact, setStudentContact] = useState('');
 
@@ -31,10 +32,11 @@ export const BookingModal = ({ isOpen, onClose, tutor }) => {
       return;
     }
 
+    const modeLabel = selectedMode || selectedSlot.mode || 'Online';
     bookSession(
       tutor,
-      selectedSlot,
-      `Topic: ${studentNote.trim() || 'General Subject Review'}. Contact: ${studentContact.trim() || currentUser.email}`,
+      { ...selectedSlot, mode: modeLabel },
+      `Topic: ${studentNote.trim() || 'General Subject Review'}. Mode: ${modeLabel}. Contact: ${studentContact.trim() || currentUser.email}`,
       selectedSubject || tutor.subjects[0]
     );
 
@@ -169,12 +171,49 @@ export const BookingModal = ({ isOpen, onClose, tutor }) => {
           </div>
         </div>
 
-        {/* 3. Specific Topic / Problem Set Note */}
+        {/* 3. Preferred Session Mode */}
         <div>
           <label className={`block text-xs font-black uppercase tracking-wider mb-1.5 ${
             isDark ? 'text-slate-300' : 'text-slate-700'
           }`}>
-            3. Specific Topics / Problem Sets (Optional)
+            3. Preferred Session Modality *
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <button
+              type="button"
+              onClick={() => setSelectedMode('Online (Google Meet / Zoom / Discord)')}
+              className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
+                selectedMode.includes('Online')
+                  ? 'bg-emerald-600 text-white border-emerald-600 shadow-xs'
+                  : isDark
+                  ? 'bg-slate-900 border-slate-700 text-slate-300 hover:border-slate-600'
+                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              💻 Online (Meet/Zoom)
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedMode('In-Person (Campus Library / Study Hub)')}
+              className={`p-2.5 rounded-xl border text-xs font-bold transition-all cursor-pointer text-center ${
+                selectedMode.includes('In-Person')
+                  ? 'bg-violet-600 text-white border-violet-600 shadow-xs'
+                  : isDark
+                  ? 'bg-slate-900 border-slate-700 text-slate-300 hover:border-slate-600'
+                  : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+              }`}
+            >
+              📍 In-Person (Campus)
+            </button>
+          </div>
+        </div>
+
+        {/* 4. Specific Topic / Problem Set Note */}
+        <div>
+          <label className={`block text-xs font-black uppercase tracking-wider mb-1.5 ${
+            isDark ? 'text-slate-300' : 'text-slate-700'
+          }`}>
+            4. Specific Topics / Problem Sets (Optional)
           </label>
           <textarea
             rows={2}
@@ -189,12 +228,12 @@ export const BookingModal = ({ isOpen, onClose, tutor }) => {
           />
         </div>
 
-        {/* 4. Student Contact Info */}
+        {/* 5. Student Contact Info */}
         <div>
           <label className={`block text-xs font-black uppercase tracking-wider mb-1.5 ${
             isDark ? 'text-slate-300' : 'text-slate-700'
           }`}>
-            4. Your Contact Info (Messenger Name / Mobile Phone) *
+            5. Your Contact Info (Messenger / Email / Phone) *
           </label>
           <input
             type="text"

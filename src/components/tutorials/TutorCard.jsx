@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Star, MapPin, Calendar, Clock, BookOpen, ShieldCheck } from 'lucide-react';
+import { Star, MapPin, Calendar, Clock, BookOpen, ShieldCheck, Laptop, School, Sparkles, Globe } from 'lucide-react';
 import { BookingModal } from './BookingModal';
 import { useApp } from '../../context/AppContext';
 
@@ -14,6 +14,9 @@ export const TutorCard = ({ tutor }) => {
     (currentUser.name && tutor.name && currentUser.name.toLowerCase() === tutor.name.toLowerCase()) ||
     (currentUser.email && tutor.email && currentUser.email.toLowerCase() === tutor.email.toLowerCase())
   );
+
+  const isOnline = tutor.preferredMode === 'Online' || tutor.isOnlineNationwide;
+  const isHybrid = tutor.preferredMode === 'Hybrid';
 
   return (
     <>
@@ -41,8 +44,8 @@ export const TutorCard = ({ tutor }) => {
                 </h3>
                 <p className={`text-xs font-medium ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>{tutor.role}</p>
                 <div className="flex items-center gap-1.5 mt-0.5 text-[11px] font-bold text-indigo-600 dark:text-indigo-400">
-                  <MapPin className="w-3 h-3" />
-                  <span>{tutor.campusName}</span>
+                  <MapPin className="w-3 h-3 shrink-0" />
+                  <span className="truncate max-w-[170px]">{tutor.campusName}</span>
                 </div>
               </div>
             </div>
@@ -54,13 +57,32 @@ export const TutorCard = ({ tutor }) => {
             </div>
           </div>
 
-          {/* Ministry Badge */}
-          <div className="flex items-center gap-2 mb-3">
+          {/* Badges & Modality Tags */}
+          <div className="flex flex-wrap items-center gap-1.5 mb-3">
             <div className={`inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider border ${
               isDark ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/30' : 'bg-slate-100 text-slate-800 border-slate-300'
             }`}>
               ✨ {tutor.badge}
             </div>
+
+            {/* Online / F2F Modality Tag */}
+            {isHybrid ? (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/15 text-emerald-600 dark:text-emerald-300 border border-emerald-500/30">
+                <Globe className="w-2.5 h-2.5" />
+                <span>Hybrid (Online + F2F)</span>
+              </span>
+            ) : isOnline ? (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-blue-500/15 text-blue-600 dark:text-blue-300 border border-blue-500/30">
+                <Laptop className="w-2.5 h-2.5" />
+                <span>💻 Online (Nationwide)</span>
+              </span>
+            ) : (
+              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-violet-500/15 text-violet-600 dark:text-violet-300 border border-violet-500/30">
+                <School className="w-2.5 h-2.5" />
+                <span>📍 Face-to-Face</span>
+              </span>
+            )}
+
             {isOwnListing && (
               <div className="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-amber-500/20 text-amber-500 dark:text-amber-400 border border-amber-500/30">
                 👑 Your Listing
@@ -100,7 +122,7 @@ export const TutorCard = ({ tutor }) => {
               {isHlg ? 'Bakante:' : 'Next Slot:'}
             </span>
             <span className={`font-black ${isDark ? 'text-emerald-400' : 'text-emerald-700'}`}>
-              {tutor.slots[0]?.day} ({tutor.slots[0]?.time.split('-')[0]})
+              {tutor.slots[0]?.day} ({tutor.slots[0]?.time?.split('-')[0]})
             </span>
           </div>
 
