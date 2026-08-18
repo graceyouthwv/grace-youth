@@ -19,7 +19,6 @@ import {
   FileText,
   Share2
 } from 'lucide-react';
-import { DailyDevotional } from '../dashboard/DailyDevotional';
 import { VolunteerModal } from '../common/VolunteerModal';
 import { UploadSongModal } from './UploadSongModal';
 import { ViewSongModal } from './ViewSongModal';
@@ -486,9 +485,8 @@ export const StudentPortal = () => {
           </div>
         </div>
 
-        {/* Right Col: Devotional & Prayer Activity */}
+        {/* Right Col: Prayer Activity & Quick Links */}
         <div className="space-y-6">
-          <DailyDevotional />
 
           {/* My Prayer Items */}
           <div className={`p-5 rounded-3xl border transition-all ${

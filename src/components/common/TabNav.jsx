@@ -12,7 +12,7 @@ export const TabNav = () => {
     { id: 'home', label: t('nav_feed'), icon: Flame },
     ...(isGuest ? [] : [{
       id: 'portal',
-      label: currentUser.role === 'leader' ? 'Admin' : currentUser.role === 'worker' ? 'Worker' : currentUser.role === 'tutor' ? 'Tutor' : 'Hub',
+      label: currentUser.role === 'leader' ? 'Admin' : currentUser.role === 'worker' ? 'Worker' : currentUser.role === 'tutor' ? 'Tutor' : 'My Hub',
       icon: currentUser.role === 'leader' ? ShieldCheck : currentUser.role === 'worker' ? UserCheck : currentUser.role === 'tutor' ? BookOpen : GraduationCap
     }]),
     { id: 'tutorials', label: 'Acads', icon: BookOpen },

@@ -58,7 +58,7 @@ export const FundraisingHub = () => {
           <p className={`text-xs sm:text-sm leading-relaxed font-medium ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
             {isHlg
               ? 'Mag-rehistro para sa aton palaabuton nga December fellowship kag youth retreats. Ang fixed registration fee nagalakip sang panihapon, acoustic worship, kag welcoming pack.'
-              : 'Register for upcoming citywide fellowships and youth camps across Western Visayas. Registration fees directly cover full dinner buffet, venue, materials, and delegate welcoming kits.'}
+              : 'Register for upcoming citywide fellowships and campus retreats. Registration fees directly cover full dinner buffet, venue, materials, and delegate welcoming kits.'}
           </p>
         </div>
 

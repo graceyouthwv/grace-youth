@@ -65,7 +65,7 @@ export const UploadReviewerModal = ({ isOpen, onClose }) => {
         <div className={`p-3.5 rounded-2xl border text-xs leading-relaxed ${
           isDark ? 'bg-sky-950/40 border-sky-500/30 text-sky-200' : 'bg-sky-50 border-sky-200 text-sky-900'
         }`}>
-          <span className="font-bold">✨ Pay it Forward:</span> Upload your formulas, midterms outlines, or mock drills to help college freshmen and fellow batchmates across Western Visayas!
+          <span className="font-bold">✨ Pay it Forward:</span> Upload your formulas, midterms outlines, or mock drills to help college freshmen and fellow batchmates across Philippine campuses!
         </div>
 
         <div>
