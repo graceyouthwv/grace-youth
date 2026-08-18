@@ -124,58 +124,14 @@ export const TutorialHub = () => {
 
   return (
     <div className="space-y-6">
-      {/* 1. REGIONAL & MODALITY BANNER BAR */}
-      <div className={`p-3.5 sm:p-4 rounded-3xl border transition-all ${
-        isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
-      }`}>
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-2xl bg-indigo-600 text-white font-bold shrink-0 shadow-sm">
-              <Globe className="w-4 h-4" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h4 className={`text-xs sm:text-sm font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                  {selectedRegion === 'all' ? 'All Philippines (Nationwide Scope)' : currentRegionObj.name}
-                </h4>
-                <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
-                  {deliveryModeFilter === 'online'
-                    ? '💻 Online (Nationwide)'
-                    : deliveryModeFilter === 'f2f'
-                    ? '📍 Face-to-Face'
-                    : '🌐 All Modes'}
-                </span>
-              </div>
-              <p className="text-[11px] text-slate-400">
-                {selectedRegion === 'all'
-                  ? 'Showing peer mentors available across all 17 regions + Online Nationwide.'
-                  : `Showing local mentors in ${currentRegionObj.shortName} + mentors available Online nationwide.`}
-              </p>
-            </div>
-          </div>
-
-          <button
-            onClick={() => setShowDetailedRegionBar(!showDetailedRegionBar)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all cursor-pointer flex items-center gap-1.5 self-start sm:self-auto ${
-              showDetailedRegionBar
-                ? 'bg-indigo-600 text-white border-indigo-600'
-                : isDark
-                ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white'
-                : 'bg-slate-50 border-slate-200 text-slate-700 hover:text-slate-950'
-            }`}
-          >
-            <Filter className="w-3.5 h-3.5" />
-            <span>{showDetailedRegionBar ? 'Hide Region Filter' : 'Change Region / Modality'}</span>
-          </button>
+      {/* Collapsible Campus Filter Bar (when toggled) */}
+      {showDetailedRegionBar && (
+        <div className={`p-4 sm:p-5 rounded-3xl border transition-all ${
+          isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200 shadow-sm'
+        }`}>
+          <CampusSelector />
         </div>
-
-        {/* Collapsible Detailed Region & Campus Bar */}
-        {showDetailedRegionBar && (
-          <div className={`mt-3.5 pt-3.5 border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
-            <CampusSelector />
-          </div>
-        )}
-      </div>
+      )}
 
       {/* Clean Sub Navigation Tabs */}
       <div className={`flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b pb-4 ${

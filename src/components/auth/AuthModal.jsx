@@ -13,13 +13,10 @@ import {
   GraduationCap,
   ShieldCheck,
   HeartHandshake,
-  AlertCircle,
   Sparkles,
   KeyRound,
   CheckCircle2,
-  ChevronLeft,
-  Globe,
-  Laptop
+  ChevronLeft
 } from 'lucide-react';
 
 export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
@@ -34,9 +31,9 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [forgotEmail, setForgotEmail] = useState('');
   const [forgotNewPassword, setForgotNewPassword] = useState('');
   const [forgotConfirmPassword, setForgotConfirmPassword] = useState('');
-  const [forgotStep, setForgotStep] = useState(1); // 1: Enter email | 2: Enter new password
+  const [forgotStep, setForgotStep] = useState(1);
 
-  // Register Form State (Student | Tutor | Youth Worker)
+  // Register Form State
   const [name, setName] = useState('');
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
@@ -56,11 +53,6 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     if (c.id === 'all') return false;
     return c.regionId === regionId;
   });
-
-  const handleFillDemo = (email, password) => {
-    setLoginEmail(email);
-    setLoginPassword(password);
-  };
 
   const handleLoginSubmit = (e) => {
     e.preventDefault();
@@ -127,7 +119,10 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
     const campusObj = CAMPUSES.find((c) => c.id === campusId);
     const regionObj = getRegionById(regionId);
-    const finalCampusName = campusId === '__other__' ? (customCampus.trim() || 'Other Campus') : (campusObj?.name || 'Philippine University Campus');
+    const finalCampusName =
+      campusId === '__other__'
+        ? customCampus.trim() || 'Other Campus'
+        : campusObj?.name || 'Philippine University Campus';
 
     const success = await register({
       name,
@@ -156,24 +151,30 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
       onClose={onClose}
       title={
         mode === 'forgot'
-          ? '🔑 Reset Forgotten Password'
+          ? '🔑 Reset Password'
           : mode === 'login'
-          ? '🔐 Sign In to Grace Youth'
-          : '✨ Create Student Account / Apply'
+          ? 'Welcome Back'
+          : 'Create an Account'
       }
       maxWidth="max-w-md"
     >
-      <div className="space-y-4 text-xs sm:text-sm">
-        {/* Toggle Mode Tabs (Only shown when not in Forgot Password) */}
+      <div className="space-y-5 py-1">
+        {/* Toggle Mode Segmented Control */}
         {mode !== 'forgot' && (
-          <div className={`flex items-center p-1 rounded-2xl border ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'}`}>
+          <div
+            className={`flex items-center p-1.5 rounded-2xl border ${
+              isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
+            }`}
+          >
             <button
               type="button"
               onClick={() => setMode('login')}
-              className={`flex-1 py-2 text-xs font-black rounded-xl transition-all cursor-pointer ${
+              className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                 mode === 'login'
-                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
-                  : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-indigo-600 text-white shadow-md'
+                  : isDark
+                  ? 'text-slate-400 hover:text-white'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Sign In
@@ -181,10 +182,12 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
             <button
               type="button"
               onClick={() => setMode('register')}
-              className={`flex-1 py-2 text-xs font-black rounded-xl transition-all cursor-pointer ${
+              className={`flex-1 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer ${
                 mode === 'register'
-                  ? 'bg-gradient-to-r from-violet-600 to-indigo-600 text-white shadow-md'
-                  : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-indigo-600 text-white shadow-md'
+                  : isDark
+                  ? 'text-slate-400 hover:text-white'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               Create Account
@@ -194,30 +197,40 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
         {/* 1. SIGN IN FORM */}
         {mode === 'login' && (
-          <div className="space-y-3.5">
-            <form onSubmit={handleLoginSubmit} className="space-y-3">
+          <div className="space-y-4">
+            <form onSubmit={handleLoginSubmit} className="space-y-4">
               <div>
-                <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Account Email
+                <label
+                  className={`block text-xs font-bold mb-1.5 ${
+                    isDark ? 'text-slate-300' : 'text-slate-700'
+                  }`}
+                >
+                  Email Address
                 </label>
                 <div className="relative">
-                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="email"
                     required
                     placeholder="name@school.edu.ph"
                     value={loginEmail}
                     onChange={(e) => setLoginEmail(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border text-xs sm:text-sm ${
-                      isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm transition-all focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-800 text-white focus:border-indigo-500'
+                        : 'bg-white border-slate-200 text-slate-900 focus:border-indigo-600'
                     }`}
                   />
                 </div>
               </div>
 
               <div>
-                <div className="flex items-center justify-between mb-1">
-                  <label className={`block text-xs font-black uppercase tracking-wider ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                <div className="flex items-center justify-between mb-1.5">
+                  <label
+                    className={`block text-xs font-bold ${
+                      isDark ? 'text-slate-300' : 'text-slate-700'
+                    }`}
+                  >
                     Password
                   </label>
                   <button
@@ -227,21 +240,23 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                       setMode('forgot');
                       setForgotStep(1);
                     }}
-                    className="text-[11px] font-bold text-pink-500 hover:underline cursor-pointer"
+                    className="text-xs font-medium text-indigo-500 hover:underline cursor-pointer"
                   >
-                    Forgot Password?
+                    Forgot?
                   </button>
                 </div>
                 <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                  <Lock className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                   <input
                     type="password"
                     required
                     placeholder="••••••••"
                     value={loginPassword}
                     onChange={(e) => setLoginPassword(e.target.value)}
-                    className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border text-xs sm:text-sm ${
-                      isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                    className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm transition-all focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-800 text-white focus:border-indigo-500'
+                        : 'bg-white border-slate-200 text-slate-900 focus:border-indigo-600'
                     }`}
                   />
                 </div>
@@ -249,20 +264,15 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
               <button
                 type="submit"
-                className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-indigo-500/25 transition-all cursor-pointer flex items-center justify-center gap-2"
+                className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all cursor-pointer flex items-center justify-center gap-2"
               >
-                <span>Sign In as Student / Tutor</span>
+                <span>Sign In</span>
                 <ArrowRight className="w-4 h-4" />
               </button>
             </form>
 
-            {/* Dedicated Leadership, Council & Staff Gateway Link */}
-            <div className={`p-3.5 rounded-2xl border text-center space-y-1.5 ${
-              isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-100 border-slate-200'
-            }`}>
-              <div className="text-xs font-bold text-slate-400">
-                🏛️ Ministry Leadership, Youth Council, Worker or Volunteer?
-              </div>
+            {/* Subtle Leadership Gateway Footer Link */}
+            <div className="pt-2 text-center border-t border-slate-100 dark:border-slate-800/80">
               <button
                 type="button"
                 onClick={() => {
@@ -274,43 +284,44 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                     if (adminBtn) adminBtn.click();
                   }
                 }}
-                className="w-full py-2 bg-gradient-to-r from-rose-600 via-pink-600 to-indigo-600 hover:from-rose-500 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                className="text-xs text-slate-400 hover:text-indigo-400 font-medium inline-flex items-center gap-1.5 cursor-pointer transition-colors"
               >
                 <ShieldCheck className="w-3.5 h-3.5" />
-                <span>Open Leadership & Staff Gateway &rarr;</span>
+                <span>Ministry Staff & Leader Login &rarr;</span>
               </button>
             </div>
           </div>
         )}
 
-        {/* 2. FORGOT PASSWORD SELF-SERVICE RESET */}
+        {/* 2. FORGOT PASSWORD FORM */}
         {mode === 'forgot' && (
           <div className="space-y-4">
-            <div className={`p-3.5 rounded-2xl border text-xs leading-relaxed flex items-start gap-2.5 ${
-              isDark ? 'bg-slate-900 border-slate-800 text-slate-300' : 'bg-indigo-50 border-indigo-200 text-indigo-950'
-            }`}>
-              <KeyRound className="w-4 h-4 text-pink-500 shrink-0 mt-0.5" />
-              <div>
-                <strong>Self-Service Password Recovery:</strong> Enter your registered school or staff email to reset your account password instantly.
-              </div>
-            </div>
+            <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+              Enter your registered email address to set a new password.
+            </p>
 
             {forgotStep === 1 ? (
-              <form onSubmit={handleVerifyForgotEmail} className="space-y-3">
+              <form onSubmit={handleVerifyForgotEmail} className="space-y-4">
                 <div>
-                  <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                    Enter Registered Account Email
+                  <label
+                    className={`block text-xs font-bold mb-1.5 ${
+                      isDark ? 'text-slate-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Registered Email
                   </label>
                   <div className="relative">
-                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <Mail className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
                     <input
                       type="email"
                       required
-                      placeholder="e.g. bea@upv.edu.ph or joshua@graceyouth.ph"
+                      placeholder="name@school.edu.ph"
                       value={forgotEmail}
                       onChange={(e) => setForgotEmail(e.target.value)}
-                      className={`w-full pl-10 pr-4 py-2.5 rounded-2xl border text-xs sm:text-sm ${
-                        isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                      className={`w-full pl-10 pr-4 py-2.5 rounded-xl border text-sm ${
+                        isDark
+                          ? 'bg-slate-900 border-slate-800 text-white'
+                          : 'bg-white border-slate-200 text-slate-900'
                       }`}
                     />
                   </div>
@@ -318,67 +329,83 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-pink-600 to-rose-600 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
                 >
-                  <span>Verify Email & Continue</span>
+                  <span>Continue</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
               </form>
             ) : (
-              <form onSubmit={handleResetPasswordSubmit} className="space-y-3">
-                <div className={`p-2.5 rounded-xl border text-xs font-bold ${
-                  isDark ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-900'
-                }`}>
-                  ✓ Email Verified: {forgotEmail}
+              <form onSubmit={handleResetPasswordSubmit} className="space-y-4">
+                <div
+                  className={`p-3 rounded-xl border text-xs font-bold ${
+                    isDark
+                      ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-300'
+                      : 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                  }`}
+                >
+                  ✓ Account Verified: {forgotEmail}
                 </div>
 
                 <div>
-                  <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                    New Password (min 6 chars)
+                  <label
+                    className={`block text-xs font-bold mb-1.5 ${
+                      isDark ? 'text-slate-300' : 'text-slate-700'
+                    }`}
+                  >
+                    New Password
                   </label>
                   <input
                     type="password"
                     required
-                    placeholder="Enter new password..."
+                    placeholder="Min 6 characters"
                     value={forgotNewPassword}
                     onChange={(e) => setForgotNewPassword(e.target.value)}
-                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm ${
-                      isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                    className={`w-full px-3.5 py-2.5 rounded-xl border text-sm ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-800 text-white'
+                        : 'bg-white border-slate-200 text-slate-900'
                     }`}
                   />
                 </div>
 
                 <div>
-                  <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                    Confirm New Password
+                  <label
+                    className={`block text-xs font-bold mb-1.5 ${
+                      isDark ? 'text-slate-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Confirm Password
                   </label>
                   <input
                     type="password"
                     required
-                    placeholder="Re-enter new password..."
+                    placeholder="Re-enter password"
                     value={forgotConfirmPassword}
                     onChange={(e) => setForgotConfirmPassword(e.target.value)}
-                    className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm ${
-                      isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                    className={`w-full px-3.5 py-2.5 rounded-xl border text-sm ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-800 text-white'
+                        : 'bg-white border-slate-200 text-slate-900'
                     }`}
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                  className="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
                 >
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>Save New Password & Sign In</span>
+                  <span>Update Password & Sign In</span>
                 </button>
               </form>
             )}
 
-            <div className="text-center pt-2">
+            <div className="text-center pt-1">
               <button
                 type="button"
                 onClick={() => setMode('login')}
-                className="text-xs font-bold text-slate-400 hover:text-white flex items-center justify-center gap-1 mx-auto cursor-pointer"
+                className="text-xs text-slate-400 hover:text-indigo-400 font-semibold inline-flex items-center gap-1 cursor-pointer"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
                 <span>Back to Sign In</span>
@@ -387,82 +414,59 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
           </div>
         )}
 
-        {/* 3. REGISTRATION / APPLICATION FORM */}
+        {/* 3. STREAMLINED REGISTRATION FORM */}
         {mode === 'register' && (
           <form onSubmit={handleRegisterSubmit} className="space-y-3.5">
-            <div>
-              <label className={`block text-xs font-black uppercase tracking-wider mb-1.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Select Account Role:
-              </label>
-              <div className="grid grid-cols-3 gap-1.5">
-                <button
-                  type="button"
-                  onClick={() => setRole('student')}
-                  className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
-                    role === 'student'
-                      ? 'bg-indigo-600 text-white border-indigo-500 shadow-md'
-                      : isDark ? 'bg-slate-900 border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-600'
-                  }`}
-                >
-                  <GraduationCap className="w-4 h-4" />
-                  <span className="text-[11px] font-black">Student</span>
-                  <span className="text-[9px] opacity-80 font-medium">Instant Entry</span>
-                </button>
+            {/* Clean Role Selector Pills */}
+            <div className="flex items-center gap-1.5 p-1 rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+              <button
+                type="button"
+                onClick={() => setRole('student')}
+                className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  role === 'student'
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
+                }`}
+              >
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span>Student</span>
+              </button>
 
-                <button
-                  type="button"
-                  onClick={() => setRole('tutor')}
-                  className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
-                    role === 'tutor'
-                      ? 'bg-amber-500 text-slate-950 border-amber-400 font-black shadow-md'
-                      : isDark ? 'bg-slate-900 border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-600'
-                  }`}
-                >
-                  <BookOpen className="w-4 h-4" />
-                  <span className="text-[11px] font-black">Peer Tutor</span>
-                  <span className="text-[9px] opacity-80 font-medium">Needs Admin</span>
-                </button>
+              <button
+                type="button"
+                onClick={() => setRole('tutor')}
+                className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  role === 'tutor'
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
+                }`}
+              >
+                <BookOpen className="w-3.5 h-3.5" />
+                <span>Peer Tutor</span>
+              </button>
 
-                <button
-                  type="button"
-                  onClick={() => setRole('worker')}
-                  className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer flex flex-col items-center justify-center gap-1 ${
-                    role === 'worker'
-                      ? 'bg-emerald-600 text-white border-emerald-500 shadow-md font-black'
-                      : isDark ? 'bg-slate-900 border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-600'
-                  }`}
-                >
-                  <HeartHandshake className="w-4 h-4" />
-                  <span className="text-[11px] font-black">Youth Worker</span>
-                  <span className="text-[9px] opacity-80 font-medium">Staff Review</span>
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => setRole('worker')}
+                className={`flex-1 py-1.5 px-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+                  role === 'worker'
+                    ? 'bg-indigo-600 text-white shadow-sm'
+                    : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-white'
+                }`}
+              >
+                <HeartHandshake className="w-3.5 h-3.5" />
+                <span>Youth Worker</span>
+              </button>
             </div>
 
-            {/* Note for Students vs Staff */}
-            {role === 'student' ? (
-              <div className={`p-2.5 rounded-xl border text-[11px] leading-relaxed flex items-center gap-2 ${
-                isDark ? 'bg-indigo-950/40 border-indigo-500/30 text-indigo-200' : 'bg-indigo-50 border-indigo-200 text-indigo-950'
-              }`}>
-                <Sparkles className="w-3.5 h-3.5 text-pink-500 shrink-0" />
-                <span><strong>Instant Student Access:</strong> Create your account to immediately book peer tutors, join Life Groups, and download reviewers. No admin approval needed.</span>
-              </div>
-            ) : (
-              <div className={`p-3 rounded-xl border text-[11px] leading-relaxed flex items-start gap-2 ${
-                role === 'tutor'
-                  ? 'bg-amber-50 dark:bg-amber-950/40 border-amber-200 dark:border-amber-500/30 text-amber-950 dark:text-amber-200'
-                  : 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-500/30 text-emerald-950 dark:text-emerald-200'
-              }`}>
-                <ShieldCheck className="w-4 h-4 shrink-0 mt-0.5" />
-                <div>
-                  <strong>Admin Verification Required:</strong> {role === 'tutor' ? 'Tutor applicants are verified by leadership in the Admin Command Center before their tutor account is activated.' : 'Youth Worker accounts require leadership authorization in the Admin Portal.'}
-                </div>
-              </div>
-            )}
-
+            {/* Core Fields */}
             <div>
-              <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Full Name *
+              <label
+                className={`block text-xs font-bold mb-1 ${
+                  isDark ? 'text-slate-300' : 'text-slate-700'
+                }`}
+              >
+                Full Name
               </label>
               <input
                 type="text"
@@ -470,16 +474,22 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 placeholder="e.g. Maria Santos"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
-                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                className={`w-full px-3.5 py-2.5 rounded-xl border text-sm ${
+                  isDark
+                    ? 'bg-slate-900 border-slate-800 text-white'
+                    : 'bg-white border-slate-200 text-slate-900'
                 }`}
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Email Address *
+                <label
+                  className={`block text-xs font-bold mb-1 ${
+                    isDark ? 'text-slate-300' : 'text-slate-700'
+                  }`}
+                >
+                  Email
                 </label>
                 <input
                   type="email"
@@ -487,14 +497,21 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   placeholder="name@school.edu.ph"
                   value={registerEmail}
                   onChange={(e) => setRegisterEmail(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-sm ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 />
               </div>
+
               <div>
-                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Password *
+                <label
+                  className={`block text-xs font-bold mb-1 ${
+                    isDark ? 'text-slate-300' : 'text-slate-700'
+                  }`}
+                >
+                  Password
                 </label>
                 <input
                   type="password"
@@ -502,59 +519,86 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   placeholder="••••••••"
                   value={registerPassword}
                   onChange={(e) => setRegisterPassword(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-sm ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 />
               </div>
             </div>
 
-            {/* 1. Region & Campus Selection (All Philippines) */}
-            <div className="grid grid-cols-2 gap-2">
+            {/* Region & Campus Select */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Region / Province *
+                <label
+                  className={`block text-xs font-bold mb-1 ${
+                    isDark ? 'text-slate-300' : 'text-slate-700'
+                  }`}
+                >
+                  Region
                 </label>
                 <select
                   value={regionId}
                   onChange={(e) => {
                     setRegionId(e.target.value);
-                    const firstCampus = CAMPUSES.find((c) => c.regionId === e.target.value && c.id !== 'all');
+                    const firstCampus = CAMPUSES.find(
+                      (c) => c.regionId === e.target.value && c.id !== 'all'
+                    );
                     if (firstCampus) setCampusId(firstCampus.id);
                   }}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 >
                   {PH_REGIONS.map((r) => (
-                    <option key={r.id} value={r.id}>{r.shortName}</option>
+                    <option key={r.id} value={r.id}>
+                      {r.shortName}
+                    </option>
                   ))}
                 </select>
               </div>
 
               <div>
-                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Campus / University *
+                <label
+                  className={`block text-xs font-bold mb-1 ${
+                    isDark ? 'text-slate-300' : 'text-slate-700'
+                  }`}
+                >
+                  Campus
                 </label>
                 <select
                   value={campusId}
-                  onChange={(e) => { setCampusId(e.target.value); if (e.target.value !== '__other__') setCustomCampus(''); }}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  onChange={(e) => {
+                    setCampusId(e.target.value);
+                    if (e.target.value !== '__other__') setCustomCampus('');
+                  }}
+                  className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 >
                   {availableCampuses.map((camp) => (
-                    <option key={camp.id} value={camp.id}>{camp.name}</option>
+                    <option key={camp.id} value={camp.id}>
+                      {camp.name}
+                    </option>
                   ))}
-                  <option value="__other__">✏️ Other (Type my campus)</option>
+                  <option value="__other__">✏️ Other Campus</option>
                 </select>
               </div>
             </div>
 
             {campusId === '__other__' && (
               <div>
-                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Type Your College / University Name *
+                <label
+                  className={`block text-xs font-bold mb-1 ${
+                    isDark ? 'text-slate-300' : 'text-slate-700'
+                  }`}
+                >
+                  University Name
                 </label>
                 <input
                   type="text"
@@ -562,105 +606,59 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   placeholder="e.g. Adventist University of the Philippines"
                   value={customCampus}
                   onChange={(e) => setCustomCampus(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  className={`w-full px-3.5 py-2.5 rounded-xl border text-sm ${
+                    isDark
+                      ? 'bg-slate-900 border-slate-800 text-white'
+                      : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 />
               </div>
             )}
 
-            {/* 2. Degree & Year Level */}
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Degree / Program *
-                </label>
-                <input
-                  type="text"
-                  placeholder="e.g. BS Computer Science / Nursing"
-                  value={program}
-                  onChange={(e) => setProgram(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-                  }`}
-                />
-              </div>
-
-              <div>
-                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Year Level
-                </label>
-                <select
-                  value={yearLevel}
-                  onChange={(e) => setYearLevel(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-                  }`}
-                >
-                  <option value="1st Year">1st Year (Freshman)</option>
-                  <option value="2nd Year">2nd Year (Sophomore)</option>
-                  <option value="3rd Year">3rd Year (Junior)</option>
-                  <option value="4th Year">4th Year (Senior)</option>
-                  <option value="5th Year+">5th Year / Grad Student</option>
-                </select>
-              </div>
-            </div>
-
-            {/* 3. Tutor Specific: Preferred Modality */}
+            {/* Extra fields for Tutors / Youth Workers */}
             {role === 'tutor' && (
-              <div>
-                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Preferred Tutoring Modality
-                </label>
-                <select
-                  value={preferredMode}
-                  onChange={(e) => setPreferredMode(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-                  }`}
-                >
-                  <option value="Hybrid">🌐 Hybrid (Online Nationwide + Campus F2F)</option>
-                  <option value="Online">💻 Online Only (Open to All Regions in PH)</option>
-                  <option value="In-Person">📍 In-Person (On-Campus Only)</option>
-                </select>
-              </div>
-            )}
-
-            {role === 'tutor' && (
-              <div>
-                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Subjects You Wish to Tutor (comma-separated) *
-                </label>
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Math 53 Calculus 1, Chem 16, Physics 71"
-                  value={subjects}
-                  onChange={(e) => setSubjects(e.target.value)}
-                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
-                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-                  }`}
-                />
+              <div className="space-y-3 pt-1 border-t border-slate-100 dark:border-slate-800">
+                <div>
+                  <label
+                    className={`block text-xs font-bold mb-1 ${
+                      isDark ? 'text-slate-300' : 'text-slate-700'
+                    }`}
+                  >
+                    Subjects you want to tutor (e.g. Calculus 1, Chem 16)
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Math 53, Physics 71, Organic Chem"
+                    value={subjects}
+                    onChange={(e) => setSubjects(e.target.value)}
+                    className={`w-full px-3.5 py-2.5 rounded-xl border text-sm ${
+                      isDark
+                        ? 'bg-slate-900 border-slate-800 text-white'
+                        : 'bg-white border-slate-200 text-slate-900'
+                    }`}
+                  />
+                </div>
               </div>
             )}
 
             <button
               type="submit"
-              className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-indigo-500/25 transition-all cursor-pointer mt-2"
+              className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all cursor-pointer mt-3"
             >
               {role === 'worker'
                 ? 'Submit Youth Worker Application'
                 : role === 'tutor'
                 ? 'Submit Peer Tutor Application'
-                : 'Create Student Account & Enter'}
+                : 'Create Account & Enter'}
             </button>
 
-            <div className="text-center pt-1">
-              <span className="text-slate-400 text-xs">Already have an account? </span>
+            <div className="text-center pt-2">
+              <span className="text-slate-500 text-xs">Already have an account? </span>
               <button
                 type="button"
                 onClick={() => setMode('login')}
-                className="text-xs font-bold text-indigo-400 hover:underline cursor-pointer"
+                className="text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
               >
                 Sign In
               </button>
