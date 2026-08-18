@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
+import { PH_REGIONS, getRegionById } from '../../data/regions';
 import {
   Lock,
   Mail,
@@ -16,7 +17,9 @@ import {
   Sparkles,
   KeyRound,
   CheckCircle2,
-  ChevronLeft
+  ChevronLeft,
+  Globe,
+  Laptop
 } from 'lucide-react';
 
 export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
@@ -38,13 +41,20 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [registerEmail, setRegisterEmail] = useState('');
   const [registerPassword, setRegisterPassword] = useState('');
   const [role, setRole] = useState('student'); // 'student' | 'tutor' | 'worker'
+  const [regionId, setRegionId] = useState('r6');
   const [campusId, setCampusId] = useState('upv');
+  const [preferredMode, setPreferredMode] = useState('Hybrid');
   const [program, setProgram] = useState('');
   const [yearLevel, setYearLevel] = useState('1st Year');
   const [subjects, setSubjects] = useState('');
   const [bioNote, setBioNote] = useState('');
 
   const isDark = theme === 'dark';
+
+  const availableCampuses = CAMPUSES.filter((c) => {
+    if (c.id === 'all') return false;
+    return c.regionId === regionId;
+  });
 
   const handleFillDemo = (email, password) => {
     setLoginEmail(email);
@@ -115,14 +125,18 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
     }
 
     const campusObj = CAMPUSES.find((c) => c.id === campusId);
+    const regionObj = getRegionById(regionId);
 
     const success = await register({
       name,
       email: registerEmail,
       password: registerPassword,
       role,
+      regionId,
+      regionName: regionObj?.name || 'All Philippines',
       campusId,
-      campusName: campusObj?.name || 'UP Visayas',
+      campusName: campusObj?.name || 'Philippine University Campus',
+      preferredMode,
       program,
       yearLevel,
       subjects,
@@ -518,31 +532,60 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
               </div>
             </div>
 
+            {/* 1. Region & Campus Selection (All Philippines) */}
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Iloilo Campus
+                  Region / Province *
                 </label>
                 <select
-                  value={campusId}
-                  onChange={(e) => setCampusId(e.target.value)}
-                  className={`w-full px-2 py-2 rounded-xl border text-xs font-bold ${
+                  value={regionId}
+                  onChange={(e) => {
+                    setRegionId(e.target.value);
+                    const firstCampus = CAMPUSES.find((c) => c.regionId === e.target.value && c.id !== 'all');
+                    if (firstCampus) setCampusId(firstCampus.id);
+                  }}
+                  className={`w-full px-2.5 py-2 rounded-xl border text-xs font-bold ${
                     isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 >
-                  {CAMPUSES.filter((c) => c.id !== 'all').map((camp) => (
-                    <option key={camp.id} value={camp.id}>{camp.shortName}</option>
+                  {PH_REGIONS.map((r) => (
+                    <option key={r.id} value={r.id}>{r.shortName}</option>
                   ))}
                 </select>
               </div>
 
               <div>
                 <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                  Degree / Major
+                  Campus / University *
+                </label>
+                <select
+                  value={campusId}
+                  onChange={(e) => setCampusId(e.target.value)}
+                  className={`w-full px-2.5 py-2 rounded-xl border text-xs font-bold ${
+                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  }`}
+                >
+                  {availableCampuses.length > 0 ? (
+                    availableCampuses.map((camp) => (
+                      <option key={camp.id} value={camp.id}>{camp.name}</option>
+                    ))
+                  ) : (
+                    <option value="other">Online / Collegiate Student</option>
+                  )}
+                </select>
+              </div>
+            </div>
+
+            {/* 2. Degree & Year Level */}
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Degree / Program *
                 </label>
                 <input
                   type="text"
-                  placeholder="e.g. BS Mathematics, Nursing"
+                  placeholder="e.g. BS Computer Science / Nursing"
                   value={program}
                   onChange={(e) => setProgram(e.target.value)}
                   className={`w-full px-3 py-2 rounded-xl border text-xs ${
@@ -550,7 +593,46 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   }`}
                 />
               </div>
+
+              <div>
+                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Year Level
+                </label>
+                <select
+                  value={yearLevel}
+                  onChange={(e) => setYearLevel(e.target.value)}
+                  className={`w-full px-2.5 py-2 rounded-xl border text-xs font-bold ${
+                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  }`}
+                >
+                  <option value="1st Year">1st Year (Freshman)</option>
+                  <option value="2nd Year">2nd Year (Sophomore)</option>
+                  <option value="3rd Year">3rd Year (Junior)</option>
+                  <option value="4th Year">4th Year (Senior)</option>
+                  <option value="5th Year+">5th Year / Grad Student</option>
+                </select>
+              </div>
             </div>
+
+            {/* 3. Tutor Specific: Preferred Modality */}
+            {role === 'tutor' && (
+              <div>
+                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Preferred Tutoring Modality
+                </label>
+                <select
+                  value={preferredMode}
+                  onChange={(e) => setPreferredMode(e.target.value)}
+                  className={`w-full px-2.5 py-2 rounded-xl border text-xs font-bold ${
+                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  }`}
+                >
+                  <option value="Hybrid">🌐 Hybrid (Online Nationwide + Campus F2F)</option>
+                  <option value="Online">💻 Online Only (Open to All Regions in PH)</option>
+                  <option value="In-Person">📍 In-Person (On-Campus Only)</option>
+                </select>
+              </div>
+            )}
 
             {role === 'tutor' && (
               <div>

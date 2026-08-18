@@ -2,14 +2,16 @@ import React, { useState } from 'react';
 import { Modal } from './Modal';
 import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
-import { HeartHandshake, Sparkles, Send, Music, Users, Coffee, Tent, Heart, BookOpen, ShieldCheck } from 'lucide-react';
+import { PH_REGIONS, getRegionById } from '../../data/regions';
+import { HeartHandshake, Sparkles, Send, Music, Users, Coffee, Tent, Heart, BookOpen, ShieldCheck, Globe } from 'lucide-react';
 
 export const VolunteerModal = ({ isOpen, onClose }) => {
-  const { currentUser, showToast, theme, addVolunteerApplication } = useApp();
+  const { currentUser, selectedRegion, showToast, theme, addVolunteerApplication } = useApp();
   const [name, setName] = useState(currentUser.name || '');
   const [email, setEmail] = useState(currentUser.email || '');
   const [contact, setContact] = useState('');
-  const [campusId, setCampusId] = useState(currentUser.campusId || 'isufst');
+  const [regionId, setRegionId] = useState(selectedRegion !== 'all' ? selectedRegion : 'r6');
+  const [campusId, setCampusId] = useState(currentUser.campusId || 'upv');
   const [roleArea, setRoleArea] = useState('life_group'); // 'life_group' | 'worship' | 'camp' | 'coffee' | 'prayer' | 'tutor'
   const [yearLevel, setYearLevel] = useState(currentUser.yearLevel || '2nd Year');
   const [availability, setAvailability] = useState('Weekdays 4:00 PM onwards & Saturdays');
@@ -17,13 +19,18 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
 
   const isDark = theme === 'dark';
 
+  const availableCampuses = CAMPUSES.filter((c) => {
+    if (c.id === 'all') return false;
+    return c.regionId === regionId;
+  });
+
   const volunteerRoles = [
     { id: 'life_group', title: '🌱 Life Group Co-Facilitator', desc: 'Help facilitate Bible study circles & mentor dormers' },
     { id: 'worship', title: '🎸 Worship & Music Team', desc: 'Acoustic guitar, vocals, or sound for campus fellowships & camps' },
     { id: 'camp', title: '🏕️ Youth Camp Counselor & Logistics', desc: 'Camp retreat facilitator, games, and spiritual counseling' },
     { id: 'coffee', title: '☕ Exam Outreach & Care Team', desc: 'Serve free cold brew, snacks, and prayer cards during finals' },
     { id: 'prayer', title: '🙏 24/7 Prayer Wall Warrior', desc: 'Intercede and pray for students posting on the wall' },
-    { id: 'tutor', title: '👨‍🏫 Academic Peer Tutor', desc: 'Review freshmen in Calculus, Chem, Nursing, or Engg' }
+    { id: 'tutor', title: '👨‍🏫 Academic Peer Tutor', desc: 'Review freshmen in STEM, Nursing, Business, or Arts' }
   ];
 
   const handleSubmit = (e) => {
@@ -35,13 +42,16 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
 
     const selectedRoleObj = volunteerRoles.find((r) => r.id === roleArea);
     const campusObj = CAMPUSES.find((c) => c.id === campusId);
+    const regionObj = getRegionById(regionId);
 
     addVolunteerApplication({
       name: name.trim(),
       email: email.trim(),
       contact: contact.trim(),
+      regionId,
+      regionName: regionObj?.name || 'All Philippines',
       campusId,
-      campusName: campusObj?.name || 'Iloilo Campus',
+      campusName: campusObj?.name || 'Philippine University Campus',
       roleArea: selectedRoleObj?.title || 'Youth Worker Volunteer',
       yearLevel,
       availability,
@@ -63,7 +73,7 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
         <div className={`p-3.5 rounded-2xl border text-xs leading-relaxed ${
           isDark ? 'bg-indigo-950/40 border-indigo-500/30 text-indigo-200' : 'bg-indigo-50 border-indigo-200 text-indigo-900'
         }`}>
-          <span className="font-bold">✨ Join the Movement:</span> God is doing something extraordinary across Iloilo universities! Whether you have musical gifts, a heart for freshmen mentoring, event logistics, or prayer, we'd love to equip and serve alongside you.
+          <span className="font-bold">✨ Join the Movement:</span> God is doing something extraordinary across Philippine university campuses and online! Whether you have musical gifts, a heart for freshmen mentoring, event logistics, or prayer, we'd love to equip and serve alongside you.
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -90,7 +100,7 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
             <input
               type="email"
               required
-              placeholder="e.g. hannah@wvsu.edu.ph"
+              placeholder="e.g. hannah@school.edu.ph"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
@@ -100,10 +110,32 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
           </div>
         </div>
 
+        {/* Region & Campus Selection */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Your Campus *
+              Region / Place *
+            </label>
+            <select
+              value={regionId}
+              onChange={(e) => {
+                setRegionId(e.target.value);
+                const firstCampus = CAMPUSES.find((c) => c.regionId === e.target.value && c.id !== 'all');
+                if (firstCampus) setCampusId(firstCampus.id);
+              }}
+              className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
+                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+              }`}
+            >
+              {PH_REGIONS.map((r) => (
+                <option key={r.id} value={r.id}>{r.shortName}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Campus / University *
             </label>
             <select
               value={campusId}
@@ -112,12 +144,18 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
                 isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
               }`}
             >
-              {CAMPUSES.filter((c) => c.id !== 'all').map((c) => (
-                <option key={c.id} value={c.id}>{c.name}</option>
-              ))}
+              {availableCampuses.length > 0 ? (
+                availableCampuses.map((c) => (
+                  <option key={c.id} value={c.id}>{c.name}</option>
+                ))
+              ) : (
+                <option value="other">Online / Collegiate Servant</option>
+              )}
             </select>
           </div>
+        </div>
 
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
               Mobile / Messenger Handle
@@ -131,6 +169,25 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
                 isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
               }`}
             />
+          </div>
+
+          <div>
+            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Year Level
+            </label>
+            <select
+              value={yearLevel}
+              onChange={(e) => setYearLevel(e.target.value)}
+              className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
+                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+              }`}
+            >
+              <option value="1st Year">1st Year</option>
+              <option value="2nd Year">2nd Year</option>
+              <option value="3rd Year">3rd Year</option>
+              <option value="4th Year">4th Year</option>
+              <option value="Graduate / Alumni">Graduate / Alumni</option>
+            </select>
           </div>
         </div>
 
@@ -161,49 +218,28 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Year Level / Status
-            </label>
-            <select
-              value={yearLevel}
-              onChange={(e) => setYearLevel(e.target.value)}
-              className={`w-full px-3 py-2 rounded-xl border text-xs ${
-                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-              }`}
-            >
-              <option value="1st Year">1st Year (Freshman)</option>
-              <option value="2nd Year">2nd Year (Sophomore)</option>
-              <option value="3rd Year">3rd Year (Junior)</option>
-              <option value="4th Year">4th Year (Senior)</option>
-              <option value="Graduate / Staff">Graduate / Young Adult / Church Partner</option>
-            </select>
-          </div>
-
-          <div>
-            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              General Weekly Availability
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. Free Mon/Wed afternoons & Saturdays"
-              value={availability}
-              onChange={(e) => setAvailability(e.target.value)}
-              className={`w-full px-3 py-2 rounded-xl border text-xs ${
-                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-              }`}
-            />
-          </div>
+        <div>
+          <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+            Weekly Availability
+          </label>
+          <input
+            type="text"
+            placeholder="e.g. Weekday afternoons (4pm-6pm) & Saturdays"
+            value={availability}
+            onChange={(e) => setAvailability(e.target.value)}
+            className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
+              isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+            }`}
+          />
         </div>
 
         <div>
           <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-            Brief Note / Why you want to serve (Optional)
+            Why would you like to join the ministry team?
           </label>
           <textarea
             rows={2}
-            placeholder="Share your spiritual journey or why you want to serve college students..."
+            placeholder="Share a short note about your ministry background or heart for campus ministry..."
             value={bioNote}
             onChange={(e) => setBioNote(e.target.value)}
             className={`w-full px-3 py-2 rounded-xl border text-xs ${
@@ -212,13 +248,24 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
           />
         </div>
 
-        <button
-          type="submit"
-          className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-violet-600 via-indigo-600 to-pink-500 hover:from-violet-500 hover:to-pink-400 text-white font-black text-xs sm:text-sm shadow-lg shadow-indigo-500/25 transition-all cursor-pointer flex items-center justify-center gap-2"
-        >
-          <HeartHandshake className="w-4 h-4" />
-          <span>Submit Volunteer Application</span>
-        </button>
+        <div className="pt-2 flex items-center justify-end gap-2">
+          <button
+            type="button"
+            onClick={onClose}
+            className={`px-4 py-2.5 rounded-xl text-xs font-bold border cursor-pointer ${
+              isDark ? 'border-slate-800 text-slate-400 hover:text-white' : 'border-slate-200 text-slate-600 hover:text-slate-950'
+            }`}
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-violet-600 to-pink-500 hover:from-violet-500 hover:to-pink-400 text-white font-black text-xs sm:text-sm shadow-md transition-all cursor-pointer flex items-center gap-1.5"
+          >
+            <Send className="w-3.5 h-3.5" />
+            <span>Submit Application</span>
+          </button>
+        </div>
       </form>
     </Modal>
   );
