@@ -512,7 +512,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   placeholder="name@school.edu.ph"
                   value={registerEmail}
                   onChange={(e) => setRegisterEmail(e.target.value)}
-                  className={`w-full px-3 py-2 rounded-xl border text-xs ${
+                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
                     isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 />
@@ -527,7 +527,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   placeholder="••••••••"
                   value={registerPassword}
                   onChange={(e) => setRegisterPassword(e.target.value)}
-                  className={`w-full px-3 py-2 rounded-xl border text-xs ${
+                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
                     isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 />
@@ -547,7 +547,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                     const firstCampus = CAMPUSES.find((c) => c.regionId === e.target.value && c.id !== 'all');
                     if (firstCampus) setCampusId(firstCampus.id);
                   }}
-                  className={`w-full px-2.5 py-2 rounded-xl border text-xs font-bold ${
+                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
                     isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 >
@@ -564,7 +564,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 <select
                   value={campusId}
                   onChange={(e) => { setCampusId(e.target.value); if (e.target.value !== '__other__') setCustomCampus(''); }}
-                  className={`w-full px-2.5 py-2 rounded-xl border text-xs font-bold ${
+                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
                     isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 >
@@ -587,7 +587,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   placeholder="e.g. Adventist University of the Philippines"
                   value={customCampus}
                   onChange={(e) => setCustomCampus(e.target.value)}
-                  className={`w-full px-3 py-2 rounded-xl border text-xs ${
+                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
                     isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 />
@@ -605,7 +605,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   placeholder="e.g. BS Computer Science / Nursing"
                   value={program}
                   onChange={(e) => setProgram(e.target.value)}
-                  className={`w-full px-3 py-2 rounded-xl border text-xs ${
+                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
                     isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 />
@@ -618,7 +618,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 <select
                   value={yearLevel}
                   onChange={(e) => setYearLevel(e.target.value)}
-                  className={`w-full px-2.5 py-2 rounded-xl border text-xs font-bold ${
+                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
                     isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 >
@@ -640,7 +640,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 <select
                   value={preferredMode}
                   onChange={(e) => setPreferredMode(e.target.value)}
-                  className={`w-full px-2.5 py-2 rounded-xl border text-xs font-bold ${
+                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
                     isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 >
@@ -662,7 +662,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                   placeholder="e.g. Math 53 Calculus 1, Chem 16, Physics 71"
                   value={subjects}
                   onChange={(e) => setSubjects(e.target.value)}
-                  className={`w-full px-3 py-2 rounded-xl border text-xs ${
+                  className={`w-full px-3 py-2.5 rounded-xl border text-xs ${
                     isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 />
