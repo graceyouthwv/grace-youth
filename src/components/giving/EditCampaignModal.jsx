@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
-import { Target, Heart, Calendar, Users, CheckCircle2, DollarSign } from 'lucide-react';
+import { Calendar, MapPin, Ticket, Users, CheckCircle2, DollarSign } from 'lucide-react';
 
 export const EditCampaignModal = ({ isOpen, onClose, campaign }) => {
   const { updateCampaign, showToast, theme } = useApp();
@@ -9,19 +9,23 @@ export const EditCampaignModal = ({ isOpen, onClose, campaign }) => {
 
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('');
-  const [targetAmount, setTargetAmount] = useState('');
-  const [raisedAmount, setRaisedAmount] = useState('');
-  const [donorsCount, setDonorsCount] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [registrationFee, setRegistrationFee] = useState('250');
+  const [maxCapacity, setMaxCapacity] = useState('250');
+  const [date, setDate] = useState('');
+  const [time, setTime] = useState('');
+  const [venue, setVenue] = useState('');
+  const [description, setDescription] = useState('');
 
   useEffect(() => {
     if (campaign) {
       setTitle(campaign.title || '');
-      setCategory(campaign.category || 'Youth Camp');
-      setTargetAmount(campaign.targetAmount || 0);
-      setRaisedAmount(campaign.raisedAmount || 0);
-      setDonorsCount(campaign.donorsCount || 0);
-      setEndDate(campaign.endDate || 'August 30, 2026');
+      setCategory(campaign.category || 'Youth Fellowship');
+      setRegistrationFee(campaign.registrationFee !== undefined ? campaign.registrationFee : 250);
+      setMaxCapacity(campaign.maxCapacity || 250);
+      setDate(campaign.date || 'December 18, 2026');
+      setTime(campaign.time || '4:00 PM - 8:30 PM');
+      setVenue(campaign.venue || 'Iloilo City Fellowship Grounds');
+      setDescription(campaign.description || '');
     }
   }, [campaign]);
 
@@ -29,22 +33,23 @@ export const EditCampaignModal = ({ isOpen, onClose, campaign }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const targetNum = parseFloat(targetAmount);
-    const raisedNum = parseFloat(raisedAmount);
-    const donorsNum = parseInt(donorsCount, 10);
+    const feeNum = parseFloat(registrationFee);
+    const capacityNum = parseInt(maxCapacity, 10) || 200;
 
-    if (isNaN(targetNum) || targetNum <= 0) {
-      showToast('Please enter a valid target goal amount.', 'error');
+    if (isNaN(feeNum) || feeNum < 0) {
+      showToast('Please enter a valid registration fee.', 'error');
       return;
     }
 
     updateCampaign(campaign.id, {
       title: title.trim() || campaign.title,
       category,
-      targetAmount: targetNum,
-      raisedAmount: isNaN(raisedNum) ? 0 : raisedNum,
-      donorsCount: isNaN(donorsNum) ? 0 : donorsNum,
-      endDate: endDate.trim() || campaign.endDate
+      registrationFee: feeNum,
+      maxCapacity: capacityNum,
+      date: date.trim() || campaign.date,
+      time: time.trim() || campaign.time,
+      venue: venue.trim() || campaign.venue,
+      description: description.trim() || campaign.description
     });
 
     onClose();
@@ -54,14 +59,14 @@ export const EditCampaignModal = ({ isOpen, onClose, campaign }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={`✏️ Update Seed Fund: ${campaign.title}`}
+      title={`✏️ Edit Event & Registration Fee: ${campaign.title}`}
       maxWidth="max-w-lg"
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* Campaign Title */}
+      <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
+        {/* Event Title */}
         <div>
           <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            Campaign Title *
+            Event Title *
           </label>
           <input
             type="text"
@@ -74,31 +79,11 @@ export const EditCampaignModal = ({ isOpen, onClose, campaign }) => {
           />
         </div>
 
-        {/* Amounts Grid */}
+        {/* Fee & Capacity Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              Target Seed Goal (₱) *
-            </label>
-            <div className="relative">
-              <span className="absolute left-3.5 top-2.5 text-xs font-bold text-slate-400">₱</span>
-              <input
-                type="number"
-                required
-                min="100"
-                step="50"
-                value={targetAmount}
-                onChange={(e) => setTargetAmount(e.target.value)}
-                className={`w-full pl-8 pr-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-black font-heading ${
-                  isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
-                }`}
-              />
-            </div>
-          </div>
-
-          <div>
-            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              Current Raised Amount (₱) *
+              Registration Fee (₱) *
             </label>
             <div className="relative">
               <span className="absolute left-3.5 top-2.5 text-xs font-bold text-slate-400">₱</span>
@@ -107,27 +92,41 @@ export const EditCampaignModal = ({ isOpen, onClose, campaign }) => {
                 required
                 min="0"
                 step="50"
-                value={raisedAmount}
-                onChange={(e) => setRaisedAmount(e.target.value)}
+                value={registrationFee}
+                onChange={(e) => setRegistrationFee(e.target.value)}
                 className={`w-full pl-8 pr-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-black font-heading ${
-                  isDark ? 'bg-slate-900 border-slate-700 text-emerald-400' : 'bg-white border-slate-300 text-emerald-700 shadow-xs'
+                  isDark ? 'bg-slate-900 border-slate-700 text-indigo-300' : 'bg-white border-slate-300 text-indigo-900 shadow-xs'
                 }`}
               />
             </div>
           </div>
-        </div>
 
-        {/* Donors & Deadline Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              Total Donors / Sponsors
+              Attendee Capacity (Slots)
             </label>
             <input
               type="number"
-              min="0"
-              value={donorsCount}
-              onChange={(e) => setDonorsCount(e.target.value)}
+              min="10"
+              value={maxCapacity}
+              onChange={(e) => setMaxCapacity(e.target.value)}
+              className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
+                isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
+              }`}
+            />
+          </div>
+        </div>
+
+        {/* Date & Time */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+              Date
+            </label>
+            <input
+              type="text"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
               className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
                 isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
               }`}
@@ -136,18 +135,47 @@ export const EditCampaignModal = ({ isOpen, onClose, campaign }) => {
 
           <div>
             <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              Target Deadline Date
+              Time
             </label>
             <input
               type="text"
-              placeholder="e.g. October 15, 2026"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
+              value={time}
+              onChange={(e) => setTime(e.target.value)}
               className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
                 isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
               }`}
             />
           </div>
+        </div>
+
+        {/* Venue */}
+        <div>
+          <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+            Venue / Location
+          </label>
+          <input
+            type="text"
+            value={venue}
+            onChange={(e) => setVenue(e.target.value)}
+            className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
+              isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
+            }`}
+          />
+        </div>
+
+        {/* Description */}
+        <div>
+          <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+            Description & Highlights
+          </label>
+          <textarea
+            rows={2}
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            className={`w-full px-3.5 py-2 rounded-xl border text-xs ${
+              isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900'
+            }`}
+          />
         </div>
 
         {/* Sticky Action Footer */}
@@ -166,10 +194,10 @@ export const EditCampaignModal = ({ isOpen, onClose, campaign }) => {
 
           <button
             type="submit"
-            className="flex-1 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-emerald-500/25 active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-black text-xs sm:text-sm shadow-md active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
           >
             <CheckCircle2 className="w-4 h-4" />
-            <span>Save & Update Seed Fund</span>
+            <span>Save & Update Event Details</span>
           </button>
         </div>
       </form>

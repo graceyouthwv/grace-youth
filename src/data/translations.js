@@ -7,7 +7,8 @@ export const TRANSLATIONS = {
     nav_feed: 'Feed',
     nav_acads: 'Acads & Tutors',
     nav_groups: 'Life Groups',
-    nav_camps: 'Camps & Giving',
+    nav_camps: 'Events & Registration',
+    nav_partners: 'Our Partners',
     nav_prayers: 'Prayer Wall',
     nav_more: 'More',
     nav_signin: 'Sign In',
@@ -45,8 +46,8 @@ export const TRANSLATIONS = {
     stat_tutors_desc: 'STEM, Nursing, Business & Arts',
     stat_lifegroups: 'Active Life Groups',
     stat_lifegroups_desc: 'Weekly campus discipleship',
-    stat_camp_funds: 'Camp Funds Raised',
-    stat_camp_funds_desc: 'Sponsoring youth delegates',
+    stat_camp_funds: 'Registered Delegates',
+    stat_camp_funds_desc: 'Fellowships & Youth Camps',
 
     // Daily Devotional
     devo_badge: 'TODAY\'S CAMPUS BREAD',
@@ -58,36 +59,35 @@ export const TRANSLATIONS = {
     // Crisis Bar / Pastoral Care
     crisis_badge: '24/7 PASTORAL CARE & PRAYER',
     crisis_title: 'Struggling with exam stress, burnout, or personal challenges?',
-    crisis_desc: 'You are never alone. Our licensed youth workers and pastors are ready to pray with you.',
-    crisis_coffee: 'Book Coffee Chat',
-    crisis_call: 'Urgent Prayer Hotline',
+    crisis_desc: 'Our certified campus youth pastors & student leaders are here to listen, pray, and walk with you confidentially.',
+    crisis_call_btn: 'Call 24/7 Pastoral Care',
+    crisis_sms_btn: 'SMS / Text a Pastor',
+    crisis_chat_btn: 'Open Anonymous Prayer Chat',
 
-    // Academics / Tutorial Hub
-    acads_heading: 'Peer Tutorials & Academic Care',
-    acads_subheading: 'Connecting college students across Iloilo universities with free peer tutoring before exam week.',
-    acads_search_placeholder: 'Search subject (e.g. Calculus 1, Chemistry, Nursing, Accounting)...',
-    acads_filter_all: 'All Subjects',
-    acads_book_btn: 'Book Free 1-on-1 Session',
-    acads_verified_badge: 'Verified Tutor',
-    acads_slots: 'available slots this week',
-    acads_request_custom: 'Can\'t find your subject? Request a custom peer tutor →',
+    // Acads & Tutors
+    acads_heading: 'Free Peer Tutoring & Study Groups',
+    acads_subheading: 'Book 1-on-1 tutoring sessions with certified upperclassmen across STEM, Nursing, Business, and Arts.',
+    acads_search_placeholder: 'Search by subject, course, or tutor name...',
+    acads_book_btn: 'Book Free Session',
+    acads_volunteer_btn: 'Volunteer as Peer Tutor',
+    acads_certified: 'Grace Certified Tutor',
 
-    // Life Groups / Bible Study Hub
-    groups_heading: 'Campus Life Groups & Discipleship',
-    groups_subheading: 'Grow in faith, make genuine college friends, and find your God-given purpose in Christ.',
-    groups_join_btn: 'Join This Life Group',
-    groups_propose_btn: 'Propose a New Life Group',
+    // Discipleship & Life Groups
+    groups_heading: 'Campus Life Groups & Bible Studies',
+    groups_subheading: 'Find your spiritual family. Small group fellowships meeting weekly across Iloilo campuses and dorms.',
+    groups_join_btn: 'Join Life Group',
+    groups_joined: 'Joined',
     groups_members: 'members',
     groups_schedule: 'Schedule:',
     groups_venue: 'Venue:',
 
-    // Camps & Giving / Fundraising
-    camps_heading: 'Fundraising, Youth Camps & Fellowships',
-    camps_subheading: 'Seed donations to sponsor delegates for regional youth camps, survival kits, and campus worship nights.',
-    camps_raised: 'Raised of',
-    camps_goal: 'Goal',
-    camps_sponsor_btn: 'Sponsor a Student (GCash / Maya)',
-    camps_donors: 'Generous Donors',
+    // Camps & Event Registration
+    camps_heading: 'Youth Gatherings, Camps & Event Registration',
+    camps_subheading: 'Register for upcoming citywide fellowships, meet & greet nights, and regional youth discipleship camps.',
+    camps_registered: 'Registered Attendees',
+    camps_fee: 'Registration Fee',
+    camps_register_btn: 'Register for Event (₱250)',
+    camps_attendees: 'Confirmed Attendees',
 
     // Prayer Wall
     prayer_heading: '24/7 Campus Prayer & Praise Wall',
@@ -101,6 +101,10 @@ export const TRANSLATIONS = {
     reviewers_subheading: 'High-yield formula cheatsheets, mock problem sets, and review outlines uploaded by student leaders.',
     reviewers_download: 'Download PDF Reviewer',
 
+    // Partners
+    partners_heading: 'Our Kingdom & Ministry Partners',
+    partners_subheading: 'Honoring mission-aligned technology and ministry partners empowering campus education and faith for the Glory of God.',
+
     // Footer
     footer_tagline: 'Empowering college students across Iloilo to excel in academics and thrive in faith. 100% free ministry service.',
     footer_campuses_title: 'Campuses Served',
@@ -113,7 +117,8 @@ export const TRANSLATIONS = {
     nav_feed: 'Balita',
     nav_acads: 'Tutorials & Acads',
     nav_groups: 'Life Groups',
-    nav_camps: 'Kampo & Donasyon',
+    nav_camps: 'Mga Event & Rehistro',
+    nav_partners: 'Aton mga Kaupod',
     nav_prayers: 'Pangamuyo Wall',
     nav_more: 'Dugang Pa ☰',
     nav_signin: 'Mag-Sign In',

@@ -2,31 +2,35 @@ import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
-import { Target, Heart, Calendar, Users, CheckCircle2, Sparkles } from 'lucide-react';
+import { Calendar, MapPin, Ticket, Users, CheckCircle2, Sparkles, Clock } from 'lucide-react';
 
 export const AddCampaignModal = ({ isOpen, onClose }) => {
   const { addCampaign, showToast, theme } = useApp();
   const isDark = theme === 'dark';
 
   const [title, setTitle] = useState('');
-  const [category, setCategory] = useState('Youth Camp');
-  const [targetAmount, setTargetAmount] = useState('15000');
+  const [category, setCategory] = useState('Youth Fellowship');
+  const [registrationFee, setRegistrationFee] = useState('250');
+  const [maxCapacity, setMaxCapacity] = useState('250');
   const [campusId, setCampusId] = useState('all');
-  const [endDate, setEndDate] = useState('November 30, 2026');
+  const [date, setDate] = useState('December 18, 2026');
+  const [time, setTime] = useState('4:00 PM - 8:30 PM');
+  const [venue, setVenue] = useState('Iloilo City Youth Pavilion & Fellowship Grounds');
   const [description, setDescription] = useState('');
   const [image, setImage] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const targetNum = parseFloat(targetAmount);
+    const feeNum = parseFloat(registrationFee);
+    const capacityNum = parseInt(maxCapacity, 10) || 200;
 
     if (!title.trim()) {
-      showToast('Please enter a campaign title.', 'error');
+      showToast('Please enter an event title.', 'error');
       return;
     }
 
-    if (isNaN(targetNum) || targetNum <= 0) {
-      showToast('Please enter a valid target goal amount.', 'error');
+    if (isNaN(feeNum) || feeNum < 0) {
+      showToast('Please enter a valid registration fee.', 'error');
       return;
     }
 
@@ -36,14 +40,18 @@ export const AddCampaignModal = ({ isOpen, onClose }) => {
       title: title.trim(),
       category,
       campusId,
-      campusName: campusObj?.name || 'All Western Visayas Campuses',
-      targetAmount: targetNum,
-      raisedAmount: 0,
-      donorsCount: 0,
-      endDate: endDate.trim() || 'December 31, 2026',
-      description: description.trim() || 'Faith seed fund to empower youth conferences, reviewer distributions, and discipleship missions.',
-      image: image.trim() || 'https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80',
-      recentDonors: []
+      campusName: campusObj?.name || 'All Iloilo Campuses',
+      registrationFee: feeNum,
+      maxCapacity: capacityNum,
+      registeredCount: 0,
+      date: date.trim() || 'December 18, 2026',
+      time: time.trim() || '4:00 PM - 8:30 PM',
+      venue: venue.trim() || 'Iloilo City Fellowship Grounds',
+      description: description.trim() || 'Citywide campus youth gathering with dinner, acoustic worship, and discipleship breakout sessions.',
+      image: image.trim() || 'https://images.unsplash.com/photo-1511632765486-a01980e01a18?w=800&auto=format&fit=crop&q=80',
+      organizer: 'Grace Youth Campus Council',
+      status: 'Open',
+      registrants: []
     });
 
     // Reset Form
@@ -57,24 +65,24 @@ export const AddCampaignModal = ({ isOpen, onClose }) => {
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="🌱 Launch New Seed Fund Campaign"
+      title="🎟️ Launch New Event & Set Registration Fee"
       maxWidth="max-w-lg"
     >
       <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
         <div className={`p-3.5 rounded-2xl border text-xs leading-relaxed ${
-          isDark ? 'bg-pink-950/40 border-pink-500/30 text-pink-200' : 'bg-pink-50 border-pink-200 text-pink-900'
+          isDark ? 'bg-indigo-950/40 border-indigo-500/30 text-indigo-200' : 'bg-indigo-50 border-indigo-200 text-indigo-950'
         }`}>
-          ✨ <strong>Ministry Giving & Seed Support:</strong> Create faith campaigns for regional youth camps, scholarship seed funds, peer tutoring kits, and campus mission support.
+          ✨ <strong>Admin Event Registration Management:</strong> Create events (e.g. December Meet & Greet, regional youth camps) and set the exact registration fee per attendee.
         </div>
 
         <div>
           <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            Campaign Title *
+            Event Title *
           </label>
           <input
             type="text"
             required
-            placeholder="e.g. CPU & UPV Freshman Welcome Camp Seed Fund"
+            placeholder="e.g. December Citywide Meet & Greet and Youth Fellowship"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
@@ -95,27 +103,27 @@ export const AddCampaignModal = ({ isOpen, onClose }) => {
                 isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
               }`}
             >
+              <option value="Youth Fellowship">🤝 Youth Fellowship & Meet-and-Greet</option>
               <option value="Youth Camp">🏕️ Youth Camp & Retreat</option>
-              <option value="Scholarship">🎓 Student Scholarship Aid</option>
-              <option value="Mission Outreach">🌍 Campus Mission Outreach</option>
-              <option value="Reviewer Printing">📚 Reviewer Printing Fund</option>
-              <option value="Music & Worship">🎸 Worship & Sound Gear</option>
+              <option value="Leadership Retreat">⚡ Leadership Training Lab</option>
+              <option value="Worship Night">🎸 Campus Acoustic Worship Night</option>
+              <option value="Mission Outreach">🌍 Campus Mission & Community Care</option>
             </select>
           </div>
 
           <div>
             <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              Target Seed Goal (₱) *
+              Registration Fee (₱) *
             </label>
             <div className="relative">
               <span className="absolute left-3.5 top-2.5 text-xs font-bold text-slate-400">₱</span>
               <input
                 type="number"
                 required
-                min="500"
-                step="100"
-                value={targetAmount}
-                onChange={(e) => setTargetAmount(e.target.value)}
+                min="0"
+                step="50"
+                value={registrationFee}
+                onChange={(e) => setRegistrationFee(e.target.value)}
                 className={`w-full pl-8 pr-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-black font-heading ${
                   isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
                 }`}
@@ -127,7 +135,54 @@ export const AddCampaignModal = ({ isOpen, onClose }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              Campus Target
+              Event Date *
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. December 18, 2026"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+              className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
+                isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
+              }`}
+            />
+          </div>
+
+          <div>
+            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+              Attendee Capacity (Slots)
+            </label>
+            <input
+              type="number"
+              min="10"
+              value={maxCapacity}
+              onChange={(e) => setMaxCapacity(e.target.value)}
+              className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
+                isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
+              }`}
+            />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+              Venue / Location *
+            </label>
+            <input
+              type="text"
+              placeholder="e.g. Iloilo City Youth Pavilion"
+              value={venue}
+              onChange={(e) => setVenue(e.target.value)}
+              className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
+                isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
+              }`}
+            />
+          </div>
+
+          <div>
+            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+              Target Campuses
             </label>
             <select
               value={campusId}
@@ -142,30 +197,15 @@ export const AddCampaignModal = ({ isOpen, onClose }) => {
               ))}
             </select>
           </div>
-
-          <div>
-            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              Target Deadline
-            </label>
-            <input
-              type="text"
-              placeholder="e.g. December 15, 2026"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-              className={`w-full px-3.5 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
-                isDark ? 'bg-slate-900 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900 shadow-xs'
-              }`}
-            />
-          </div>
         </div>
 
         <div>
           <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-            Campaign Purpose & Impact Details
+            Description & Highlights
           </label>
           <textarea
             rows={2}
-            placeholder="e.g. Sponsoring 50 underprivileged students with camp fees, transportation, and Bible study manuals..."
+            placeholder="Includes full dinner buffet, acoustic worship, icebreakers, and welcoming pack..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             className={`w-full px-3.5 py-2 rounded-xl border text-xs ${
@@ -205,10 +245,10 @@ export const AddCampaignModal = ({ isOpen, onClose }) => {
 
           <button
             type="submit"
-            className="flex-1 py-3 rounded-xl bg-gradient-to-r from-pink-600 via-rose-600 to-amber-600 hover:from-pink-500 hover:to-amber-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-pink-500/25 active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
+            className="flex-1 py-3 rounded-xl bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-700 hover:from-indigo-500 hover:to-violet-500 text-white font-black text-xs sm:text-sm shadow-md active:scale-[0.99] transition-all cursor-pointer flex items-center justify-center gap-2"
           >
-            <Sparkles className="w-4 h-4" />
-            <span>Publish Seed Fund Campaign</span>
+            <Ticket className="w-4 h-4 text-white" />
+            <span>Publish Event Registration (₱{registrationFee})</span>
           </button>
         </div>
       </form>

@@ -69,6 +69,8 @@ export const AdminPortal = () => {
     claimRequest,
     cancelBooking,
     campaigns,
+    verifyRegistrantPayment,
+    deleteRegistrant,
     volunteerApplications,
     approveVolunteerApplication,
     deleteVolunteerApplication,
@@ -738,11 +740,11 @@ export const AdminPortal = () => {
           onClick={() => setAdminTab('campaigns')}
           className={`px-4 py-2.5 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center gap-1.5 ${
             adminTab === 'campaigns'
-              ? 'bg-gradient-to-r from-rose-600 to-pink-600 text-white shadow-md'
+              ? 'bg-gradient-to-r from-indigo-600 to-violet-600 text-white shadow-md'
               : isDark ? 'text-slate-400 hover:text-white hover:bg-slate-800' : 'text-slate-700 hover:text-slate-950 hover:bg-white font-bold'
           }`}
         >
-          <span>🏕️ Camps & Sponsorship</span>
+          <span>🎟️ Event Registrations</span>
           <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-black ${adminTab === 'campaigns' ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-300'}`}>
             {campaigns.length}
           </span>
@@ -1578,65 +1580,135 @@ export const AdminPortal = () => {
         </div>
       )}
 
-      {/* TAB 6: CAMPS & SPONSORSHIP MANAGER */}
+      {/* TAB 6: EVENT REGISTRATIONS & ATTENDEE ROSTER */}
       {adminTab === 'campaigns' && (
-        <div className="space-y-4">
-          <div className="space-y-3">
-            {campaigns.map((camp) => (
-              <div
-                key={camp.id}
-                className={`p-5 rounded-2xl border ${
-                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-                }`}
-              >
-                <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-3">
-                  <div className="flex-1">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-extrabold text-base">{camp.title}</h3>
-                      <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-500 border border-pink-500/20">
-                        {camp.category}
+        <div className="space-y-6">
+          <div className="space-y-4">
+            {campaigns.map((camp) => {
+              const registrants = camp.registrants || [];
+              const regCount = camp.registeredCount || registrants.length || 0;
+              const fee = camp.registrationFee || 250;
+
+              return (
+                <div
+                  key={camp.id}
+                  className={`p-5 sm:p-6 rounded-3xl border ${
+                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+                  }`}
+                >
+                  <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-4">
+                    <div className="flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <h3 className="font-extrabold text-base sm:text-lg">{camp.title}</h3>
+                        <span className="text-[10px] font-black uppercase px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
+                          {camp.category}
+                        </span>
+                      </div>
+                      <div className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'} flex flex-wrap items-center gap-2`}>
+                        <span>📅 {camp.date || 'December 18, 2026'}</span>
+                        <span>•</span>
+                        <span>📍 {camp.venue || 'Iloilo City Fellowship Grounds'}</span>
+                        <span>•</span>
+                        <span>Capacity: <strong>{camp.maxCapacity || 250} Slots</strong></span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                      <div className="text-left sm:text-right">
+                        <div className="text-xl font-black text-indigo-600 dark:text-indigo-400 font-heading">
+                          ₱{fee} Fee
+                        </div>
+                        <div className="text-xs font-bold text-emerald-600 dark:text-emerald-400">
+                          {regCount} Confirmed Attendees
+                        </div>
+                      </div>
+
+                      <button
+                        onClick={() => setEditingCampaign(camp)}
+                        className="px-3.5 py-2 rounded-xl bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 font-black text-xs border border-indigo-500/30 transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
+                      >
+                        <span>✏️ Set Fee & Details</span>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Registered Attendees Roster Table */}
+                  <div className={`pt-4 border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="text-xs font-black uppercase tracking-wider text-slate-400">
+                        Registered Delegates & Attendees ({registrants.length}):
+                      </div>
+                      <span className="text-[10px] text-slate-500 font-mono">
+                        Fixed Registration: ₱{fee}/student
                       </span>
                     </div>
-                    <div className={`text-xs mt-0.5 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                      Campaign Goal: <strong>₱{camp.targetAmount.toLocaleString()}</strong> • Deadline: <strong>{camp.endDate}</strong>
-                    </div>
-                  </div>
 
-                  <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
-                    <div className="text-left sm:text-right">
-                      <div className="text-lg font-black text-pink-500">₱{camp.raisedAmount.toLocaleString()}</div>
-                      <div className="text-[11px] text-slate-500">{camp.donorsCount} Donors</div>
-                    </div>
+                    {registrants.length > 0 ? (
+                      <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+                        {registrants.map((reg) => (
+                          <div
+                            key={reg.id}
+                            className={`p-3 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-xs ${
+                              isDark ? 'bg-slate-950/50 border-slate-800' : 'bg-slate-50 border-slate-200'
+                            }`}
+                          >
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <strong className={`font-extrabold text-sm ${isDark ? 'text-white' : 'text-slate-900'}`}>{reg.name}</strong>
+                                <span className={`px-2 py-0.2 rounded-full text-[9px] font-black uppercase ${
+                                  reg.status === 'Confirmed'
+                                    ? 'bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30'
+                                    : 'bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-500/30'
+                                }`}>
+                                  {reg.status}
+                                </span>
+                              </div>
+                              <div className="text-[11px] text-slate-500">
+                                {reg.campus} • {reg.yearProgram}
+                              </div>
+                              <div className="text-[10px] text-slate-400 flex flex-wrap items-center gap-2">
+                                <span>📞 {reg.phone}</span>
+                                <span>•</span>
+                                <span>📧 {reg.email}</span>
+                                <span>•</span>
+                                <span>Payment: <strong>{reg.paymentMethod}</strong> ({reg.referenceNumber})</span>
+                                {reg.dietaryOrNotes && reg.dietaryOrNotes !== 'None' && (
+                                  <>
+                                    <span>•</span>
+                                    <span className="text-amber-500 font-medium">Note: {reg.dietaryOrNotes}</span>
+                                  </>
+                                )}
+                              </div>
+                            </div>
 
-                    <button
-                      onClick={() => setEditingCampaign(camp)}
-                      className="px-3.5 py-2 rounded-xl bg-indigo-600/10 hover:bg-indigo-600/20 text-indigo-600 dark:text-indigo-400 font-black text-xs border border-indigo-500/30 transition-all cursor-pointer flex items-center gap-1.5 shrink-0"
-                    >
-                      <span>✏️ Edit Fund & Goal</span>
-                    </button>
-                  </div>
-                </div>
-
-                <div className={`pt-3 border-t ${isDark ? 'border-slate-800' : 'border-slate-100'}`}>
-                  <div className="text-xs font-bold text-slate-400 mb-2">Recent GCash / Maya Verified Donors:</div>
-                  <div className="space-y-1.5">
-                    {(camp.recentDonors || []).map((donor, idx) => (
-                      <div key={idx} className={`p-2 rounded-xl border flex items-center justify-between text-xs ${
-                        isDark ? 'bg-slate-950/40 border-slate-800' : 'bg-slate-50 border-slate-200'
-                      }`}>
-                        <div className="flex items-center gap-2">
-                          <span className={`font-bold ${isDark ? 'text-white' : 'text-slate-900'}`}>{donor.name}</span>
-                          {donor.refNumber && (
-                            <span className="font-mono text-[10px] text-emerald-500">Ref: #{donor.refNumber}</span>
-                          )}
-                        </div>
-                        <span className="font-black text-pink-500">+₱{donor.amount.toLocaleString()}</span>
+                            <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                              {reg.status !== 'Confirmed' && (
+                                <button
+                                  onClick={() => verifyRegistrantPayment(camp.id, reg.id)}
+                                  className="px-3 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-black text-xs cursor-pointer shadow-xs"
+                                >
+                                  Confirm Payment
+                                </button>
+                              )}
+                              <button
+                                onClick={() => deleteRegistrant(camp.id, reg.id)}
+                                className="px-2.5 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 text-xs font-bold cursor-pointer"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          </div>
+                        ))}
                       </div>
-                    ))}
+                    ) : (
+                      <div className="text-center py-6 text-slate-500 text-xs border border-dashed rounded-2xl border-slate-700">
+                        No attendees registered for this event yet.
+                      </div>
+                    )}
                   </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </div>
       )}

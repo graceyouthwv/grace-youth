@@ -1,6 +1,6 @@
 import React from 'react';
 import { useApp } from '../../context/AppContext';
-import { Flame, BookOpen, Users, Heart, ShieldCheck, UserCheck, GraduationCap, Tent } from 'lucide-react';
+import { Flame, BookOpen, Users, Heart, ShieldCheck, UserCheck, GraduationCap, Tent, Sparkles, Building2 } from 'lucide-react';
 import { getTranslation } from '../../data/translations';
 
 export const TabNav = () => {
@@ -15,10 +15,11 @@ export const TabNav = () => {
       label: currentUser.role === 'leader' ? 'Admin' : currentUser.role === 'worker' ? 'Worker' : currentUser.role === 'tutor' ? 'Tutor' : 'Hub',
       icon: currentUser.role === 'leader' ? ShieldCheck : currentUser.role === 'worker' ? UserCheck : currentUser.role === 'tutor' ? BookOpen : GraduationCap
     }]),
-    { id: 'tutorials', label: language === 'hlg' ? 'Acads' : 'Acads', icon: BookOpen },
-    { id: 'discipleship', label: language === 'hlg' ? 'Groups' : 'Groups', icon: Users },
-    { id: 'giving', label: language === 'hlg' ? 'Camps' : 'Camps', icon: Tent },
-    { id: 'prayer', label: language === 'hlg' ? 'Prayers' : 'Prayers', icon: Heart }
+    { id: 'tutorials', label: 'Acads', icon: BookOpen },
+    { id: 'discipleship', label: 'Groups', icon: Users },
+    { id: 'giving', label: 'Events', icon: Tent },
+    { id: 'partners', label: 'Partner', icon: Sparkles },
+    { id: 'prayer', label: 'Prayers', icon: Heart }
   ];
 
   return (

@@ -15,7 +15,7 @@ export { DEMO_ACCOUNTS };
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v11_lifegroup_chat';
+const STORAGE_VERSION = 'gy_clean_v12_meet_greet_reg';
 
 const GUEST_USER = {
   id: 'guest',
@@ -973,39 +973,84 @@ export const AppProvider = ({ children }) => {
     showToast('✓ Pastoral request marked as contacted & handled.', 'info');
   };
 
-  const donateToCampaign = (campaignId, donationData) => {
+  const registerForEvent = (eventId, registrantData) => {
+    let eventTitle = 'Event';
     setCampaigns((prev) =>
       prev.map((c) => {
-        if (c.id === campaignId) {
-          const newRaised = c.raisedAmount + donationData.amount;
-          const newDonorsCount = c.donorsCount + 1;
-          const newDonorEntry = {
-            name: donationData.name,
-            amount: donationData.amount,
-            message: donationData.message,
-            refNumber: donationData.refNumber,
-            time: 'Just now'
+        if (c.id === eventId) {
+          eventTitle = c.title;
+          const newRegistrant = {
+            id: `reg-${Date.now()}`,
+            name: registrantData.name || currentUser.name || 'Student Attendee',
+            email: registrantData.email || currentUser.email || '',
+            phone: registrantData.phone || '',
+            campus: registrantData.campus || currentUser.campusName || 'Iloilo Campus',
+            yearProgram: registrantData.yearProgram || '',
+            dietaryOrNotes: registrantData.dietaryOrNotes || 'None',
+            paymentMethod: registrantData.paymentMethod || 'GCash',
+            referenceNumber: registrantData.referenceNumber || 'N/A',
+            status: registrantData.paymentMethod === 'Cash on Arrival' ? 'Pending Verification' : 'Confirmed',
+            amountPaid: c.registrationFee || 250,
+            registeredAt: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
           };
+
           return {
             ...c,
-            raisedAmount: newRaised,
-            donorsCount: newDonorsCount,
-            recentDonors: [newDonorEntry, ...(c.recentDonors || []).slice(0, 4)]
+            registeredCount: (c.registeredCount || 0) + 1,
+            registrants: [newRegistrant, ...(c.registrants || [])]
           };
         }
         return c;
       })
     );
 
-    showToast(`💖 Faith seed of ₱${donationData.amount.toLocaleString()} received! God bless you abundantly!`, 'success');
+    showToast(`🎉 Registration submitted for "${eventTitle}"! See you there!`, 'success');
     triggerConfetti();
+  };
+
+  const verifyRegistrantPayment = (eventId, registrantId) => {
+    setCampaigns((prev) =>
+      prev.map((c) => {
+        if (c.id === eventId && c.registrants) {
+          return {
+            ...c,
+            registrants: c.registrants.map((r) =>
+              r.id === registrantId ? { ...r, status: 'Confirmed' } : r
+            )
+          };
+        }
+        return c;
+      })
+    );
+    showToast('✓ Attendee payment verified and confirmed!', 'success');
+  };
+
+  const deleteRegistrant = (eventId, registrantId) => {
+    setCampaigns((prev) =>
+      prev.map((c) => {
+        if (c.id === eventId && c.registrants) {
+          return {
+            ...c,
+            registeredCount: Math.max(0, (c.registeredCount || 1) - 1),
+            registrants: c.registrants.filter((r) => r.id !== registrantId)
+          };
+        }
+        return c;
+      })
+    );
+    showToast('Attendee registration removed.', 'info');
+  };
+
+  const donateToCampaign = (campaignId, donationData) => {
+    // Backward compatibility wrapper
+    registerForEvent(campaignId, donationData);
   };
 
   const updateCampaign = (campaignId, updatedFields) => {
     setCampaigns((prev) =>
       prev.map((c) => (c.id === campaignId ? { ...c, ...updatedFields } : c))
     );
-    showToast('✓ Campaign fund amounts & details updated successfully!', 'success');
+    showToast('✓ Event details and registration fee updated successfully!', 'success');
   };
 
   const addCurriculumSeries = (seriesData) => {
@@ -1179,6 +1224,9 @@ export const AppProvider = ({ children }) => {
         updateReviewer,
         deleteReviewer,
         donateToCampaign,
+        registerForEvent,
+        verifyRegistrantPayment,
+        deleteRegistrant,
         addCampaign,
         updateCampaign,
         deleteCampaign,

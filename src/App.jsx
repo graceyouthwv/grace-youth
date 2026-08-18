@@ -18,7 +18,8 @@ import { StudentPortal } from './components/student/StudentPortal';
 import { TutorPortal } from './components/tutor/TutorPortal';
 import { YouthWorkerPortal } from './components/worker/YouthWorkerPortal';
 import { AdminPortal } from './components/admin/AdminPortal';
-import { Sparkles, BookOpen, School, ShieldCheck } from 'lucide-react';
+import { PartnersHub } from './components/partners/PartnersHub';
+import { Sparkles, BookOpen, School, ShieldCheck, Building2 } from 'lucide-react';
 import { CAMPUSES } from './data/campuses';
 import { getTranslation } from './data/translations';
 
@@ -159,7 +160,22 @@ export const App = () => {
           </div>
         )}
 
-        {/* 7. PRAYER WALL TAB */}
+        {/* 7. PARTNERS TAB (SMARTPATH TECHNOLOGIES) */}
+        {activeTab === 'partners' && (
+          <div className="space-y-4">
+            <div className="mb-2">
+              <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                {t('partners_heading')}
+              </h1>
+              <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                {t('partners_subheading')}
+              </p>
+            </div>
+            <PartnersHub />
+          </div>
+        )}
+
+        {/* 8. PRAYER WALL TAB */}
         {activeTab === 'prayer' && (
           <div className="space-y-4">
             <div className="mb-2">
@@ -174,7 +190,7 @@ export const App = () => {
           </div>
         )}
 
-        {/* 8. EVENTS TAB */}
+        {/* 9. EVENTS TAB */}
         {activeTab === 'events' && (
           <div className="space-y-4">
             <div className="mb-2">
@@ -191,7 +207,7 @@ export const App = () => {
           </div>
         )}
 
-        {/* 9. REVIEWERS TAB */}
+        {/* 10. REVIEWERS TAB */}
         {activeTab === 'reviewers' && (
           <div className="space-y-4">
             <div className="mb-2">
@@ -229,6 +245,17 @@ export const App = () => {
               </p>
               <div className="font-mono text-[11px] opacity-75">
                 Iloilo Province & City • ISUFST • UPV • CPU • WVSU • ISAT-U • USA
+              </div>
+
+              {/* Dedicated Partner Note */}
+              <div className="pt-1">
+                <button
+                  onClick={() => setActiveTab('partners')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-300 text-[11px] font-bold hover:scale-105 transition-transform cursor-pointer"
+                >
+                  <Sparkles className="w-3 h-3 text-amber-500" />
+                  <span>Proud Ministry Partner: <strong>SmartPath Technologies</strong> (SmartPath College)</span>
+                </button>
               </div>
             </div>
 

@@ -192,12 +192,24 @@ export const Navbar = () => {
                 onClick={() => setActiveTab('giving')}
                 className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
                   activeTab === 'giving'
-                    ? 'bg-rose-600 text-white shadow-xs'
+                    ? 'bg-indigo-600 text-white shadow-xs'
                     : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
                 }`}
               >
-                <Tent className={`w-3.5 h-3.5 ${activeTab === 'giving' ? 'text-white' : 'text-pink-500'}`} />
+                <Tent className={`w-3.5 h-3.5 ${activeTab === 'giving' ? 'text-white' : 'text-indigo-500'}`} />
                 <span>{t('nav_camps')}</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('partners')}
+                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                  activeTab === 'partners'
+                    ? 'bg-amber-500 text-slate-950 font-black shadow-xs'
+                    : isDark ? 'text-amber-400 hover:text-amber-300' : 'text-amber-800 hover:text-amber-950 font-bold'
+                }`}
+              >
+                <Sparkles className={`w-3.5 h-3.5 ${activeTab === 'partners' ? 'text-slate-950' : 'text-amber-500'}`} />
+                <span>{t('nav_partners')}</span>
               </button>
 
               <button
@@ -326,6 +338,20 @@ export const Navbar = () => {
                     >
                       <Users className="w-4 h-4 text-emerald-500" />
                       <span>Life Groups & Circles</span>
+                    </button>
+
+                    {/* Ministry Partners */}
+                    <button
+                      onClick={() => {
+                        setActiveTab('partners');
+                        setDesktopMenuOpen(false);
+                      }}
+                      className={`w-full flex items-center gap-2.5 p-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                        isDark ? 'hover:bg-slate-800 text-amber-300' : 'hover:bg-slate-100 text-amber-800'
+                      }`}
+                    >
+                      <Sparkles className="w-4 h-4 text-amber-500" />
+                      <span>Our Partners (SmartPath)</span>
                     </button>
 
                     {/* Pastoral Care */}
