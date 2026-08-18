@@ -1,28 +1,38 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { useApp } from './context/AppContext';
 import { Navbar } from './components/common/Navbar';
 import { TabNav } from './components/common/TabNav';
 import { Toast } from './components/common/Toast';
-import { InstallPWA } from './components/common/InstallPWA';
 import { HeroBanner } from './components/dashboard/HeroBanner';
 import { DailyDevotional } from './components/dashboard/DailyDevotional';
 import { QuickStats } from './components/dashboard/QuickStats';
 import { CrisisBar } from './components/dashboard/CrisisBar';
 import { TutorialHub } from './components/tutorials/TutorialHub';
-import { BibleStudyHub } from './components/discipleship/BibleStudyHub';
-import { PrayerWall } from './components/prayer/PrayerWall';
-import { EventList } from './components/events/EventList';
-import { ReviewerVault } from './components/tutorials/ReviewerVault';
-import { FundraisingHub } from './components/giving/FundraisingHub';
-import { StudentPortal } from './components/student/StudentPortal';
-import { TutorPortal } from './components/tutor/TutorPortal';
-import { YouthWorkerPortal } from './components/worker/YouthWorkerPortal';
-import { AdminPortal } from './components/admin/AdminPortal';
-import { PartnersHub } from './components/partners/PartnersHub';
-import { Sparkles, BookOpen, School, ShieldCheck, Building2 } from 'lucide-react';
+import { Sparkles, BookOpen, School, Loader2 } from 'lucide-react';
 import { CAMPUSES } from './data/campuses';
 import { getRegionById } from './data/regions';
 import { getTranslation } from './data/translations';
+
+// Dynamic Code Splitting for heavy views & portals
+const AdminPortal = lazy(() => import('./components/admin/AdminPortal').then(m => ({ default: m.AdminPortal })));
+const YouthWorkerPortal = lazy(() => import('./components/worker/YouthWorkerPortal').then(m => ({ default: m.YouthWorkerPortal })));
+const TutorPortal = lazy(() => import('./components/tutor/TutorPortal').then(m => ({ default: m.TutorPortal })));
+const StudentPortal = lazy(() => import('./components/student/StudentPortal').then(m => ({ default: m.StudentPortal })));
+const ReviewerVault = lazy(() => import('./components/tutorials/ReviewerVault').then(m => ({ default: m.ReviewerVault })));
+const FundraisingHub = lazy(() => import('./components/giving/FundraisingHub').then(m => ({ default: m.FundraisingHub })));
+const BibleStudyHub = lazy(() => import('./components/discipleship/BibleStudyHub').then(m => ({ default: m.BibleStudyHub })));
+const PartnersHub = lazy(() => import('./components/partners/PartnersHub').then(m => ({ default: m.PartnersHub })));
+const EventList = lazy(() => import('./components/events/EventList').then(m => ({ default: m.EventList })));
+
+// Accessible, sleek loading fallback
+const TabLoadingFallback = ({ isDark }) => (
+  <div className={`min-h-[300px] flex flex-col items-center justify-center p-8 rounded-3xl border ${
+    isDark ? 'bg-slate-900/50 border-slate-800 text-slate-400' : 'bg-white border-slate-200 text-slate-500 shadow-xs'
+  }`}>
+    <Loader2 className="w-8 h-8 text-pink-500 animate-spin mb-3" />
+    <p className="text-xs font-semibold tracking-wide uppercase font-mono">Loading Grace Youth Hub...</p>
+  </div>
+);
 
 export const App = () => {
   const { activeTab, setActiveTab, selectedRegion, selectedCampus, setSelectedRegion, setSelectedCampus, currentUser, language, theme } = useApp();
@@ -77,158 +87,160 @@ export const App = () => {
         )}
 
         <div key={activeTab} className="animate-tab-in">
-          {/* 1. DEDICATED ROLE PORTALS */}
-          {activeTab === 'portal' && (
-            <div>
-            {currentUser.role === 'leader' || currentUser.role === 'council' ? (
-              <AdminPortal />
-            ) : currentUser.role === 'worker' ? (
-              <YouthWorkerPortal />
-            ) : currentUser.role === 'tutor' ? (
-              <TutorPortal />
-            ) : (
-              <StudentPortal />
-            )}
-          </div>
-        )}
-
-        {/* 2. ADMIN PORTAL DIRECT ROUTE */}
-        {activeTab === 'admin' && <AdminPortal />}
-
-        {/* 3. HOME PUBLIC FEED */}
-        {activeTab === 'home' && (
-          <div className="space-y-6">
-            <HeroBanner />
-            <QuickStats />
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2">
-                <DailyDevotional />
-              </div>
+          <Suspense fallback={<TabLoadingFallback isDark={isDark} />}>
+            {/* 1. DEDICATED ROLE PORTALS */}
+            {activeTab === 'portal' && (
               <div>
-                <CrisisBar />
+                {currentUser.role === 'leader' || currentUser.role === 'council' ? (
+                  <AdminPortal />
+                ) : currentUser.role === 'worker' ? (
+                  <YouthWorkerPortal />
+                ) : currentUser.role === 'tutor' ? (
+                  <TutorPortal />
+                ) : (
+                  <StudentPortal />
+                )}
               </div>
-            </div>
+            )}
 
-            {/* Quick Preview of Tutorial Hub */}
-            <div className={`pt-6 border-t ${isDark ? 'border-slate-800/80' : 'border-slate-200'}`}>
-              <div className="flex items-center justify-between mb-4">
-                <div>
-                  <h2 className={`text-xl font-extrabold flex items-center gap-2 font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                    <BookOpen className="w-5 h-5 text-amber-400" />
-                    <span>Peer Tutors & Reviewers</span>
-                  </h2>
-                  <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    Book free 1-on-1 sessions with verified upperclassmen before exam week.
+            {/* 2. ADMIN PORTAL DIRECT ROUTE */}
+            {activeTab === 'admin' && <AdminPortal />}
+
+            {/* 3. HOME PUBLIC FEED */}
+            {activeTab === 'home' && (
+              <div className="space-y-6">
+                <HeroBanner />
+                <QuickStats />
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  <div className="lg:col-span-2">
+                    <DailyDevotional />
+                  </div>
+                  <div>
+                    <CrisisBar />
+                  </div>
+                </div>
+
+                {/* Quick Preview of Tutorial Hub */}
+                <div className={`pt-6 border-t ${isDark ? 'border-slate-800/80' : 'border-slate-200'}`}>
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <h2 className={`text-xl font-extrabold flex items-center gap-2 font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                        <BookOpen className="w-5 h-5 text-amber-400" />
+                        <span>Peer Tutors & Reviewers</span>
+                      </h2>
+                      <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                        Book free 1-on-1 sessions with verified upperclassmen before exam week.
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => setActiveTab('tutorials')}
+                      className="text-xs font-black text-indigo-500 hover:text-indigo-400 cursor-pointer"
+                    >
+                      View All &rarr;
+                    </button>
+                  </div>
+                  <TutorialHub />
+                </div>
+              </div>
+            )}
+
+            {/* 4. TUTORIALS TAB */}
+            {activeTab === 'tutorials' && (
+              <div className="space-y-4">
+                <div className="mb-2">
+                  <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {t('acads_heading')}
+                  </h1>
+                  <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    {t('acads_subheading')}
                   </p>
                 </div>
-                <button
-                  onClick={() => setActiveTab('tutorials')}
-                  className="text-xs font-black text-indigo-500 hover:text-indigo-400 cursor-pointer"
-                >
-                  View All &rarr;
-                </button>
+                <TutorialHub />
               </div>
-              <TutorialHub />
-            </div>
-          </div>
-        )}
+            )}
 
-        {/* 4. TUTORIALS TAB */}
-        {activeTab === 'tutorials' && (
-          <div className="space-y-4">
-            <div className="mb-2">
-              <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                {t('acads_heading')}
-              </h1>
-              <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                {t('acads_subheading')}
-              </p>
-            </div>
-            <TutorialHub />
-          </div>
-        )}
+            {/* 5. LIFE GROUPS TAB */}
+            {activeTab === 'discipleship' && (
+              <div className="space-y-4">
+                <div className="mb-2">
+                  <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {t('groups_heading')}
+                  </h1>
+                  <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    {t('groups_subheading')}
+                  </p>
+                </div>
+                <BibleStudyHub />
+              </div>
+            )}
 
-        {/* 5. LIFE GROUPS TAB */}
-        {activeTab === 'discipleship' && (
-          <div className="space-y-4">
-            <div className="mb-2">
-              <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                {t('groups_heading')}
-              </h1>
-              <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                {t('groups_subheading')}
-              </p>
-            </div>
-            <BibleStudyHub />
-          </div>
-        )}
+            {/* 6. FUNDRAISING & YOUTH CAMPS TAB */}
+            {activeTab === 'giving' && (
+              <div className="space-y-4">
+                <div className="mb-2">
+                  <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {t('camps_heading')}
+                  </h1>
+                  <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    {t('camps_subheading')}
+                  </p>
+                </div>
+                <FundraisingHub />
+              </div>
+            )}
 
-        {/* 6. FUNDRAISING & YOUTH CAMPS TAB */}
-        {activeTab === 'giving' && (
-          <div className="space-y-4">
-            <div className="mb-2">
-              <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                {t('camps_heading')}
-              </h1>
-              <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                {t('camps_subheading')}
-              </p>
-            </div>
-            <FundraisingHub />
-          </div>
-        )}
+            {/* 7. PARTNERS TAB (SMARTPATH TECHNOLOGIES & SMARTPATH COLLEGE) */}
+            {activeTab === 'partners' && (
+              <PartnersHub />
+            )}
 
-        {/* 7. PARTNERS TAB (SMARTPATH TECHNOLOGIES & SMARTPATH COLLEGE) */}
-        {activeTab === 'partners' && (
-          <PartnersHub />
-        )}
+            {/* 8. DISCIPLESHIP & LIFE GROUPS (HOSTS GROUP PRAYERS) */}
+            {activeTab === 'prayer' && (
+              <div className="space-y-4">
+                <div className="mb-2">
+                  <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {t('discipleship_heading')}
+                  </h1>
+                  <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    Connect with your campus Life Group family for fellowship, Bible reflection, and dedicated group prayers.
+                  </p>
+                </div>
+                <BibleStudyHub />
+              </div>
+            )}
 
-        {/* 8. DISCIPLESHIP & LIFE GROUPS (HOSTS GROUP PRAYERS) */}
-        {activeTab === 'prayer' && (
-          <div className="space-y-4">
-            <div className="mb-2">
-              <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                {t('discipleship_heading')}
-              </h1>
-              <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Connect with your campus Life Group family for fellowship, Bible reflection, and dedicated group prayers.
-              </p>
-            </div>
-            <BibleStudyHub />
-          </div>
-        )}
+            {/* 9. EVENTS TAB */}
+            {activeTab === 'events' && (
+              <div className="space-y-4">
+                <div className="mb-2">
+                  <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {language === 'hlg' ? 'Campus Fellowship & Tilipon sang Pagtuo' : 'Campus Fellowship & Gatherings'}
+                  </h1>
+                  <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    {language === 'hlg'
+                      ? 'Midterm chill nights, beach prayer walks, kag youth discipleship conferences.'
+                      : 'Midterm chill nights, beach prayer walks, and youth discipleship conferences.'}
+                  </p>
+                </div>
+                <EventList />
+              </div>
+            )}
 
-        {/* 9. EVENTS TAB */}
-        {activeTab === 'events' && (
-          <div className="space-y-4">
-            <div className="mb-2">
-              <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                {language === 'hlg' ? 'Campus Fellowship & Tilipon sang Pagtuo' : 'Campus Fellowship & Gatherings'}
-              </h1>
-              <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                {language === 'hlg'
-                  ? 'Midterm chill nights, beach prayer walks, kag youth discipleship conferences.'
-                  : 'Midterm chill nights, beach prayer walks, and youth discipleship conferences.'}
-              </p>
-            </div>
-            <EventList />
-          </div>
-        )}
-
-        {/* 10. REVIEWERS TAB */}
-        {activeTab === 'reviewers' && (
-          <div className="space-y-4">
-            <div className="mb-2">
-              <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                {t('reviewers_heading')}
-              </h1>
-              <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                {t('reviewers_subheading')}
-              </p>
-            </div>
-            <ReviewerVault />
-          </div>
-        )}
+            {/* 10. REVIEWERS TAB */}
+            {activeTab === 'reviewers' && (
+              <div className="space-y-4">
+                <div className="mb-2">
+                  <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                    {t('reviewers_heading')}
+                  </h1>
+                  <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    {t('reviewers_subheading')}
+                  </p>
+                </div>
+                <ReviewerVault />
+              </div>
+            )}
+          </Suspense>
         </div>
       </main>
 

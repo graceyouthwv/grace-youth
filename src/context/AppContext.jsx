@@ -17,7 +17,7 @@ export { DEMO_ACCOUNTS, PH_REGIONS, getRegionById };
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v14_philippines_nationwide';
+const STORAGE_VERSION = 'gy_clean_v16_production_zero_samples';
 
 const GUEST_USER = {
   id: 'guest',
@@ -34,21 +34,7 @@ const GUEST_USER = {
   bio: 'Exploring Grace Youth campus tutorials and community across the Philippines.'
 };
 
-const DEFAULT_BOOKINGS = [
-  {
-    id: 'bk-default-1',
-    tutorId: 'tutor-2',
-    tutorName: 'Hannah Grace Villaruel',
-    studentName: 'Bea Claridad',
-    studentContact: 'bea.claridad@upv.edu.ph',
-    subject: 'Anatomy & Physiology (Cardiovascular System)',
-    day: 'Wednesday',
-    time: '3:30 PM - 5:00 PM',
-    mode: 'In-Person (WVSU Library)',
-    meetingNote: 'Bring your AnaPhy lecture notes and flashcards.',
-    status: 'Confirmed'
-  }
-];
+const DEFAULT_BOOKINGS = [];
 
 const checkVersionAndGet = (key, fallback) => {
   try {
@@ -60,7 +46,7 @@ const checkVersionAndGet = (key, fallback) => {
     if (!saved) return fallback;
     const parsed = JSON.parse(saved);
     if (Array.isArray(fallback)) {
-      return Array.isArray(parsed) && parsed.length > 0 ? parsed : fallback;
+      return Array.isArray(parsed) ? parsed : fallback;
     }
     return parsed || fallback;
   } catch (e) {
@@ -173,20 +159,7 @@ export const AppProvider = ({ children }) => {
   );
 
   const [pastoralRequests, setPastoralRequests] = useState(() =>
-    checkVersionAndGet('gy_pastoral_requests', [
-      {
-        id: 'pr-demo-1',
-        studentName: 'Bea Claridad',
-        contactInfo: '0917-882-9471 (Messenger: Bea Claridad)',
-        workerId: 'usr-worker-1',
-        workerName: 'Kuya Daniel Chavez',
-        connectType: 'coffee',
-        note: 'Midterm thesis burnout and seeking prayer for peace of mind.',
-        campusName: 'UP Visayas',
-        createdAt: '10 mins ago',
-        status: 'Pending Contact'
-      }
-    ])
+    checkVersionAndGet('gy_pastoral_requests', [])
   );
 
   const [myBookings, setMyBookings] = useState(() =>
@@ -194,7 +167,7 @@ export const AppProvider = ({ children }) => {
   );
 
   const [myGroups, setMyGroups] = useState(() =>
-    checkVersionAndGet('gy_my_groups', ['bs-1'])
+    checkVersionAndGet('gy_my_groups', [])
   );
 
   const [curriculumSeries, setCurriculumSeries] = useState(() =>
@@ -206,36 +179,7 @@ export const AppProvider = ({ children }) => {
   );
 
   const [volunteerApplications, setVolunteerApplications] = useState(() =>
-    checkVersionAndGet('gy_volunteer_apps', [
-      {
-        id: 'vol-sample-1',
-        name: 'Hannah Grace',
-        email: 'hannah.grace@wvsu.edu.ph',
-        contact: '0918-334-1122 (FB: Hannah Grace)',
-        campusId: 'wvsu',
-        campusName: 'West Visayas State University (WVSU)',
-        roleArea: '🎸 Worship & Music Team',
-        yearLevel: '2nd Year',
-        availability: 'Thursdays 4:00 PM onwards & Saturdays',
-        bioNote: 'Played acoustic guitar in high school worship team and eager to serve freshmen in Iloilo!',
-        appliedAt: 'Yesterday',
-        status: 'Pending Admin Review'
-      },
-      {
-        id: 'vol-sample-2',
-        name: 'Kenzo Ramirez',
-        email: 'kenzo.ramirez@cpu.edu.ph',
-        contact: '0919-556-7788',
-        campusId: 'cpu',
-        campusName: 'Central Philippine University (CPU)',
-        roleArea: '☕ Exam Outreach & Care Team',
-        yearLevel: '3rd Year',
-        availability: 'Weekdays after 3:00 PM',
-        bioNote: 'Passionate about brewing coffee and sharing scriptures with classmates during finals week.',
-        appliedAt: '2 days ago',
-        status: 'Pending Admin Review'
-      }
-    ])
+    checkVersionAndGet('gy_volunteer_apps', [])
   );
 
   const [toasts, setToasts] = useState([]);

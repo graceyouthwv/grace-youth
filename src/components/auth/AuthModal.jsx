@@ -195,31 +195,6 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
         {/* 1. SIGN IN FORM */}
         {mode === 'login' && (
           <div className="space-y-3.5">
-            {/* Quick Test Demo Account Fillers (Student & Peer Tutor) */}
-            <div className={`p-3 rounded-2xl border ${isDark ? 'bg-slate-900/70 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
-              <div className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1.5 flex items-center justify-between">
-                <span>⚡ Test Accounts (Students & Tutors):</span>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  onClick={() => handleFillDemo('bea@upv.edu.ph', 'password123')}
-                  className="px-2.5 py-2 bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/20 rounded-xl text-xs font-bold text-center cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <GraduationCap className="w-4 h-4 text-indigo-400" />
-                  <span>🎓 Student (UPV)</span>
-                </button>
-                <button
-                  type="button"
-                  onClick={() => handleFillDemo('joshua@graceyouth.ph', 'password123')}
-                  className="px-2.5 py-2 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/20 rounded-xl text-xs font-bold text-center cursor-pointer flex items-center justify-center gap-1.5"
-                >
-                  <BookOpen className="w-4 h-4 text-amber-400" />
-                  <span>👨‍🏫 Peer Tutor</span>
-                </button>
-              </div>
-            </div>
-
             <form onSubmit={handleLoginSubmit} className="space-y-3">
               <div>
                 <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>

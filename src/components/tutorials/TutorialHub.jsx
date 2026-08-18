@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, Suspense, lazy } from 'react';
 import { useApp } from '../../context/AppContext';
 import { TutorCard } from './TutorCard';
-import { RequestBoard } from './RequestBoard';
-import { TutorVolunteerModal } from './TutorVolunteerModal';
-import { ReviewerVault } from './ReviewerVault';
-import { SmartMatchHub } from '../matching/SmartMatchHub';
 import { CampusSelector } from '../common/CampusSelector';
+
+const RequestBoard = lazy(() => import('./RequestBoard').then(m => ({ default: m.RequestBoard })));
+const TutorVolunteerModal = lazy(() => import('./TutorVolunteerModal').then(m => ({ default: m.TutorVolunteerModal })));
+const ReviewerVault = lazy(() => import('./ReviewerVault').then(m => ({ default: m.ReviewerVault })));
+const SmartMatchHub = lazy(() => import('../matching/SmartMatchHub').then(m => ({ default: m.SmartMatchHub })));
 import {
   Search,
   PlusCircle,
@@ -354,19 +355,19 @@ export const TutorialHub = () => {
       )}
 
       {/* Subtab 2: P2P Smart Match */}
-      {subTab === 'matching' && <SmartMatchHub />}
+      <Suspense fallback={<div className="py-12 text-center text-xs font-mono text-slate-400">Loading module...</div>}>
+        {subTab === 'matching' && <SmartMatchHub />}
+        {subTab === 'requests' && <RequestBoard />}
+        {subTab === 'reviewers' && <ReviewerVault />}
 
-      {/* Subtab 3: Request Board */}
-      {subTab === 'requests' && <RequestBoard />}
-
-      {/* Subtab 4: Reviewers Vault */}
-      {subTab === 'reviewers' && <ReviewerVault />}
-
-      {/* Volunteer Modal */}
-      <TutorVolunteerModal
-        isOpen={showVolunteerModal}
-        onClose={() => setShowVolunteerModal(false)}
-      />
+        {/* Volunteer Modal */}
+        {showVolunteerModal && (
+          <TutorVolunteerModal
+            isOpen={showVolunteerModal}
+            onClose={() => setShowVolunteerModal(false)}
+          />
+        )}
+      </Suspense>
     </div>
   );
 };

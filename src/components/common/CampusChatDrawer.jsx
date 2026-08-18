@@ -3,52 +3,9 @@ import { useApp } from '../../context/AppContext';
 import { MessageSquare, Send, X, Users, Sparkles, BookOpen, Heart, ShieldCheck, Hash } from 'lucide-react';
 
 const INITIAL_MESSAGES = {
-  fellowship: [
-    {
-      id: 'm-1',
-      sender: 'Hannah Grace Dela Cruz',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-      role: 'worker',
-      roleLabel: 'Youth Worker',
-      campus: 'ISUFST',
-      text: 'Good morning Iloilo campus fam! ☀️ Reminder for our Friday Grace Youth circle at 5:00 PM!',
-      time: '9:30 AM'
-    },
-    {
-      id: 'm-2',
-      sender: 'Bea Claridad',
-      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-      role: 'student',
-      roleLabel: 'UPV Student',
-      campus: 'UPV Miagao',
-      text: 'Excited for Friday! Will bring my dorm roommates too. 🙌',
-      time: '9:45 AM'
-    }
-  ],
-  acads: [
-    {
-      id: 'm-3',
-      sender: 'Joshua Alcantara',
-      avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
-      role: 'tutor',
-      roleLabel: 'Peer Tutor',
-      campus: 'UPV',
-      text: 'Hey everyone! If anyone needs review in Calculus derivatives or limits before midterms, feel free to book a free slot or ask questions here!',
-      time: '10:15 AM'
-    }
-  ],
-  prayer: [
-    {
-      id: 'm-4',
-      sender: 'Pastor Tim',
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-      role: 'leader',
-      roleLabel: 'Admin / Pastor',
-      campus: 'WVSU & Regional',
-      text: 'Lifting up all students taking major laboratory exams and revalidas this week. God goes before you! 🙏',
-      time: '8:00 AM'
-    }
-  ]
+  fellowship: [],
+  acads: [],
+  prayer: []
 };
 
 export const CampusChatDrawer = ({ isOpen, onClose }) => {

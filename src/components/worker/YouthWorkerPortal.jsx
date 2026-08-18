@@ -76,51 +76,11 @@ export const YouthWorkerPortal = () => {
   const [selectedSeriesId, setSelectedSeriesId] = useState(curriculumSeries[0]?.id || 'ser-1');
 
   // Master Class Rosters with Attendance
-  const DEFAULT_CLASS_ROSTERS = {
-    'bs-1': [
-      { id: 'st-1', name: 'Bea Claridad', program: 'BS Biology, UP Visayas', attended: true },
-      { id: 'st-2', name: 'Kenzo Ramirez', program: 'BS Civil Engg, CPU', attended: true },
-      { id: 'st-3', name: 'Althea Marie', program: 'BS Nursing, WVSU', attended: false },
-      { id: 'st-4', name: 'John Paul Villar', program: 'BS Fisheries, ISUFST', attended: true }
-    ],
-    'bs-2': [
-      { id: 'st-5', name: 'Joshua Dizon', program: 'BS Applied Math, UP Visayas', attended: true },
-      { id: 'st-6', name: 'Chloe Anne', program: 'BA Communication, WVSU', attended: true },
-      { id: 'st-7', name: 'Dave Gabriel', program: 'BS Chemistry, CPU', attended: false },
-      { id: 'st-8', name: 'Hannah Grace', program: 'BS Accountancy, CPU', attended: true }
-    ],
-    'bs-3': [
-      { id: 'st-9', name: 'Michael Santos', program: 'BS Architecture, ISAT-U', attended: true },
-      { id: 'st-10', name: 'Sarah Joy', program: 'BS Psychology, UPV', attended: true },
-      { id: 'st-11', name: 'Daniel Reyes', program: 'BS Marine Engg, JBLFMU', attended: false }
-    ],
-    'bs-4': [
-      { id: 'st-12', name: 'Ezekiel Cruz', program: 'BS Computer Science, UPV', attended: true },
-      { id: 'st-13', name: 'Faith Morales', program: 'BS Education, WVSU', attended: true },
-      { id: 'st-14', name: 'Rachel Mae', program: 'BS Pharmacy, CPU', attended: true }
-    ]
-  };
+  const DEFAULT_CLASS_ROSTERS = {};
 
   const [classAttendance, setClassAttendance] = useState(DEFAULT_CLASS_ROSTERS);
 
-  const [careNotes, setCareNotes] = useState([
-    {
-      id: 'cn-1',
-      studentName: 'Bea Claridad',
-      campus: 'UP Visayas',
-      date: 'Aug 15, 2026',
-      status: 'Followed Up',
-      note: 'Had post-tutorial coffee at CAS Gazebo. Shared personal testimony about finding peace during exams. Invited to Thursday Life Group.'
-    },
-    {
-      id: 'cn-2',
-      studentName: 'Kenzo Ramirez',
-      campus: 'CPU Jaro',
-      date: 'Aug 14, 2026',
-      status: 'Pending Call',
-      note: 'Requested prayer for family financial distress and midterm Calculus anxiety.'
-    }
-  ]);
+  const [careNotes, setCareNotes] = useState([]);
 
   const [newNoteStudent, setNewNoteStudent] = useState('');
   const [newNoteContent, setNewNoteContent] = useState('');
