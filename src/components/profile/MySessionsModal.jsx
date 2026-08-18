@@ -70,17 +70,18 @@ export const MySessionsModal = ({ isOpen, onClose }) => {
                       </p>
                     )}
 
-                    <div className="pt-2">
-                      <button
-                        onClick={() => {
-                          setSelectedSession(bk);
-                          setShowSessionRoom(true);
-                        }}
-                        className="w-full py-2 bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-black text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
-                      >
-                        <span>Launch Meeting Room & Scratchpad &rarr;</span>
-                      </button>
-                    </div>
+                      <div className="pt-2">
+                        <button
+                          onClick={() => {
+                            setSelectedSession(bk);
+                            setShowSessionRoom(true);
+                          }}
+                          className="w-full py-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-extrabold text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                        >
+                          <Video className="w-3.5 h-3.5" />
+                          <span>Enter Live 1-on-1 Video Study Room &rarr;</span>
+                        </button>
+                      </div>
                   </div>
                 </div>
               ))}

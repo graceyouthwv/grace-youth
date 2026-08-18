@@ -24,7 +24,8 @@ import { VolunteerModal } from '../common/VolunteerModal';
 import { UploadSongModal } from './UploadSongModal';
 import { ViewSongModal } from './ViewSongModal';
 import { LifeGroupCircleModal } from '../discipleship/LifeGroupCircleModal';
-import { UploadCloud, FileUp, Eye, MessageSquare } from 'lucide-react';
+import { SessionRoomModal } from '../tutor/SessionRoomModal';
+import { UploadCloud, FileUp, Eye, MessageSquare, Video } from 'lucide-react';
 
 export const StudentPortal = () => {
   const { currentUser, myBookings, myGroups, bibleStudies, prayers, cancelBooking, setActiveTab, showToast, theme } = useApp();
@@ -32,6 +33,7 @@ export const StudentPortal = () => {
   const [showUploadSongModal, setShowUploadSongModal] = useState(false);
   const [selectedSongForView, setSelectedSongForView] = useState(null);
   const [selectedGroupForCircle, setSelectedGroupForCircle] = useState(null);
+  const [selectedSessionForCall, setSelectedSessionForCall] = useState(null);
   const isDark = theme === 'dark';
 
   const [musicSetlist, setMusicSetlist] = useState([
@@ -192,6 +194,16 @@ export const StudentPortal = () => {
                           Prep Note: {bk.meetingNote}
                         </p>
                       )}
+
+                      <div className="pt-2">
+                        <button
+                          onClick={() => setSelectedSessionForCall(bk)}
+                          className="w-full py-2 bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-extrabold text-xs rounded-xl shadow-md transition-all cursor-pointer flex items-center justify-center gap-1.5"
+                        >
+                          <Video className="w-3.5 h-3.5" />
+                          <span>Enter Live 1-on-1 Video Study Room &rarr;</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -502,6 +514,12 @@ export const StudentPortal = () => {
         isOpen={!!selectedGroupForCircle}
         onClose={() => setSelectedGroupForCircle(null)}
         group={selectedGroupForCircle}
+      />
+
+      <SessionRoomModal
+        isOpen={!!selectedSessionForCall}
+        onClose={() => setSelectedSessionForCall(null)}
+        session={selectedSessionForCall}
       />
     </div>
   );
