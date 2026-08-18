@@ -59,6 +59,24 @@ const getRegisteredUsersSafe = () => {
   }
 };
 
+const checkVersionAndGet = (key, fallback) => {
+  try {
+    const currentVersion = localStorage.getItem('gy_version');
+    if (currentVersion !== STORAGE_VERSION) {
+      return fallback;
+    }
+    const saved = localStorage.getItem(key);
+    if (!saved) return fallback;
+    const parsed = JSON.parse(saved);
+    if (Array.isArray(fallback)) {
+      return Array.isArray(parsed) ? parsed : fallback;
+    }
+    return parsed || fallback;
+  } catch (e) {
+    return fallback;
+  }
+};
+
 export const AppProvider = ({ children }) => {
   // Sync storage version
   useEffect(() => {
