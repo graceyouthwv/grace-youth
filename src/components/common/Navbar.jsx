@@ -2,7 +2,6 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useApp } from '../../context/AppContext';
 import {
   Sparkles,
-  Languages,
   BookOpen,
   Heart,
   Menu,
@@ -35,7 +34,6 @@ import { getTranslation } from '../../data/translations';
 export const Navbar = () => {
   const {
     language,
-    setLanguage,
     currentUser,
     activeTab,
     setActiveTab,
@@ -45,7 +43,6 @@ export const Navbar = () => {
     logout
   } = useApp();
 
-  const isHlg = language === 'hlg' || language === 'hil';
   const t = (key) => getTranslation(key, language);
 
   const [showProfileModal, setShowProfileModal] = useState(false);
@@ -203,15 +200,6 @@ export const Navbar = () => {
 
             {/* 3. RIGHT SIDE CONTROLS */}
             <div className="flex items-center gap-2 sm:gap-3">
-              {/* Language Switcher */}
-              <button
-                onClick={() => setLanguage(language === 'en' ? 'hlg' : 'en')}
-                className="px-2.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 text-xs font-bold transition-colors cursor-pointer flex items-center gap-1.5 shadow-2xs"
-                title="Toggle Language (English / Hiligaynon)"
-              >
-                <Languages className="w-3.5 h-3.5 text-indigo-500" />
-                <span>{language === 'en' ? 'HLG' : 'EN'}</span>
-              </button>
 
               {/* Dark/Light Theme Toggle */}
               <button
