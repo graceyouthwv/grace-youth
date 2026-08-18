@@ -38,21 +38,24 @@ const GUEST_USER = {
 
 const DEFAULT_BOOKINGS = [];
 
-const checkVersionAndGet = (key, fallback) => {
+const getRegisteredUsersSafe = () => {
   try {
-    const currentVersion = localStorage.getItem('gy_version');
-    if (currentVersion !== STORAGE_VERSION) {
-      return fallback;
+    const saved = localStorage.getItem('gy_registered_users');
+    let localUsers = [];
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        localUsers = parsed;
+      }
     }
-    const saved = localStorage.getItem(key);
-    if (!saved) return fallback;
-    const parsed = JSON.parse(saved);
-    if (Array.isArray(fallback)) {
-      return Array.isArray(parsed) ? parsed : fallback;
-    }
-    return parsed || fallback;
+    const userMap = new Map();
+    // Base demo accounts
+    DEMO_ACCOUNTS.forEach((u) => userMap.set(u.email.toLowerCase(), u));
+    // User accounts
+    localUsers.forEach((u) => userMap.set(u.email.toLowerCase(), u));
+    return Array.from(userMap.values());
   } catch (e) {
-    return fallback;
+    return DEMO_ACCOUNTS;
   }
 };
 
@@ -62,13 +65,24 @@ export const AppProvider = ({ children }) => {
     localStorage.setItem('gy_version', STORAGE_VERSION);
   }, []);
 
-  const [registeredUsers, setRegisteredUsers] = useState(() =>
-    checkVersionAndGet('gy_registered_users', DEMO_ACCOUNTS)
-  );
+  const [registeredUsers, setRegisteredUsers] = useState(() => getRegisteredUsersSafe());
+
+  // Automatically persist registered users whenever updated
+  useEffect(() => {
+    try {
+      localStorage.setItem('gy_registered_users', JSON.stringify(registeredUsers));
+    } catch (e) {}
+  }, [registeredUsers]);
 
   const [currentUser, setCurrentUser] = useState(() => {
     const saved = localStorage.getItem('gy_active_session');
-    return saved ? JSON.parse(saved) : GUEST_USER;
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        return parsed || GUEST_USER;
+      } catch (e) {}
+    }
+    return GUEST_USER;
   });
 
   const [theme, setTheme] = useState(() => {

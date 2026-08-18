@@ -262,6 +262,52 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 </div>
               </div>
 
+              {/* Quick Fill Test Accounts */}
+              <div className="pt-0.5">
+                <div className="text-[11px] font-semibold text-slate-400 mb-1.5 flex items-center justify-between">
+                  <span>Quick 1-Click Fill:</span>
+                  <span className="text-[10px] text-slate-400 font-mono">password123</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoginEmail('jassy@school.edu.ph');
+                      setLoginPassword('password123');
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                      isDark ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    🎓 Student
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoginEmail('perry@graceyouth.ph');
+                      setLoginPassword('password123');
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                      isDark ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    👨‍🏫 Peer Tutor
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLoginEmail('leader@graceyouth.ph');
+                      setLoginPassword('password123');
+                    }}
+                    className={`px-2.5 py-1 rounded-lg text-xs font-semibold border transition-all cursor-pointer ${
+                      isDark ? 'bg-slate-900 border-slate-800 text-slate-300 hover:text-white' : 'bg-slate-50 border-slate-200 text-slate-700 hover:bg-slate-100'
+                    }`}
+                  >
+                    🏛️ Leader
+                  </button>
+                </div>
+              </div>
+
               <button
                 type="submit"
                 className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all cursor-pointer flex items-center justify-center gap-2"

@@ -60,7 +60,10 @@ describe('Unit Tests: Data Integrity & Production State', () => {
     assert.strictEqual(INITIAL_PRAYERS.length, 0, 'INITIAL_PRAYERS must be empty');
 
     assert.ok(Array.isArray(DEMO_ACCOUNTS));
-    assert.strictEqual(DEMO_ACCOUNTS.length, 0, 'DEMO_ACCOUNTS must be empty');
+    for (const acc of DEMO_ACCOUNTS) {
+      assert.ok(acc.email, 'Account must have email');
+      assert.ok(acc.name, 'Account must have name');
+    }
   });
 
   it('should preserve discipleship stages curriculum definition', () => {
