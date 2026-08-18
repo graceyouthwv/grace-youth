@@ -700,9 +700,9 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login', initialRole 
               className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm shadow-md shadow-indigo-500/20 hover:shadow-indigo-500/30 transition-all cursor-pointer mt-3"
             >
               {role === 'worker'
-                ? 'Submit Youth Worker Application'
+                ? '✝️ Join Campus Ministry & Outreach'
                 : role === 'tutor'
-                ? 'Submit Peer Tutor Application'
+                ? '🌟 Join as a Peer Mentor & Tutor'
                 : 'Create Account & Enter'}
             </button>
 

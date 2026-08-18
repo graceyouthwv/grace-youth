@@ -192,7 +192,7 @@ export const TutorialHub = () => {
           </button>
         </div>
 
-        {/* Apply as Peer Tutor CTA */}
+        {/* Inspiring Peer Mentorship CTA */}
         <button
           onClick={() => {
             if (currentUser.role === 'tutor') {
@@ -200,16 +200,18 @@ export const TutorialHub = () => {
                 setActiveTab('portal');
                 showToast('👋 You are already a certified Peer Tutor! Opened your Console.', 'info');
               } else {
-                showToast('⏳ Your Peer Tutor application is currently under verification in the Admin Portal.', 'info');
+                showToast('⏳ Your Peer Mentor application is currently under verification in the Admin Portal.', 'info');
               }
             } else {
               setShowApplyModal(true);
             }
           }}
-          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-950 font-black text-xs shadow-md hover:scale-105 active:scale-95 transition-all w-full sm:w-auto cursor-pointer"
+          className="flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-slate-950 font-black text-xs shadow-md hover:scale-105 active:scale-95 transition-all w-full sm:w-auto cursor-pointer"
         >
-          <PlusCircle className="w-4 h-4 text-slate-950" />
-          <span className="text-slate-950 font-black">{isHlg ? 'Mag-Apply bilang Tutor' : 'Apply to be a Peer Tutor'}</span>
+          <Sparkles className="w-4 h-4 text-slate-950" />
+          <span className="text-slate-950 font-black">
+            {isHlg ? '🌟 Ipaambit ang Naalam • Mag-Mentor' : '🌟 Share Your Knowledge • Tutor a Peer'}
+          </span>
         </button>
       </div>
 
