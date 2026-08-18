@@ -6,25 +6,15 @@ import {
   Brain,
   Send,
   CheckCircle2,
-  Cpu,
-  Target,
   BookOpen,
   Camera,
-  Layers,
   GraduationCap,
   Calculator,
-  Compass,
-  FileText,
-  MessageSquare,
-  Clock,
-  MapPin,
   Bot,
-  Lightbulb,
-  Award,
+  User,
   Zap,
-  Building2,
-  Play,
-  RotateCcw
+  Check,
+  Star
 } from 'lucide-react';
 import { Modal } from '../common/Modal';
 
@@ -32,11 +22,10 @@ export const PartnersHub = () => {
   const { theme, showToast } = useApp();
   const isDark = theme === 'dark';
 
-  const [showDemoModal, setShowDemoModal] = useState(false);
+  const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
   const [activeAppTab, setActiveAppTab] = useState('ai-studio'); // 'ai-studio' | 'vault' | 'camera' | 'thesis' | 'dashboard'
   
   // AI Study Studio Interactive Simulation
-  const [selectedPrompt, setSelectedPrompt] = useState(0);
   const [customInput, setCustomInput] = useState('');
   const [chatMessages, setChatMessages] = useState([
     {
@@ -126,30 +115,30 @@ $$-x \\cos(x) + \\sin(x) + C$$
     }, 500);
   };
 
-  const [demoForm, setDemoForm] = useState({
-    institutionName: '',
-    contactPerson: '',
+  const [studentForm, setStudentForm] = useState({
+    studentName: '',
     email: '',
-    phone: '',
-    role: 'College Administrator / Dean',
-    message: ''
+    campus: 'UP Visayas',
+    program: 'BS Biology',
+    studentLevel: 'Undergraduate (Bachelor Degree)',
+    planType: 'Monthly Student Pass (₱149/mo)'
   });
 
-  const handleDemoSubmit = (e) => {
+  const handleStudentSubmit = (e) => {
     e.preventDefault();
-    if (!demoForm.institutionName.trim() || !demoForm.email.trim()) {
-      showToast('Please provide your institution name and official email.', 'error');
+    if (!studentForm.studentName.trim() || !studentForm.email.trim()) {
+      showToast('Please provide your name and student email.', 'error');
       return;
     }
-    showToast(`✓ Subscription & demo inquiry sent for ${demoForm.institutionName}! SmartPath Tech will contact you shortly.`, 'success');
-    setShowDemoModal(false);
-    setDemoForm({
-      institutionName: '',
-      contactPerson: '',
+    showToast(`✓ Early Student Access registered for ${studentForm.studentName}! SmartPath Technologies will send your activation link.`, 'success');
+    setShowSubscriptionModal(false);
+    setStudentForm({
+      studentName: '',
       email: '',
-      phone: '',
-      role: 'College Administrator / Dean',
-      message: ''
+      campus: 'UP Visayas',
+      program: 'BS Biology',
+      studentLevel: 'Undergraduate (Bachelor Degree)',
+      planType: 'Monthly Student Pass (₱149/mo)'
     });
   };
 
@@ -193,16 +182,16 @@ $$-x \\cos(x) + \\sin(x) + C$$
           </div>
 
           <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-            Through technological innovation, Christian servant-leadership, and kingdom stewardship, SmartPath Technologies provides digital software platforms that help collegiate institutions elevate student outcomes while supporting student discipleship.
+            Through technological innovation, Christian servant-leadership, and kingdom stewardship, SmartPath Technologies provides digital software platforms that help collegiate students achieve academic excellence while supporting campus discipleship.
           </p>
 
           <div className="pt-2 flex flex-wrap items-center gap-3">
             <button
-              onClick={() => setShowDemoModal(true)}
+              onClick={() => setShowSubscriptionModal(true)}
               className="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-400/20 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
             >
-              <Building2 className="w-4 h-4 text-slate-950" />
-              <span>Inquire for Campus Subscription</span>
+              <Zap className="w-4 h-4 text-slate-950 fill-slate-950" />
+              <span>Get Individual Student Access</span>
             </button>
 
             <a
@@ -226,7 +215,7 @@ $$-x \\cos(x) + \\sin(x) + C$$
           <div className="max-w-3xl space-y-2">
             <div className="flex items-center gap-2 text-xs font-black text-indigo-500 uppercase tracking-widest">
               <Sparkles className="w-4 h-4 text-amber-500" />
-              <span>Software Product by SmartPath Technologies</span>
+              <span>Flagship Software Product by SmartPath Technologies</span>
             </div>
             <h2 className={`text-2xl sm:text-3xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
               SmartPath College™
@@ -238,16 +227,16 @@ $$-x \\cos(x) + \\sin(x) + C$$
             </div>
 
             <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Experience the actual <strong>SmartPath College</strong> software application below. Test the interactive AI Study Studio, lecture transcription vault, blackboard photo OCR synthesizer, and thesis research copilot.
+              Built specifically for <strong>undergraduate</strong> and <strong>graduate (Master's / PhD / Law / Medicine) students</strong>. SmartPath College is your personal academic companion—helping you conquer heavy college coursework, generate automated lecture transes, compute target GWAs, formulate thesis literature reviews, and ace examinations.
             </p>
           </div>
 
           <button
-            onClick={() => setShowDemoModal(true)}
+            onClick={() => setShowSubscriptionModal(true)}
             className="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs sm:text-sm transition-all self-start sm:self-auto cursor-pointer shadow-md hover:scale-105 active:scale-95 shrink-0 flex items-center gap-2"
           >
-            <Building2 className="w-4 h-4" />
-            <span>Subscribe for Your College →</span>
+            <Zap className="w-4 h-4" />
+            <span>Subscribe as a Student →</span>
           </button>
         </div>
 
@@ -263,13 +252,13 @@ $$-x \\cos(x) + \\sin(x) + C$$
               <span className="w-3 h-3 rounded-full bg-emerald-500" />
               <div className="hidden sm:flex items-center gap-2 ml-3 px-3 py-1 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[11px]">
                 <Sparkles className="w-3 h-3 text-amber-400" />
-                <span>app.smartpath.college • Live Software Demo</span>
+                <span>app.smartpath.college • Student App Emulator</span>
               </div>
             </div>
 
             <div className="flex items-center gap-2">
               <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                ● Live AI Engine Ready
+                ● Live Student Copilot
               </span>
             </div>
           </div>
@@ -333,7 +322,7 @@ $$-x \\cos(x) + \\sin(x) + C$$
               }`}
             >
               <Calculator className="w-4 h-4" />
-              <span>GWA & Student Academic Tools</span>
+              <span>GWA & Target Calculator</span>
             </button>
           </div>
 
@@ -349,7 +338,7 @@ $$-x \\cos(x) + \\sin(x) + C$$
                       <span>Metacognitive Socratic Dialogue Studio</span>
                     </h3>
                     <p className="text-xs text-slate-400">
-                      Step-by-step problem solver with active recall drills and exam pro-tips.
+                      Undergraduate & Graduate step-by-step problem solver with active recall drills and exam pro-tips.
                     </p>
                   </div>
 
@@ -458,7 +447,9 @@ $$-x \\cos(x) + \\sin(x) + C$$
                     </div>
                     <h4 className="font-extrabold text-sm">Mitochondrial ATP Synthesis & Chemiosmosis</h4>
                     <p className="text-[11px] text-slate-400 line-clamp-3">
-                      • Proton gradient driving ATP synthase F0/F1 complex.\n• Yield: ~30-32 ATP per glucose molecule.\n• Inhibitors: Oligomycin & Cyanide.
+                      • Proton gradient driving ATP synthase F0/F1 complex.
+                      • Yield: ~30-32 ATP per glucose molecule.
+                      • Inhibitors: Oligomycin & Cyanide.
                     </p>
                     <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-bold text-emerald-400">
                       <span>✓ 18 Flashcards Generated</span>
@@ -473,7 +464,9 @@ $$-x \\cos(x) + \\sin(x) + C$$
                     </div>
                     <h4 className="font-extrabold text-sm">Eigenvalues & Diagonalization</h4>
                     <p className="text-[11px] text-slate-400 line-clamp-3">
-                      • Characteristic equation det(A - λI) = 0.\n• Geometric vs Algebraic multiplicity.\n• Matrix powers via P D P^-1.
+                      • Characteristic equation det(A - λI) = 0.
+                      • Geometric vs Algebraic multiplicity.
+                      • Matrix powers via P D P^-1.
                     </p>
                     <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-bold text-emerald-400">
                       <span>✓ 24 Flashcards Generated</span>
@@ -488,7 +481,9 @@ $$-x \\cos(x) + \\sin(x) + C$$
                     </div>
                     <h4 className="font-extrabold text-sm">Pharmacology: Antihypertensive Classes</h4>
                     <p className="text-[11px] text-slate-400 line-clamp-3">
-                      • ACE Inhibitors (-pril) vs ARBs (-sartan).\n• Beta-blockers: Cardioselective vs non-selective.\n• Nursing alert: Monitor dry cough & hyperkalemia.
+                      • ACE Inhibitors (-pril) vs ARBs (-sartan).
+                      • Beta-blockers: Cardioselective vs non-selective.
+                      • Nursing alert: Monitor dry cough & hyperkalemia.
                     </p>
                     <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-bold text-emerald-400">
                       <span>✓ 30 Flashcards Generated</span>
@@ -552,17 +547,17 @@ $$-x \\cos(x) + \\sin(x) + C$$
                   <div>
                     <h3 className="text-base sm:text-lg font-black font-heading flex items-center gap-2">
                       <GraduationCap className="w-5 h-5 text-indigo-400" />
-                      <span>Thesis & Capstone Defense Studio</span>
+                      <span>Graduate & Thesis Defense Studio</span>
                     </h3>
                     <p className="text-xs text-slate-400">
-                      Literature review synthesis, conceptual framework builder, and mock panel defense simulator.
+                      Literature review synthesis, conceptual framework builder, and mock panel defense simulator for Undergraduate capstones & Graduate theses.
                     </p>
                   </div>
                 </div>
 
                 <div className={`p-4 rounded-2xl border space-y-3 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
                   <div className="flex items-center justify-between">
-                    <h4 className="font-extrabold text-sm">Undergraduate Research Project: "AI-Powered Formative Assessment in Higher Ed"</h4>
+                    <h4 className="font-extrabold text-sm">Research Project: "AI-Powered Metacognitive Scaffolding in Collegiate Education"</h4>
                     <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
                       Chapter 2: Review of Related Literature (RRL)
                     </span>
@@ -586,7 +581,7 @@ $$-x \\cos(x) + \\sin(x) + C$$
               </div>
             )}
 
-            {/* SCREEN 5: GWA & STUDENT ACADEMIC TOOLS */}
+            {/* SCREEN 5: GWA & TARGET CALCULATOR */}
             {activeAppTab === 'dashboard' && (
               <div className="space-y-4 text-xs">
                 <div className="flex items-center justify-between pb-3 border-b border-slate-800/60">
@@ -626,113 +621,88 @@ $$-x \\cos(x) + \\sin(x) + C$$
         </div>
       </div>
 
-      {/* 4. SHORT INSTITUTIONAL PRODUCT FEATURES */}
-      <div className="space-y-4 pt-2">
-        <div className="text-center max-w-xl mx-auto space-y-1">
-          <h3 className={`text-xl sm:text-2xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-            Why Colleges & Universities Deploy SmartPath College™
-          </h3>
-          <p className={`text-xs ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-            Empowering university students with metacognitive study habits while delivering actionable telemetry to college leadership.
-          </p>
+      {/* 4. TAILORED FOR UNDERGRADUATE & GRADUATE SCHOLARS */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
+        <div className={`p-6 rounded-3xl border space-y-3 ${
+          isDark ? 'bg-slate-900/70 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+        }`}>
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">
+              🎓
+            </div>
+            <div>
+              <h4 className="font-extrabold text-sm sm:text-base font-heading">For Undergraduate Students</h4>
+              <span className="text-[11px] text-indigo-400 font-bold">BS / BA / Pre-Med / Engineering / Nursing / Accountancy</span>
+            </div>
+          </div>
+
+          <ul className="space-y-2 text-xs text-slate-400">
+            <li className="flex items-start gap-2">
+              <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <span>Step-by-step problem solver for difficult STEM, Bio, Calculus, and Accounting problem sets.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <span>Instant audio lecture transes and active recall flashcard generation for midterms and finals.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <span>Accurate target GWA planner for Dean's List and Latin Honors qualification.</span>
+            </li>
+          </ul>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className={`p-5 rounded-3xl border flex flex-col justify-between ${
-            isDark ? 'bg-slate-900/70 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-          }`}>
-            <div className="space-y-2">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-600 text-white flex items-center justify-center shadow-md">
-                <Brain className="w-5 h-5" />
-              </div>
-              <h4 className="font-extrabold text-sm font-heading">AI Metacognitive Copilot</h4>
-              <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                24/7 Socratic problem-solving, active recall prompts, and diagnostic gap-filling for every college student.
-              </p>
+        <div className={`p-6 rounded-3xl border space-y-3 ${
+          isDark ? 'bg-slate-900/70 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+        }`}>
+          <div className="flex items-center gap-2">
+            <div className="w-9 h-9 rounded-xl bg-violet-500/20 text-violet-400 flex items-center justify-center font-bold">
+              📚
             </div>
-            <div className="pt-3 border-t border-slate-800 flex items-center gap-1 text-[11px] font-bold text-indigo-400">
-              <span>Higher Ed Standard</span>
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+            <div>
+              <h4 className="font-extrabold text-sm sm:text-base font-heading">For Graduate & Research Scholars</h4>
+              <span className="text-[11px] text-violet-400 font-bold">Master's (MS/MA/MBA) / Law / Medicine (MD) / PhD</span>
             </div>
           </div>
 
-          <div className={`p-5 rounded-3xl border flex flex-col justify-between ${
-            isDark ? 'bg-slate-900/70 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-          }`}>
-            <div className="space-y-2">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 to-blue-600 text-white flex items-center justify-center shadow-md">
-                <BookOpen className="w-5 h-5" />
-              </div>
-              <h4 className="font-extrabold text-sm font-heading">Note Vault & Transcriptions</h4>
-              <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Converts lecture audio into structured high-yield summaries, key equations, and Anki-compatible flashcards.
-              </p>
-            </div>
-            <div className="pt-3 border-t border-slate-800 flex items-center gap-1 text-[11px] font-bold text-indigo-400">
-              <span>Higher Ed Standard</span>
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-            </div>
-          </div>
-
-          <div className={`p-5 rounded-3xl border flex flex-col justify-between ${
-            isDark ? 'bg-slate-900/70 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-          }`}>
-            <div className="space-y-2">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-600 text-white flex items-center justify-center shadow-md">
-                <GraduationCap className="w-5 h-5" />
-              </div>
-              <h4 className="font-extrabold text-sm font-heading">Thesis & Capstone Studio</h4>
-              <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Literature review synthesizer, conceptual matrix builder, and mock panel defense simulator.
-              </p>
-            </div>
-            <div className="pt-3 border-t border-slate-800 flex items-center gap-1 text-[11px] font-bold text-indigo-400">
-              <span>Higher Ed Standard</span>
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-            </div>
-          </div>
-
-          <div className={`p-5 rounded-3xl border flex flex-col justify-between ${
-            isDark ? 'bg-slate-900/70 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-          }`}>
-            <div className="space-y-2">
-              <div className="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-600 to-orange-600 text-white flex items-center justify-center shadow-md">
-                <ShieldCheck className="w-5 h-5" />
-              </div>
-              <h4 className="font-extrabold text-sm font-heading">Institutional Privacy & Security</h4>
-              <p className={`text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                Enterprise role-based access, student privacy containment, and audit-ready data policies.
-              </p>
-            </div>
-            <div className="pt-3 border-t border-slate-800 flex items-center gap-1 text-[11px] font-bold text-indigo-400">
-              <span>Higher Ed Standard</span>
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-            </div>
-          </div>
+          <ul className="space-y-2 text-xs text-slate-400">
+            <li className="flex items-start gap-2">
+              <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <span>Comprehensive Literature Review (RRL) synthesis matrix builder across Scopus & PubMed papers.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <span>Simulated thesis defense panel interrogation to prepare for tough oral defense revisions.</span>
+            </li>
+            <li className="flex items-start gap-2">
+              <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <span>APA 7th, IEEE, and Chicago citation formatter for publishable scholarly papers.</span>
+            </li>
+          </ul>
         </div>
       </div>
 
-      {/* 5. INSTITUTIONAL SUBSCRIPTION CTA BANNER */}
+      {/* 5. INDIVIDUAL STUDENT SUBSCRIPTION CTA BANNER */}
       <div className={`p-8 sm:p-10 rounded-3xl border text-center space-y-4 ${
         isDark ? 'bg-gradient-to-r from-indigo-950/60 via-slate-900 to-violet-950/60 border-indigo-500/30' : 'bg-gradient-to-r from-indigo-50 to-amber-50/50 border-indigo-200'
       }`}>
-        <Building2 className="w-12 h-12 text-indigo-500 mx-auto" />
+        <Sparkles className="w-12 h-12 text-amber-400 mx-auto" />
         <div className="space-y-1.5 max-w-2xl mx-auto">
           <h3 className={`text-xl sm:text-2xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-            Ready to Deploy SmartPath College™ in Your Institution?
+            Ready to Supercharge Your Academic Success?
           </h3>
           <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-            Contact the SmartPath Technologies enterprise education team for institutional campus subscriptions, faculty pilot programs, and custom LMS integrations.
+            Join college and graduate students across UP Visayas, CPU, WVSU, ISUFST, ISAT-U, and USA using SmartPath College™. Student passes available with free initial trial.
           </p>
         </div>
 
         <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
           <button
-            onClick={() => setShowDemoModal(true)}
-            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-indigo-600 via-violet-600 to-indigo-700 hover:from-indigo-500 hover:to-violet-500 text-white font-black text-xs sm:text-sm shadow-lg shadow-indigo-500/25 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
+            onClick={() => setShowSubscriptionModal(true)}
+            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-400/20 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
           >
-            <Building2 className="w-4 h-4" />
-            <span>Request College Subscription & Demo</span>
+            <Zap className="w-4 h-4 text-slate-950 fill-slate-950" />
+            <span>Get Individual Student Access →</span>
           </button>
 
           <a
@@ -749,47 +719,31 @@ $$-x \\cos(x) + \\sin(x) + C$$
         </div>
       </div>
 
-      {/* INSTITUTIONAL DEMO / SUBSCRIPTION MODAL */}
+      {/* INDIVIDUAL STUDENT SUBSCRIPTION MODAL */}
       <Modal
-        isOpen={showDemoModal}
-        onClose={() => setShowDemoModal(false)}
-        title="Inquire for SmartPath College™ Institutional Subscription"
+        isOpen={showSubscriptionModal}
+        onClose={() => setShowSubscriptionModal(false)}
+        title="Get SmartPath College™ Student Access"
       >
-        <form onSubmit={handleDemoSubmit} className="space-y-4">
+        <form onSubmit={handleStudentSubmit} className="space-y-4">
           <div className="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-500/30 text-xs text-indigo-900 dark:text-indigo-200 flex items-start gap-2">
-            <Sparkles className="w-4 h-4 text-indigo-500 shrink-0 mt-0.5" />
+            <Sparkles className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
             <span>
-              Schedule a comprehensive product demonstration and campus subscription pricing for <strong>SmartPath College™</strong> (An AI-Powered Academic Success & Metacognitive Copilot for Higher Education Students) with the <strong>SmartPath Technologies</strong> team.
+              Subscribe to <strong>SmartPath College™</strong> (The AI Metacognitive Copilot for Undergraduate & Graduate Students) with an individual student plan.
             </span>
-          </div>
-
-          <div className="space-y-1">
-            <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              College / State University / Institution Name *
-            </label>
-            <input
-              type="text"
-              required
-              placeholder="e.g. West Visayas State University, CPU, UPV, ISUFST..."
-              value={demoForm.institutionName}
-              onChange={(e) => setDemoForm({ ...demoForm, institutionName: e.target.value })}
-              className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
-                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-              }`}
-            />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Contact Person *
+                Student Full Name *
               </label>
               <input
                 type="text"
                 required
-                placeholder="Full Name / Designation"
-                value={demoForm.contactPerson}
-                onChange={(e) => setDemoForm({ ...demoForm, contactPerson: e.target.value })}
+                placeholder="e.g. Bea Claridad"
+                value={studentForm.studentName}
+                onChange={(e) => setStudentForm({ ...studentForm, studentName: e.target.value })}
                 className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
                   isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                 }`}
@@ -798,36 +752,31 @@ $$-x \\cos(x) + \\sin(x) + C$$
 
             <div className="space-y-1">
               <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Role / Title
+                Student Email Address *
               </label>
-              <select
-                value={demoForm.role}
-                onChange={(e) => setDemoForm({ ...demoForm, role: e.target.value })}
+              <input
+                type="email"
+                required
+                placeholder="bea@upv.edu.ph"
+                value={studentForm.email}
+                onChange={(e) => setStudentForm({ ...studentForm, email: e.target.value })}
                 className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
                   isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                 }`}
-              >
-                <option>College President / VP Academics</option>
-                <option>College Administrator / Dean</option>
-                <option>Department Chair / Faculty</option>
-                <option>IT / MIS Director</option>
-                <option>Campus Student Council Officer</option>
-                <option>Kingdom Partner / Other</option>
-              </select>
+              />
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Official Institutional Email *
+                University / College Campus
               </label>
               <input
-                type="email"
-                required
-                placeholder="admin@university.edu.ph"
-                value={demoForm.email}
-                onChange={(e) => setDemoForm({ ...demoForm, email: e.target.value })}
+                type="text"
+                placeholder="e.g. UP Visayas, CPU, WVSU, ISUFST..."
+                value={studentForm.campus}
+                onChange={(e) => setStudentForm({ ...studentForm, campus: e.target.value })}
                 className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
                   isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                 }`}
@@ -836,13 +785,13 @@ $$-x \\cos(x) + \\sin(x) + C$$
 
             <div className="space-y-1">
               <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                Contact Number
+                Degree Program / Major
               </label>
               <input
-                type="tel"
-                placeholder="0917-xxx-xxxx"
-                value={demoForm.phone}
-                onChange={(e) => setDemoForm({ ...demoForm, phone: e.target.value })}
+                type="text"
+                placeholder="e.g. BS Biology, BS Nursing, BS Civil Eng..."
+                value={studentForm.program}
+                onChange={(e) => setStudentForm({ ...studentForm, program: e.target.value })}
                 className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
                   isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                 }`}
@@ -850,25 +799,49 @@ $$-x \\cos(x) + \\sin(x) + C$$
             </div>
           </div>
 
-          <div className="space-y-1">
-            <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-              Estimated Student Population / College Requirements
-            </label>
-            <textarea
-              rows={3}
-              placeholder="Tell us about your campus size (e.g. 2,500 collegiate students, Engineering / Nursing / Education departments, or pilot timeline)..."
-              value={demoForm.message}
-              onChange={(e) => setDemoForm({ ...demoForm, message: e.target.value })}
-              className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
-                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-              }`}
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-1">
+              <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Academic Level
+              </label>
+              <select
+                value={studentForm.studentLevel}
+                onChange={(e) => setStudentForm({ ...studentForm, studentLevel: e.target.value })}
+                className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
+                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                }`}
+              >
+                <option>Undergraduate (1st / 2nd Year)</option>
+                <option>Undergraduate (3rd / 4th Year - Graduating)</option>
+                <option>Graduate (Master's - MS / MA / MBA)</option>
+                <option>Postgraduate (Doctor of Medicine / Law)</option>
+                <option>Doctorate (PhD Research Scholar)</option>
+              </select>
+            </div>
+
+            <div className="space-y-1">
+              <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
+                Student Subscription Plan
+              </label>
+              <select
+                value={studentForm.planType}
+                onChange={(e) => setStudentForm({ ...studentForm, planType: e.target.value })}
+                className={`w-full p-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
+                  isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                }`}
+              >
+                <option>Free Student Trial (7 Days Full Access)</option>
+                <option>Monthly Student Pass (₱149 / month)</option>
+                <option>Semestral Scholar Pass (₱599 / semester)</option>
+                <option>Annual Academic Pass (₱1,199 / year)</option>
+              </select>
+            </div>
           </div>
 
           <div className="pt-2 flex items-center justify-end gap-2">
             <button
               type="button"
-              onClick={() => setShowDemoModal(false)}
+              onClick={() => setShowSubscriptionModal(false)}
               className={`px-4 py-2 rounded-xl text-xs font-bold border cursor-pointer ${
                 isDark ? 'border-slate-800 text-slate-400 hover:text-white' : 'border-slate-200 text-slate-600 hover:text-slate-950'
               }`}
@@ -879,8 +852,8 @@ $$-x \\cos(x) + \\sin(x) + C$$
               type="submit"
               className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
             >
-              <Send className="w-3.5 h-3.5 text-slate-950" />
-              <span>Submit Subscription Inquiry</span>
+              <Zap className="w-3.5 h-3.5 text-slate-950 fill-slate-950" />
+              <span>Get Student Access</span>
             </button>
           </div>
         </form>
