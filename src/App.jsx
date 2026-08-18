@@ -160,19 +160,9 @@ export const App = () => {
           </div>
         )}
 
-        {/* 7. PARTNERS TAB (SMARTPATH TECHNOLOGIES) */}
+        {/* 7. PARTNERS TAB (SMARTPATH TECHNOLOGIES & SMARTPATH COLLEGE) */}
         {activeTab === 'partners' && (
-          <div className="space-y-4">
-            <div className="mb-2">
-              <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                {t('partners_heading')}
-              </h1>
-              <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                {t('partners_subheading')}
-              </p>
-            </div>
-            <PartnersHub />
-          </div>
+          <PartnersHub />
         )}
 
         {/* 8. DISCIPLESHIP & LIFE GROUPS (HOSTS GROUP PRAYERS) */}

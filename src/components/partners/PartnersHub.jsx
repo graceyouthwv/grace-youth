@@ -5,16 +5,13 @@ import {
   ExternalLink,
   Brain,
   Send,
-  CheckCircle2,
   BookOpen,
   Camera,
   GraduationCap,
   Calculator,
   Bot,
-  User,
   Zap,
-  Check,
-  Star
+  Check
 } from 'lucide-react';
 import { Modal } from '../common/Modal';
 
@@ -143,579 +140,431 @@ $$-x \\cos(x) + \\sin(x) + C$$
   };
 
   return (
-    <div className="space-y-8 animate-tab-in pb-12">
-      {/* 1. HERO DEDICATION & PARTNER SPOTLIGHT */}
-      <div className={`p-6 sm:p-10 rounded-3xl border relative overflow-hidden transition-all shadow-xl ${
+    <div className="space-y-4 animate-tab-in pb-12">
+      {/* 1. COMPACT MINISTRY DEDICATION BANNER */}
+      <div className={`p-3.5 sm:p-4 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
         isDark
-          ? 'bg-gradient-to-br from-indigo-950/80 via-slate-900 to-[#0c101d] border-indigo-500/30 text-white'
-          : 'bg-gradient-to-br from-indigo-50 via-white to-amber-50/50 border-indigo-200 text-slate-900'
+          ? 'bg-indigo-950/40 border-indigo-500/30 text-white'
+          : 'bg-indigo-50/80 border-indigo-200 text-indigo-950 shadow-xs'
       }`}>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-amber-500/10 rounded-full blur-2xl pointer-events-none" />
-
-        <div className="relative z-10 max-w-4xl space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-400/30 text-xs font-black">
-            <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-            <span>MINISTRY PARTNERSHIP SPOTLIGHT</span>
-          </div>
-
-          <div className="space-y-1">
-            <div className="text-xs font-black uppercase tracking-widest text-indigo-400">
-              Technology Partner: SmartPath Technologies
-            </div>
-            <h1 className="text-2xl sm:text-4xl lg:text-5xl font-black tracking-tight font-heading leading-tight">
-              Empowering Higher Education in Academics & Faith
-            </h1>
-          </div>
-
-          {/* User Required Dedication Statement */}
-          <div className={`p-4 sm:p-5 rounded-2xl border ${
-            isDark ? 'bg-black/40 border-indigo-500/30' : 'bg-white/80 border-indigo-200 shadow-sm'
-          }`}>
-            <p className="text-sm sm:text-base font-bold italic leading-relaxed text-indigo-950 dark:text-indigo-200 flex items-start gap-2.5">
-              <span className="text-2xl text-amber-400 leading-none">“</span>
-              <span>
-                Our ministry partner, <strong className="text-indigo-600 dark:text-amber-300 font-black">SmartPath Technologies</strong>, is wholeheartedly committed to support the campus ministry across Western Visayas for the Glory of God.
-              </span>
-              <span className="text-2xl text-amber-400 leading-none self-end">”</span>
-            </p>
-          </div>
-
-          <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-            Through technological innovation, Christian servant-leadership, and kingdom stewardship, SmartPath Technologies provides digital software platforms that help collegiate students achieve academic excellence while supporting campus discipleship.
+        <div className="flex items-center gap-2.5">
+          <span className="p-1.5 rounded-xl bg-amber-400/20 text-amber-400 font-bold shrink-0">
+            <Sparkles className="w-4 h-4" />
+          </span>
+          <p className="text-xs sm:text-sm italic font-medium leading-snug">
+            “Our ministry partner, <strong className="text-indigo-600 dark:text-amber-300 font-black">SmartPath Technologies</strong>, is wholeheartedly committed to support the campus ministry across Western Visayas for the Glory of God.”
           </p>
-
-          <div className="pt-2 flex flex-wrap items-center gap-3">
-            <button
-              onClick={() => setShowSubscriptionModal(true)}
-              className="px-5 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-400/20 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
-            >
-              <Zap className="w-4 h-4 text-slate-950 fill-slate-950" />
-              <span>Get Individual Student Access</span>
-            </button>
-
-            <a
-              href="https://smartpath.tech"
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`px-4 py-3 rounded-2xl border text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all ${
-                isDark ? 'bg-slate-900 border-slate-700 text-slate-200 hover:text-white hover:bg-slate-800' : 'bg-white border-slate-300 text-slate-700 hover:text-slate-950 hover:bg-slate-50'
-              }`}
-            >
-              <span>Visit SmartPath Technologies</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          </div>
         </div>
+
+        <a
+          href="https://smartpath.tech"
+          target="_blank"
+          rel="noopener noreferrer"
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 flex items-center gap-1.5 border transition-all ${
+            isDark ? 'bg-slate-900 border-slate-700 text-slate-300 hover:text-white' : 'bg-white border-slate-200 text-slate-700 hover:text-slate-950'
+          }`}
+        >
+          <span>smartpath.tech</span>
+          <ExternalLink className="w-3 h-3" />
+        </a>
       </div>
 
-      {/* 2. THE SOFTWARE PRODUCT SHOWCASE: SMARTPATH COLLEGE */}
-      <div className="space-y-6">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-          <div className="max-w-3xl space-y-2">
-            <div className="flex items-center gap-2 text-xs font-black text-indigo-500 uppercase tracking-widest">
-              <Sparkles className="w-4 h-4 text-amber-500" />
-              <span>Flagship Software Product by SmartPath Technologies</span>
-            </div>
+      {/* 2. PRODUCT HEADER + IMMEDIATE CALL TO ACTION */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
+        <div>
+          <div className="flex items-center gap-2">
             <h2 className={`text-2xl sm:text-3xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
               SmartPath College™
             </h2>
-
-            {/* Exact Required Tagline */}
-            <div className="inline-block p-3 rounded-2xl bg-gradient-to-r from-indigo-500/15 to-violet-500/15 border border-indigo-500/30 text-indigo-900 dark:text-indigo-200 text-xs sm:text-sm font-black shadow-xs">
-              ✨ &ldquo;An AI-Powered Academic Success & Metacognitive Copilot for Higher Education Students.&rdquo;
-            </div>
-
-            <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-              Built specifically for <strong>undergraduate</strong> and <strong>graduate (Master's / PhD / Law / Medicine) students</strong>. SmartPath College is your personal academic companion—helping you conquer heavy college coursework, generate automated lecture transes, compute target GWAs, formulate thesis literature reviews, and ace examinations.
-            </p>
+            <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-500 dark:text-amber-300 border border-amber-400/30">
+              Student App
+            </span>
           </div>
 
-          <button
-            onClick={() => setShowSubscriptionModal(true)}
-            className="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs sm:text-sm transition-all self-start sm:self-auto cursor-pointer shadow-md hover:scale-105 active:scale-95 shrink-0 flex items-center gap-2"
-          >
-            <Zap className="w-4 h-4" />
-            <span>Subscribe as a Student →</span>
-          </button>
-        </div>
-
-        {/* 3. INTERACTIVE SOFTWARE APP EMULATOR / LIVE SHOWCASE */}
-        <div className={`rounded-3xl border overflow-hidden shadow-2xl ${
-          isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xl'
-        }`}>
-          {/* Top Browser / App Chrome Bar */}
-          <div className="p-3.5 px-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-xs">
-            <div className="flex items-center gap-2">
-              <span className="w-3 h-3 rounded-full bg-rose-500" />
-              <span className="w-3 h-3 rounded-full bg-amber-500" />
-              <span className="w-3 h-3 rounded-full bg-emerald-500" />
-              <div className="hidden sm:flex items-center gap-2 ml-3 px-3 py-1 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[11px]">
-                <Sparkles className="w-3 h-3 text-amber-400" />
-                <span>app.smartpath.college • Student App Emulator</span>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                ● Live Student Copilot
-              </span>
-            </div>
-          </div>
-
-          {/* Software Screen Sub-Nav Tabs */}
-          <div className="flex items-center gap-1.5 p-2 bg-slate-900/60 border-b border-slate-800 overflow-x-auto text-xs">
-            <button
-              onClick={() => setActiveAppTab('ai-studio')}
-              className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeAppTab === 'ai-studio'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <Brain className="w-4 h-4" />
-              <span>AI Study Studio (Copilot)</span>
-            </button>
-
-            <button
-              onClick={() => setActiveAppTab('vault')}
-              className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeAppTab === 'vault'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <BookOpen className="w-4 h-4" />
-              <span>Note Vault & Transcriptions</span>
-            </button>
-
-            <button
-              onClick={() => setActiveAppTab('camera')}
-              className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeAppTab === 'camera'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <Camera className="w-4 h-4" />
-              <span>Smart Camera (OCR Synthesizer)</span>
-            </button>
-
-            <button
-              onClick={() => setActiveAppTab('thesis')}
-              className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeAppTab === 'thesis'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <GraduationCap className="w-4 h-4" />
-              <span>Thesis & Defense Studio</span>
-            </button>
-
-            <button
-              onClick={() => setActiveAppTab('dashboard')}
-              className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
-                activeAppTab === 'dashboard'
-                  ? 'bg-indigo-600 text-white shadow-md'
-                  : 'text-slate-400 hover:text-white hover:bg-slate-800'
-              }`}
-            >
-              <Calculator className="w-4 h-4" />
-              <span>GWA & Target Calculator</span>
-            </button>
-          </div>
-
-          {/* Software Screen Content Render */}
-          <div className="p-4 sm:p-6 min-h-[480px]">
-            {/* SCREEN 1: AI STUDY STUDIO */}
-            {activeAppTab === 'ai-studio' && (
-              <div className="space-y-4">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 pb-3 border-b border-slate-800/60">
-                  <div>
-                    <h3 className="text-base sm:text-lg font-black font-heading flex items-center gap-2">
-                      <Bot className="w-5 h-5 text-indigo-400" />
-                      <span>Metacognitive Socratic Dialogue Studio</span>
-                    </h3>
-                    <p className="text-xs text-slate-400">
-                      Undergraduate & Graduate step-by-step problem solver with active recall drills and exam pro-tips.
-                    </p>
-                  </div>
-
-                  {/* Preset prompt pills */}
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
-                    <span className="text-[11px] font-bold text-slate-400 shrink-0">Try Scenario:</span>
-                    {DEMO_PRESET_PROMPTS.map((p, idx) => (
-                      <button
-                        key={idx}
-                        onClick={() => handleSendPrompt(p.text, p.answer)}
-                        className="px-2.5 py-1 rounded-xl bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 whitespace-nowrap font-bold text-[11px] cursor-pointer"
-                      >
-                        {p.subject}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Chat Feed */}
-                <div className={`p-4 rounded-2xl border space-y-4 max-h-[360px] overflow-y-auto ${
-                  isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
-                }`}>
-                  {chatMessages.map((msg, idx) => (
-                    <div
-                      key={idx}
-                      className={`p-4 rounded-2xl text-xs sm:text-sm leading-relaxed border ${
-                        msg.role === 'user'
-                          ? 'bg-indigo-600 text-white border-indigo-500 ml-auto max-w-md'
-                          : isDark ? 'bg-slate-950 border-slate-800 text-slate-200' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-                      }`}
-                    >
-                      {msg.role === 'assistant' && (
-                        <div className="flex items-center gap-2 mb-2 pb-1.5 border-b border-indigo-500/20 text-indigo-400 font-bold text-xs font-mono">
-                          <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                          <span>SmartPath College Copilot</span>
-                        </div>
-                      )}
-                      <pre className="font-sans whitespace-pre-line text-xs sm:text-[13px]">
-                        {msg.content}
-                      </pre>
-                    </div>
-                  ))}
-
-                  {isAiThinking && (
-                    <div className="p-3 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs flex items-center gap-2">
-                      <Brain className="w-4 h-4 animate-spin text-indigo-500" />
-                      <span>Synthesizing Socratic step-by-step reasoning...</span>
-                    </div>
-                  )}
-                </div>
-
-                {/* Input Bar */}
-                <form
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    if (!customInput.trim()) return;
-                    handleSendPrompt(customInput.trim());
-                    setCustomInput('');
-                  }}
-                  className="flex items-center gap-2"
-                >
-                  <input
-                    type="text"
-                    placeholder="Ask any collegiate topic (e.g. Explain Fourier Transform intuitively, or Test me on Cell Division)..."
-                    value={customInput}
-                    onChange={(e) => setCustomInput(e.target.value)}
-                    className={`flex-1 px-4 py-3 rounded-2xl border text-xs sm:text-sm focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
-                      isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-300 text-slate-900'
-                    }`}
-                  />
-                  <button
-                    type="submit"
-                    className="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5"
-                  >
-                    <Send className="w-3.5 h-3.5" />
-                    <span>Send</span>
-                  </button>
-                </form>
-              </div>
-            )}
-
-            {/* SCREEN 2: NOTE VAULT & TRANSCRIPTIONS */}
-            {activeAppTab === 'vault' && (
-              <div className="space-y-4 text-xs">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800/60">
-                  <div>
-                    <h3 className="text-base sm:text-lg font-black font-heading flex items-center gap-2">
-                      <BookOpen className="w-5 h-5 text-indigo-400" />
-                      <span>Lecture Note Vault & AI Transcriptions</span>
-                    </h3>
-                    <p className="text-xs text-slate-400">
-                      Automated lecture audio processing, high-yield summary generation, and digital flashcard decks.
-                    </p>
-                  </div>
-
-                  <span className="px-3 py-1 rounded-full text-[11px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/30">
-                    3 Live Transcriptions Saved
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  <div className={`p-4 rounded-2xl border space-y-2 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase text-indigo-400">BIO 101 • Lecture 8</span>
-                      <span className="text-[10px] text-slate-400">45 mins audio</span>
-                    </div>
-                    <h4 className="font-extrabold text-sm">Mitochondrial ATP Synthesis & Chemiosmosis</h4>
-                    <p className="text-[11px] text-slate-400 line-clamp-3">
-                      • Proton gradient driving ATP synthase F0/F1 complex.
-                      • Yield: ~30-32 ATP per glucose molecule.
-                      • Inhibitors: Oligomycin & Cyanide.
-                    </p>
-                    <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-bold text-emerald-400">
-                      <span>✓ 18 Flashcards Generated</span>
-                      <span className="text-indigo-400 cursor-pointer">Open Trans →</span>
-                    </div>
-                  </div>
-
-                  <div className={`p-4 rounded-2xl border space-y-2 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase text-indigo-400">MATH 54 • Lecture 12</span>
-                      <span className="text-[10px] text-slate-400">55 mins audio</span>
-                    </div>
-                    <h4 className="font-extrabold text-sm">Eigenvalues & Diagonalization</h4>
-                    <p className="text-[11px] text-slate-400 line-clamp-3">
-                      • Characteristic equation det(A - λI) = 0.
-                      • Geometric vs Algebraic multiplicity.
-                      • Matrix powers via P D P^-1.
-                    </p>
-                    <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-bold text-emerald-400">
-                      <span>✓ 24 Flashcards Generated</span>
-                      <span className="text-indigo-400 cursor-pointer">Open Trans →</span>
-                    </div>
-                  </div>
-
-                  <div className={`p-4 rounded-2xl border space-y-2 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
-                    <div className="flex items-center justify-between">
-                      <span className="text-[10px] font-black uppercase text-indigo-400">NURS 204 • Lecture 5</span>
-                      <span className="text-[10px] text-slate-400">1 hr 10 mins</span>
-                    </div>
-                    <h4 className="font-extrabold text-sm">Pharmacology: Antihypertensive Classes</h4>
-                    <p className="text-[11px] text-slate-400 line-clamp-3">
-                      • ACE Inhibitors (-pril) vs ARBs (-sartan).
-                      • Beta-blockers: Cardioselective vs non-selective.
-                      • Nursing alert: Monitor dry cough & hyperkalemia.
-                    </p>
-                    <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[11px] font-bold text-emerald-400">
-                      <span>✓ 30 Flashcards Generated</span>
-                      <span className="text-indigo-400 cursor-pointer">Open Trans →</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* SCREEN 3: SMART CAMERA OCR */}
-            {activeAppTab === 'camera' && (
-              <div className="space-y-4 text-xs">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800/60">
-                  <div>
-                    <h3 className="text-base sm:text-lg font-black font-heading flex items-center gap-2">
-                      <Camera className="w-5 h-5 text-indigo-400" />
-                      <span>Smart Camera: Photo-to-Study Notes Synthesizer</span>
-                    </h3>
-                    <p className="text-xs text-slate-400">
-                      Snap a photo of messy chalkboard equations, textbook pages, or slide handouts to instantly convert them into clean LaTeX and active recall notes.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className={`p-4 rounded-2xl border space-y-3 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
-                    <div className="text-[11px] font-black uppercase text-amber-400">📸 1. Raw Blackboard Capture</div>
-                    <div className="aspect-video rounded-xl bg-slate-950 border border-slate-800 overflow-hidden relative flex items-center justify-center">
-                      <img
-                        src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80"
-                        alt="Board notes"
-                        className="w-full h-full object-cover opacity-60"
-                      />
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="px-3 py-1 rounded-full bg-black/80 text-white font-mono text-xs border border-white/20">
-                          Differential Equations & Laplace Transform
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className={`p-4 rounded-2xl border space-y-3 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
-                    <div className="text-[11px] font-black uppercase text-emerald-400">✨ 2. AI Synthesized LaTeX & Study Card</div>
-                    <div className={`p-3 rounded-xl border text-xs space-y-2 font-mono ${isDark ? 'bg-black/50 border-emerald-500/30 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-900'}`}>
-                      <div>{`$$\\mathcal{L}\\{e^{at}\\} = \\frac{1}{s - a}, \\quad s > a$$`}</div>
-                      <div>{`$$\\mathcal{L}\\{\\sin(\\omega t)\\} = \\frac{\\omega}{s^2 + \\omega^2}$$`}</div>
-                      <div className="text-[11px] font-sans text-slate-300 pt-1">
-                        • Transformed from handwritten chalk into clean digital study cards with 1-click export to PDF and Anki!
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* SCREEN 4: THESIS STUDIO */}
-            {activeAppTab === 'thesis' && (
-              <div className="space-y-4 text-xs">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800/60">
-                  <div>
-                    <h3 className="text-base sm:text-lg font-black font-heading flex items-center gap-2">
-                      <GraduationCap className="w-5 h-5 text-indigo-400" />
-                      <span>Graduate & Thesis Defense Studio</span>
-                    </h3>
-                    <p className="text-xs text-slate-400">
-                      Literature review synthesis, conceptual framework builder, and mock panel defense simulator for Undergraduate capstones & Graduate theses.
-                    </p>
-                  </div>
-                </div>
-
-                <div className={`p-4 rounded-2xl border space-y-3 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
-                  <div className="flex items-center justify-between">
-                    <h4 className="font-extrabold text-sm">Research Project: "AI-Powered Metacognitive Scaffolding in Collegiate Education"</h4>
-                    <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-                      Chapter 2: Review of Related Literature (RRL)
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-                      <strong className="text-indigo-300">Synthesis Matrix</strong>
-                      <p className="text-[11px] text-slate-400">Auto-correlated 14 Scopus-indexed papers comparing Bloom's taxonomy vs Metacognitive awareness.</p>
-                    </div>
-                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-                      <strong className="text-indigo-300">APA 7th Citations</strong>
-                      <p className="text-[11px] text-slate-400">1-click formatted in-text citations and reference list export.</p>
-                    </div>
-                    <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-                      <strong className="text-indigo-300">Mock Panel Defense</strong>
-                      <p className="text-[11px] text-slate-400">AI simulates rigorous questions from tough collegiate research panelists.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* SCREEN 5: GWA & TARGET CALCULATOR */}
-            {activeAppTab === 'dashboard' && (
-              <div className="space-y-4 text-xs">
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800/60">
-                  <div>
-                    <h3 className="text-base sm:text-lg font-black font-heading flex items-center gap-2">
-                      <Calculator className="w-5 h-5 text-indigo-400" />
-                      <span>Academic Performance & Target GWA Calculator</span>
-                    </h3>
-                    <p className="text-xs text-slate-400">
-                      Real-time collegiate GWA computation, Latin Honors trajectory tracking, and exam score planning.
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <div className={`p-4 rounded-2xl border space-y-1 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
-                    <div className="text-[10px] font-black uppercase text-slate-400">Cumulative GWA</div>
-                    <div className="text-2xl font-black text-emerald-400 font-heading">1.38</div>
-                    <div className="text-[11px] text-emerald-500 font-bold">★ Magna Cum Laude Standing</div>
-                  </div>
-
-                  <div className={`p-4 rounded-2xl border space-y-1 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
-                    <div className="text-[10px] font-black uppercase text-slate-400">Enrolled Units</div>
-                    <div className="text-2xl font-black text-indigo-400 font-heading">21.0 Units</div>
-                    <div className="text-[11px] text-slate-400">7 Core Major Subjects</div>
-                  </div>
-
-                  <div className={`p-4 rounded-2xl border space-y-1 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
-                    <div className="text-[10px] font-black uppercase text-slate-400">Exam Target Score</div>
-                    <div className="text-2xl font-black text-amber-400 font-heading">88%</div>
-                    <div className="text-[11px] text-slate-400">Needed on Finals for Flat 1.0</div>
-                  </div>
-                </div>
-              </div>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* 4. TAILORED FOR UNDERGRADUATE & GRADUATE SCHOLARS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-        <div className={`p-6 rounded-3xl border space-y-3 ${
-          isDark ? 'bg-slate-900/70 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-        }`}>
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-indigo-500/20 text-indigo-400 flex items-center justify-center font-bold">
-              🎓
-            </div>
-            <div>
-              <h4 className="font-extrabold text-sm sm:text-base font-heading">For Undergraduate Students</h4>
-              <span className="text-[11px] text-indigo-400 font-bold">BS / BA / Pre-Med / Engineering / Nursing / Accountancy</span>
-            </div>
-          </div>
-
-          <ul className="space-y-2 text-xs text-slate-400">
-            <li className="flex items-start gap-2">
-              <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span>Step-by-step problem solver for difficult STEM, Bio, Calculus, and Accounting problem sets.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span>Instant audio lecture transes and active recall flashcard generation for midterms and finals.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span>Accurate target GWA planner for Dean's List and Latin Honors qualification.</span>
-            </li>
-          </ul>
-        </div>
-
-        <div className={`p-6 rounded-3xl border space-y-3 ${
-          isDark ? 'bg-slate-900/70 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
-        }`}>
-          <div className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-violet-500/20 text-violet-400 flex items-center justify-center font-bold">
-              📚
-            </div>
-            <div>
-              <h4 className="font-extrabold text-sm sm:text-base font-heading">For Graduate & Research Scholars</h4>
-              <span className="text-[11px] text-violet-400 font-bold">Master's (MS/MA/MBA) / Law / Medicine (MD) / PhD</span>
-            </div>
-          </div>
-
-          <ul className="space-y-2 text-xs text-slate-400">
-            <li className="flex items-start gap-2">
-              <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span>Comprehensive Literature Review (RRL) synthesis matrix builder across Scopus & PubMed papers.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span>Simulated thesis defense panel interrogation to prepare for tough oral defense revisions.</span>
-            </li>
-            <li className="flex items-start gap-2">
-              <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
-              <span>APA 7th, IEEE, and Chicago citation formatter for publishable scholarly papers.</span>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      {/* 5. INDIVIDUAL STUDENT SUBSCRIPTION CTA BANNER */}
-      <div className={`p-8 sm:p-10 rounded-3xl border text-center space-y-4 ${
-        isDark ? 'bg-gradient-to-r from-indigo-950/60 via-slate-900 to-violet-950/60 border-indigo-500/30' : 'bg-gradient-to-r from-indigo-50 to-amber-50/50 border-indigo-200'
-      }`}>
-        <Sparkles className="w-12 h-12 text-amber-400 mx-auto" />
-        <div className="space-y-1.5 max-w-2xl mx-auto">
-          <h3 className={`text-xl sm:text-2xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-            Ready to Supercharge Your Academic Success?
-          </h3>
-          <p className={`text-xs sm:text-sm ${isDark ? 'text-slate-300' : 'text-slate-600'}`}>
-            Join college and graduate students across UP Visayas, CPU, WVSU, ISUFST, ISAT-U, and USA using SmartPath College™. Student passes available with free initial trial.
+          <p className="text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-300 mt-0.5">
+            ✨ “An AI-Powered Academic Success & Metacognitive Copilot for Higher Education Students.”
           </p>
         </div>
 
-        <div className="pt-2 flex flex-wrap items-center justify-center gap-3">
-          <button
-            onClick={() => setShowSubscriptionModal(true)}
-            className="px-6 py-3.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-lg shadow-amber-400/20 hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
-          >
-            <Zap className="w-4 h-4 text-slate-950 fill-slate-950" />
-            <span>Get Individual Student Access →</span>
-          </button>
+        <button
+          onClick={() => setShowSubscriptionModal(true)}
+          className="px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2 self-start sm:self-auto shrink-0"
+        >
+          <Zap className="w-4 h-4 text-slate-950 fill-slate-950" />
+          <span>Get Student Access →</span>
+        </button>
+      </div>
 
-          <a
-            href="https://smartpath.tech"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`px-5 py-3.5 rounded-2xl border text-xs sm:text-sm font-bold flex items-center gap-1.5 transition-all ${
-              isDark ? 'bg-slate-900 border-slate-700 text-slate-200 hover:text-white hover:bg-slate-800' : 'bg-white border-slate-300 text-slate-700 hover:text-slate-950 hover:bg-slate-50'
+      {/* 3. INTERACTIVE SOFTWARE APP EMULATOR (FRONT & CENTER) */}
+      <div className={`rounded-3xl border overflow-hidden shadow-2xl ${
+        isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xl'
+      }`}>
+        {/* Top Browser / App Chrome Bar */}
+        <div className="p-3 px-4 bg-slate-900 border-b border-slate-800 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
+            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
+            <div className="flex items-center gap-2 ml-2 px-2.5 py-0.5 rounded-xl bg-slate-800 border border-slate-700 text-slate-300 font-mono text-[11px]">
+              <Sparkles className="w-3 h-3 text-amber-400" />
+              <span>app.smartpath.college • Live Interactive Software Showcase</span>
+            </div>
+          </div>
+
+          <span className="text-[10px] font-black uppercase tracking-wider px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
+            ● Try Live App Below
+          </span>
+        </div>
+
+        {/* Software Screen Sub-Nav Tabs */}
+        <div className="flex items-center gap-1.5 p-2 bg-slate-900/60 border-b border-slate-800 overflow-x-auto text-xs">
+          <button
+            onClick={() => setActiveAppTab('ai-studio')}
+            className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeAppTab === 'ai-studio'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800'
             }`}
           >
-            <span>Visit smartpath.tech</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
+            <Brain className="w-3.5 h-3.5" />
+            <span>1. AI Study Copilot</span>
+          </button>
+
+          <button
+            onClick={() => setActiveAppTab('vault')}
+            className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeAppTab === 'vault'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <BookOpen className="w-3.5 h-3.5" />
+            <span>2. Note Vault & Trans</span>
+          </button>
+
+          <button
+            onClick={() => setActiveAppTab('camera')}
+            className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeAppTab === 'camera'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <Camera className="w-3.5 h-3.5" />
+            <span>3. Smart Camera OCR</span>
+          </button>
+
+          <button
+            onClick={() => setActiveAppTab('thesis')}
+            className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeAppTab === 'thesis'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <GraduationCap className="w-3.5 h-3.5" />
+            <span>4. Thesis & Defense</span>
+          </button>
+
+          <button
+            onClick={() => setActiveAppTab('dashboard')}
+            className={`px-3 py-1.5 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 ${
+              activeAppTab === 'dashboard'
+                ? 'bg-indigo-600 text-white shadow-md'
+                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+            }`}
+          >
+            <Calculator className="w-3.5 h-3.5" />
+            <span>5. GWA Calculator</span>
+          </button>
+        </div>
+
+        {/* Software Screen Content Render */}
+        <div className="p-4 sm:p-5 min-h-[440px]">
+          {/* SCREEN 1: AI STUDY STUDIO */}
+          {activeAppTab === 'ai-studio' && (
+            <div className="space-y-3">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-2 pb-2 border-b border-slate-800/60">
+                <div className="flex items-center gap-2">
+                  <Bot className="w-4 h-4 text-indigo-400" />
+                  <span className="font-extrabold text-xs sm:text-sm">Metacognitive Socratic Dialogue Studio</span>
+                </div>
+
+                {/* Preset prompt pills */}
+                <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
+                  <span className="text-[10px] font-bold text-slate-400 shrink-0">Try Demo:</span>
+                  {DEMO_PRESET_PROMPTS.map((p, idx) => (
+                    <button
+                      key={idx}
+                      onClick={() => handleSendPrompt(p.text, p.answer)}
+                      className="px-2 py-0.5 rounded-lg bg-indigo-500/10 hover:bg-indigo-500/20 text-indigo-400 border border-indigo-500/30 whitespace-nowrap font-bold text-[10px] cursor-pointer"
+                    >
+                      {p.subject}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Chat Feed */}
+              <div className={`p-3.5 rounded-2xl border space-y-3 max-h-[320px] overflow-y-auto ${
+                isDark ? 'bg-slate-900/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+              }`}>
+                {chatMessages.map((msg, idx) => (
+                  <div
+                    key={idx}
+                    className={`p-3 rounded-xl text-xs leading-relaxed border ${
+                      msg.role === 'user'
+                        ? 'bg-indigo-600 text-white border-indigo-500 ml-auto max-w-md'
+                        : isDark ? 'bg-slate-950 border-slate-800 text-slate-200' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+                    }`}
+                  >
+                    {msg.role === 'assistant' && (
+                      <div className="flex items-center gap-1.5 mb-1.5 pb-1 border-b border-indigo-500/20 text-indigo-400 font-bold text-[11px] font-mono">
+                        <Sparkles className="w-3 h-3 text-amber-400" />
+                        <span>SmartPath College Copilot</span>
+                      </div>
+                    )}
+                    <pre className="font-sans whitespace-pre-line text-xs">
+                      {msg.content}
+                    </pre>
+                  </div>
+                ))}
+
+                {isAiThinking && (
+                  <div className="p-2.5 rounded-xl bg-indigo-500/10 border border-indigo-500/30 text-indigo-400 text-xs flex items-center gap-2">
+                    <Brain className="w-3.5 h-3.5 animate-spin text-indigo-500" />
+                    <span>Synthesizing Socratic step-by-step reasoning...</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Input Bar */}
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (!customInput.trim()) return;
+                  handleSendPrompt(customInput.trim());
+                  setCustomInput('');
+                }}
+                className="flex items-center gap-2"
+              >
+                <input
+                  type="text"
+                  placeholder="Ask any collegiate topic (e.g. SN2 reaction, Integral Calculus, Cell Division)..."
+                  value={customInput}
+                  onChange={(e) => setCustomInput(e.target.value)}
+                  className={`flex-1 px-3.5 py-2.5 rounded-xl border text-xs focus:ring-2 focus:ring-indigo-500 focus:outline-hidden ${
+                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-300 text-slate-900'
+                  }`}
+                />
+                <button
+                  type="submit"
+                  className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-black text-xs shadow-md transition-all cursor-pointer flex items-center gap-1.5"
+                >
+                  <Send className="w-3 h-3" />
+                  <span>Send</span>
+                </button>
+              </form>
+            </div>
+          )}
+
+          {/* SCREEN 2: NOTE VAULT & TRANSCRIPTIONS */}
+          {activeAppTab === 'vault' && (
+            <div className="space-y-3 text-xs">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-800/60">
+                <div className="flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-indigo-400" />
+                  <span className="font-extrabold text-xs sm:text-sm">Lecture Note Vault & AI Transcriptions</span>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-indigo-500/10 text-indigo-400 border border-indigo-500/30">
+                  3 Saved Trans
+                </span>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                <div className={`p-3.5 rounded-2xl border space-y-1.5 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-black uppercase text-indigo-400">BIO 101 • Lecture 8</span>
+                    <span className="text-[9px] text-slate-400">45 mins</span>
+                  </div>
+                  <h4 className="font-bold text-xs">Mitochondrial ATP Synthesis</h4>
+                  <p className="text-[11px] text-slate-400 line-clamp-2">
+                    • Proton gradient driving ATP synthase complex. Yield ~30-32 ATP.
+                  </p>
+                  <div className="pt-1.5 border-t border-slate-800 flex items-center justify-between text-[10px] font-bold text-emerald-400">
+                    <span>✓ 18 Flashcards</span>
+                    <span className="text-indigo-400 cursor-pointer">Open Trans →</span>
+                  </div>
+                </div>
+
+                <div className={`p-3.5 rounded-2xl border space-y-1.5 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-black uppercase text-indigo-400">MATH 54 • Lecture 12</span>
+                    <span className="text-[9px] text-slate-400">55 mins</span>
+                  </div>
+                  <h4 className="font-bold text-xs">Eigenvalues & Diagonalization</h4>
+                  <p className="text-[11px] text-slate-400 line-clamp-2">
+                    • Characteristic equation det(A - λI) = 0. Matrix powers via P D P^-1.
+                  </p>
+                  <div className="pt-1.5 border-t border-slate-800 flex items-center justify-between text-[10px] font-bold text-emerald-400">
+                    <span>✓ 24 Flashcards</span>
+                    <span className="text-indigo-400 cursor-pointer">Open Trans →</span>
+                  </div>
+                </div>
+
+                <div className={`p-3.5 rounded-2xl border space-y-1.5 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-black uppercase text-indigo-400">NURS 204 • Lecture 5</span>
+                    <span className="text-[9px] text-slate-400">1h 10m</span>
+                  </div>
+                  <h4 className="font-bold text-xs">Pharmacology: Antihypertensives</h4>
+                  <p className="text-[11px] text-slate-400 line-clamp-2">
+                    • ACE Inhibitors (-pril) vs ARBs (-sartan). Nursing alerts & vitals.
+                  </p>
+                  <div className="pt-1.5 border-t border-slate-800 flex items-center justify-between text-[10px] font-bold text-emerald-400">
+                    <span>✓ 30 Flashcards</span>
+                    <span className="text-indigo-400 cursor-pointer">Open Trans →</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* SCREEN 3: SMART CAMERA OCR */}
+          {activeAppTab === 'camera' && (
+            <div className="space-y-3 text-xs">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-800/60">
+                <div className="flex items-center gap-2">
+                  <Camera className="w-4 h-4 text-indigo-400" />
+                  <span className="font-extrabold text-xs sm:text-sm">Smart Camera: Photo-to-LaTeX Synthesizer</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div className={`p-3.5 rounded-2xl border space-y-2 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                  <div className="text-[10px] font-black uppercase text-amber-400">📸 1. Raw Blackboard Photo</div>
+                  <div className="aspect-video rounded-xl bg-slate-950 border border-slate-800 overflow-hidden relative flex items-center justify-center">
+                    <img
+                      src="https://images.unsplash.com/photo-1509062522246-3755977927d7?w=600&auto=format&fit=crop&q=80"
+                      alt="Board notes"
+                      className="w-full h-full object-cover opacity-60"
+                    />
+                    <div className="absolute inset-0 flex items-center justify-center">
+                      <span className="px-2.5 py-0.5 rounded-full bg-black/80 text-white font-mono text-[11px] border border-white/20">
+                        Laplace Transform Lecture
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className={`p-3.5 rounded-2xl border space-y-2 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                  <div className="text-[10px] font-black uppercase text-emerald-400">✨ 2. Synthesized LaTeX Card</div>
+                  <div className={`p-3 rounded-xl border text-xs space-y-2 font-mono ${isDark ? 'bg-black/50 border-emerald-500/30 text-emerald-300' : 'bg-emerald-50 border-emerald-200 text-emerald-900'}`}>
+                    <div>{`$$\\mathcal{L}\\{e^{at}\\} = \\frac{1}{s - a}, \\quad s > a$$`}</div>
+                    <div>{`$$\\mathcal{L}\\{\\sin(\\omega t)\\} = \\frac{\\omega}{s^2 + \\omega^2}$$`}</div>
+                    <div className="text-[10px] font-sans text-slate-300 pt-1">
+                      • Instant digital card generated with export to Anki flashcard deck.
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* SCREEN 4: THESIS STUDIO */}
+          {activeAppTab === 'thesis' && (
+            <div className="space-y-3 text-xs">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-800/60">
+                <div className="flex items-center gap-2">
+                  <GraduationCap className="w-4 h-4 text-indigo-400" />
+                  <span className="font-extrabold text-xs sm:text-sm">Thesis & Defense Studio</span>
+                </div>
+              </div>
+
+              <div className={`p-3.5 rounded-2xl border space-y-2 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                <div className="flex items-center justify-between">
+                  <h4 className="font-bold text-xs">Chapter 2: Review of Related Literature (RRL) Matrix</h4>
+                  <span className="text-[9px] font-bold px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
+                    Active Synthesis
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-1">
+                  <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+                    <strong className="text-indigo-300 text-xs">Synthesis Matrix</strong>
+                    <p className="text-[10px] text-slate-400">Correlates Scopus & PubMed papers with key thematic variables.</p>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+                    <strong className="text-indigo-300 text-xs">APA 7th Citations</strong>
+                    <p className="text-[10px] text-slate-400">Auto-formatted in-text citations & bibliography.</p>
+                  </div>
+                  <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
+                    <strong className="text-indigo-300 text-xs">Mock Defense</strong>
+                    <p className="text-[10px] text-slate-400">Panel defense question generator & response coaching.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* SCREEN 5: GWA CALCULATOR */}
+          {activeAppTab === 'dashboard' && (
+            <div className="space-y-3 text-xs">
+              <div className="flex items-center justify-between pb-2 border-b border-slate-800/60">
+                <div className="flex items-center gap-2">
+                  <Calculator className="w-4 h-4 text-indigo-400" />
+                  <span className="font-extrabold text-xs sm:text-sm">Academic Performance & Target GWA Calculator</span>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className={`p-3.5 rounded-2xl border space-y-1 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                  <div className="text-[10px] font-black uppercase text-slate-400">Cumulative GWA</div>
+                  <div className="text-xl font-black text-emerald-400 font-heading">1.38</div>
+                  <div className="text-[10px] text-emerald-500 font-bold">★ Magna Cum Laude Trajectory</div>
+                </div>
+
+                <div className={`p-3.5 rounded-2xl border space-y-1 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                  <div className="text-[10px] font-black uppercase text-slate-400">Enrolled Units</div>
+                  <div className="text-xl font-black text-indigo-400 font-heading">21.0 Units</div>
+                  <div className="text-[10px] text-slate-400">7 Major Subjects</div>
+                </div>
+
+                <div className={`p-3.5 rounded-2xl border space-y-1 ${isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-50 border-slate-200'}`}>
+                  <div className="text-[10px] font-black uppercase text-slate-400">Finals Target</div>
+                  <div className="text-xl font-black text-amber-400 font-heading">88%</div>
+                  <div className="text-[10px] text-slate-400">To secure 1.25 semester grade</div>
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* 4. COMPACT 2-COLUMN LEVEL BREAKDOWN */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">
+        <div className={`p-4 rounded-2xl border space-y-1.5 ${
+          isDark ? 'bg-slate-900/60 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+        }`}>
+          <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-500">
+            <span>🎓</span>
+            <span>Undergraduate Students (BS / BA / Pre-Med / Eng / Nursing)</span>
+          </div>
+          <p className="text-xs text-slate-400">
+            Socratic problem-solving for STEM, automatic audio lecture transes, and Dean's list GWA target tracking.
+          </p>
+        </div>
+
+        <div className={`p-4 rounded-2xl border space-y-1.5 ${
+          isDark ? 'bg-slate-900/60 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+        }`}>
+          <div className="flex items-center gap-1.5 text-xs font-bold text-violet-400">
+            <span>📚</span>
+            <span>Graduate & Thesis Scholars (Master's / Law / MD / PhD)</span>
+          </div>
+          <p className="text-xs text-slate-400">
+            Literature review (RRL) matrix builder across Scopus/PubMed papers, mock panel defense, and APA 7th citations.
+          </p>
         </div>
       </div>
 
@@ -725,8 +574,8 @@ $$-x \\cos(x) + \\sin(x) + C$$
         onClose={() => setShowSubscriptionModal(false)}
         title="Get SmartPath College™ Student Access"
       >
-        <form onSubmit={handleStudentSubmit} className="space-y-4">
-          <div className="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-500/30 text-xs text-indigo-900 dark:text-indigo-200 flex items-start gap-2">
+        <form onSubmit={handleStudentSubmit} className="space-y-3.5">
+          <div className="p-3 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-500/30 text-xs text-indigo-900 dark:text-indigo-200 flex items-start gap-2">
             <Sparkles className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
             <span>
               Subscribe to <strong>SmartPath College™</strong> (The AI Metacognitive Copilot for Undergraduate & Graduate Students) with an individual student plan.
@@ -770,7 +619,7 @@ $$-x \\cos(x) + \\sin(x) + C$$
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div className="space-y-1">
               <label className={`text-xs font-bold ${isDark ? 'text-slate-300' : 'text-slate-700'}`}>
-                University / College Campus
+                University / Campus
               </label>
               <input
                 type="text"
@@ -838,11 +687,11 @@ $$-x \\cos(x) + \\sin(x) + C$$
             </div>
           </div>
 
-          <div className="pt-2 flex items-center justify-end gap-2">
+          <div className="pt-1 flex items-center justify-end gap-2">
             <button
               type="button"
               onClick={() => setShowSubscriptionModal(false)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold border cursor-pointer ${
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold border cursor-pointer ${
                 isDark ? 'border-slate-800 text-slate-400 hover:text-white' : 'border-slate-200 text-slate-600 hover:text-slate-950'
               }`}
             >
@@ -850,7 +699,7 @@ $$-x \\cos(x) + \\sin(x) + C$$
             </button>
             <button
               type="submit"
-              className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
+              className="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-slate-950 font-black text-xs shadow-md hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-1.5"
             >
               <Zap className="w-3.5 h-3.5 text-slate-950 fill-slate-950" />
               <span>Get Student Access</span>
