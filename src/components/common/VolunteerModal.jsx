@@ -12,6 +12,7 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
   const [contact, setContact] = useState('');
   const [regionId, setRegionId] = useState(selectedRegion !== 'all' ? selectedRegion : 'r6');
   const [campusId, setCampusId] = useState(currentUser.campusId || 'upv');
+  const [customCampus, setCustomCampus] = useState('');
   const [roleArea, setRoleArea] = useState('life_group'); // 'life_group' | 'worship' | 'camp' | 'coffee' | 'prayer' | 'tutor'
   const [yearLevel, setYearLevel] = useState(currentUser.yearLevel || '2nd Year');
   const [availability, setAvailability] = useState('Weekdays 4:00 PM onwards & Saturdays');
@@ -44,14 +45,16 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
     const campusObj = CAMPUSES.find((c) => c.id === campusId);
     const regionObj = getRegionById(regionId);
 
+    const finalCampusName = campusId === '__other__' ? (customCampus.trim() || 'Other Campus') : (campusObj?.name || 'Philippine University Campus');
+
     addVolunteerApplication({
       name: name.trim(),
       email: email.trim(),
       contact: contact.trim(),
       regionId,
       regionName: regionObj?.name || 'All Philippines',
-      campusId,
-      campusName: campusObj?.name || 'Philippine University Campus',
+      campusId: campusId === '__other__' ? 'other' : campusId,
+      campusName: finalCampusName,
       roleArea: selectedRoleObj?.title || 'Youth Worker Volunteer',
       yearLevel,
       availability,
@@ -139,21 +142,36 @@ export const VolunteerModal = ({ isOpen, onClose }) => {
             </label>
             <select
               value={campusId}
-              onChange={(e) => setCampusId(e.target.value)}
+              onChange={(e) => { setCampusId(e.target.value); if (e.target.value !== '__other__') setCustomCampus(''); }}
               className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm font-bold ${
                 isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
               }`}
             >
-              {availableCampuses.length > 0 ? (
-                availableCampuses.map((c) => (
-                  <option key={c.id} value={c.id}>{c.name}</option>
-                ))
-              ) : (
-                <option value="other">Online / Collegiate Servant</option>
-              )}
+              {availableCampuses.map((c) => (
+                <option key={c.id} value={c.id}>{c.name}</option>
+              ))}
+              <option value="__other__">✏️ Other (Type my campus)</option>
             </select>
           </div>
         </div>
+
+        {campusId === '__other__' && (
+          <div>
+            <label className={`block text-xs font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+              Type Your College / University Name *
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Adventist University of the Philippines"
+              value={customCampus}
+              onChange={(e) => setCustomCampus(e.target.value)}
+              className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+              }`}
+            />
+          </div>
+        )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>

@@ -43,6 +43,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
   const [role, setRole] = useState('student'); // 'student' | 'tutor' | 'worker'
   const [regionId, setRegionId] = useState('r6');
   const [campusId, setCampusId] = useState('upv');
+  const [customCampus, setCustomCampus] = useState('');
   const [preferredMode, setPreferredMode] = useState('Hybrid');
   const [program, setProgram] = useState('');
   const [yearLevel, setYearLevel] = useState('1st Year');
@@ -126,6 +127,7 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
 
     const campusObj = CAMPUSES.find((c) => c.id === campusId);
     const regionObj = getRegionById(regionId);
+    const finalCampusName = campusId === '__other__' ? (customCampus.trim() || 'Other Campus') : (campusObj?.name || 'Philippine University Campus');
 
     const success = await register({
       name,
@@ -134,8 +136,8 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
       role,
       regionId,
       regionName: regionObj?.name || 'All Philippines',
-      campusId,
-      campusName: campusObj?.name || 'Philippine University Campus',
+      campusId: campusId === '__other__' ? 'other' : campusId,
+      campusName: finalCampusName,
       preferredMode,
       program,
       yearLevel,
@@ -561,21 +563,36 @@ export const AuthModal = ({ isOpen, onClose, initialMode = 'login' }) => {
                 </label>
                 <select
                   value={campusId}
-                  onChange={(e) => setCampusId(e.target.value)}
+                  onChange={(e) => { setCampusId(e.target.value); if (e.target.value !== '__other__') setCustomCampus(''); }}
                   className={`w-full px-2.5 py-2 rounded-xl border text-xs font-bold ${
                     isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
                   }`}
                 >
-                  {availableCampuses.length > 0 ? (
-                    availableCampuses.map((camp) => (
-                      <option key={camp.id} value={camp.id}>{camp.name}</option>
-                    ))
-                  ) : (
-                    <option value="other">Online / Collegiate Student</option>
-                  )}
+                  {availableCampuses.map((camp) => (
+                    <option key={camp.id} value={camp.id}>{camp.name}</option>
+                  ))}
+                  <option value="__other__">✏️ Other (Type my campus)</option>
                 </select>
               </div>
             </div>
+
+            {campusId === '__other__' && (
+              <div>
+                <label className={`block text-[11px] font-black uppercase tracking-wider mb-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                  Type Your College / University Name *
+                </label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Adventist University of the Philippines"
+                  value={customCampus}
+                  onChange={(e) => setCustomCampus(e.target.value)}
+                  className={`w-full px-3 py-2 rounded-xl border text-xs ${
+                    isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+                  }`}
+                />
+              </div>
+            )}
 
             {/* 2. Degree & Year Level */}
             <div className="grid grid-cols-2 gap-2">

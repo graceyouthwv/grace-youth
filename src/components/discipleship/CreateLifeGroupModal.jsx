@@ -11,6 +11,7 @@ export const CreateLifeGroupModal = ({ isOpen, onClose }) => {
   const [title, setTitle] = useState('');
   const [regionId, setRegionId] = useState(selectedRegion !== 'all' ? selectedRegion : 'r6');
   const [campusId, setCampusId] = useState('upv');
+  const [customCampus, setCustomCampus] = useState('');
   const [meetingType, setMeetingType] = useState('Hybrid');
   const [isOpenNationwide, setIsOpenNationwide] = useState(true);
   const [facilitator, setFacilitator] = useState(currentUser.name || 'Pastor Tim');
@@ -40,13 +41,14 @@ export const CreateLifeGroupModal = ({ isOpen, onClose }) => {
     const campusObj = CAMPUSES.find((c) => c.id === campusId);
     const regionObj = getRegionById(regionId);
     const tagsArray = tags.split(',').map((t) => t.trim()).filter(Boolean);
+    const finalCampusName = campusId === '__other__' ? (customCampus.trim() || 'Other Campus') : (campusObj?.name || 'Philippine University Campus');
 
     createOfficialLifeGroup({
       title: title.trim(),
       regionId,
       regionName: regionObj?.name || 'All Philippines',
-      campusId,
-      campusName: campusObj?.name || 'Philippine University Campus',
+      campusId: campusId === '__other__' ? 'other' : campusId,
+      campusName: finalCampusName,
       meetingType,
       isOpenNationwide: meetingType === 'Online' || meetingType === 'Hybrid' || isOpenNationwide,
       facilitator: facilitator.trim(),
@@ -122,7 +124,7 @@ export const CreateLifeGroupModal = ({ isOpen, onClose }) => {
             </label>
             <select
               value={campusId}
-              onChange={(e) => setCampusId(e.target.value)}
+              onChange={(e) => { setCampusId(e.target.value); if (e.target.value !== '__other__') setCustomCampus(''); }}
               className={`w-full px-3 py-2 rounded-xl border text-xs ${
                 isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
               }`}
@@ -130,9 +132,28 @@ export const CreateLifeGroupModal = ({ isOpen, onClose }) => {
               {availableCampuses.map((camp) => (
                 <option key={camp.id} value={camp.id}>{camp.name}</option>
               ))}
+              <option value="__other__">✏️ Other (Type my campus)</option>
             </select>
           </div>
         </div>
+
+        {campusId === '__other__' && (
+          <div>
+            <label className="block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+              Type Your College / University Name *
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Adventist University of the Philippines"
+              value={customCampus}
+              onChange={(e) => setCustomCampus(e.target.value)}
+              className={`w-full px-3 py-2 rounded-xl border text-xs ${
+                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+              }`}
+            />
+          </div>
+        )}
 
         {/* Meeting Modality & Facilitator */}
         <div className="grid grid-cols-2 gap-3">

@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
+import { PH_REGIONS, getRegionById } from '../../data/regions';
 import { Users, Sparkles, MapPin, Send, School, Clock } from 'lucide-react';
 
 export const RequestLifeGroupModal = ({ isOpen, onClose }) => {
-  const { currentUser, requestLifeGroup, showToast, theme } = useApp();
+  const { currentUser, selectedRegion, requestLifeGroup, showToast, theme } = useApp();
 
-  const [campusId, setCampusId] = useState(currentUser.campusId || 'isufst');
+  const [regionId, setRegionId] = useState(selectedRegion !== 'all' ? selectedRegion : (currentUser.regionId || 'r6'));
+  const [campusId, setCampusId] = useState(currentUser.campusId || 'upv');
+  const [customCampus, setCustomCampus] = useState('');
   const [proposedTitle, setProposedTitle] = useState('');
   const [targetAudience, setTargetAudience] = useState('Freshmen & Dorm Mates');
   const [preferredSchedule, setPreferredSchedule] = useState('Wednesdays 5:00 PM');
@@ -18,6 +21,11 @@ export const RequestLifeGroupModal = ({ isOpen, onClose }) => {
 
   const isDark = theme === 'dark';
 
+  const availableCampuses = CAMPUSES.filter((c) => {
+    if (c.id === 'all') return false;
+    return c.regionId === regionId;
+  });
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!proposedTitle.trim() || !contact.trim()) {
@@ -26,10 +34,14 @@ export const RequestLifeGroupModal = ({ isOpen, onClose }) => {
     }
 
     const campusObj = CAMPUSES.find((c) => c.id === campusId);
+    const regionObj = getRegionById(regionId);
+    const finalCampusName = campusId === '__other__' ? (customCampus.trim() || 'Other Campus') : (campusObj?.name || 'Philippine University Campus');
 
     requestLifeGroup({
-      campusId,
-      campusName: campusObj?.name || 'Iloilo Campus',
+      regionId,
+      regionName: regionObj?.name || 'All Philippines',
+      campusId: campusId === '__other__' ? 'other' : campusId,
+      campusName: finalCampusName,
       proposedTitle: proposedTitle.trim(),
       targetAudience,
       preferredSchedule,
@@ -57,22 +69,65 @@ export const RequestLifeGroupModal = ({ isOpen, onClose }) => {
           <span className="font-bold">✨ Student Initiative:</span> Want to gather your classmates or dorm friends for weekly prayer and Bible reading? Submit a request and our <strong>Ministry Leadership & Youth Workers</strong> will equip and officially launch your campus group!
         </div>
 
-        <div>
-          <label className="block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
-            Target Iloilo Campus *
-          </label>
-          <select
-            value={campusId}
-            onChange={(e) => setCampusId(e.target.value)}
-            className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
-              isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
-            }`}
-          >
-            {CAMPUSES.filter((c) => c.id !== 'all').map((camp) => (
-              <option key={camp.id} value={camp.id}>{camp.name}</option>
-            ))}
-          </select>
+        {/* Region & Campus */}
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+              Region / Place *
+            </label>
+            <select
+              value={regionId}
+              onChange={(e) => {
+                setRegionId(e.target.value);
+                const firstCampus = CAMPUSES.find((c) => c.regionId === e.target.value && c.id !== 'all');
+                if (firstCampus) setCampusId(firstCampus.id);
+              }}
+              className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+              }`}
+            >
+              {PH_REGIONS.map((r) => (
+                <option key={r.id} value={r.id}>{r.shortName}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label className="block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+              Campus / University *
+            </label>
+            <select
+              value={campusId}
+              onChange={(e) => { setCampusId(e.target.value); if (e.target.value !== '__other__') setCustomCampus(''); }}
+              className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+              }`}
+            >
+              {availableCampuses.map((camp) => (
+                <option key={camp.id} value={camp.id}>{camp.name}</option>
+              ))}
+              <option value="__other__">✏️ Other (Type my campus)</option>
+            </select>
+          </div>
         </div>
+
+        {campusId === '__other__' && (
+          <div>
+            <label className="block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
+              Type Your College / University Name *
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Adventist University of the Philippines"
+              value={customCampus}
+              onChange={(e) => setCustomCampus(e.target.value)}
+              className={`w-full px-3 py-2.5 rounded-xl border text-xs sm:text-sm ${
+                isDark ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900'
+              }`}
+            />
+          </div>
+        )}
 
         <div>
           <label className="block text-xs font-black uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-1">
