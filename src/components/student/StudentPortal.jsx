@@ -448,10 +448,10 @@ export const StudentPortal = () => {
                 </h4>
               </div>
               <button
-                onClick={() => setActiveTab('prayer')}
+                onClick={() => setActiveTab('discipleship')}
                 className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline cursor-pointer"
               >
-                Wall &rarr;
+                Life Groups &rarr;
               </button>
             </div>
 

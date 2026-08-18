@@ -175,18 +175,18 @@ export const App = () => {
           </div>
         )}
 
-        {/* 8. PRAYER WALL TAB */}
+        {/* 8. DISCIPLESHIP & LIFE GROUPS (HOSTS GROUP PRAYERS) */}
         {activeTab === 'prayer' && (
           <div className="space-y-4">
             <div className="mb-2">
               <h1 className={`text-2xl sm:text-4xl font-extrabold tracking-tight font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                {t('prayer_heading')}
+                {t('discipleship_heading')}
               </h1>
               <p className={`text-xs sm:text-sm mt-1 ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
-                {t('prayer_subheading')}
+                Connect with your campus Life Group family for fellowship, Bible reflection, and dedicated group prayers.
               </p>
             </div>
-            <PrayerWall />
+            <BibleStudyHub />
           </div>
         )}
 

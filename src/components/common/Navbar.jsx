@@ -212,17 +212,6 @@ export const Navbar = () => {
                 <span>{t('nav_partners')}</span>
               </button>
 
-              <button
-                onClick={() => setActiveTab('prayer')}
-                className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
-                  activeTab === 'prayer'
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-slate-950 font-bold'
-                }`}
-              >
-                <Heart className={`w-3.5 h-3.5 ${activeTab === 'prayer' ? 'text-white' : 'text-rose-500'}`} />
-                <span>{t('nav_prayers')}</span>
-              </button>
             </nav>
 
             {/* 3. RIGHT SIDE CONTROLS */}

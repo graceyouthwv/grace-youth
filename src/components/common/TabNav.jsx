@@ -18,8 +18,7 @@ export const TabNav = () => {
     { id: 'tutorials', label: 'Acads', icon: BookOpen },
     { id: 'discipleship', label: 'Groups', icon: Users },
     { id: 'giving', label: 'Events', icon: Tent },
-    { id: 'partners', label: 'Partner', icon: Sparkles },
-    { id: 'prayer', label: 'Prayers', icon: Heart }
+    { id: 'partners', label: 'Partner', icon: Sparkles }
   ];
 
   return (

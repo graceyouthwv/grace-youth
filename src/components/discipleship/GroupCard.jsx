@@ -10,6 +10,7 @@ export const GroupCard = ({ group }) => {
   const [showJoinModal, setShowJoinModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showCircleModal, setShowCircleModal] = useState(false);
+  const [circleInitialTab, setCircleInitialTab] = useState('chat');
 
   const isJoined = myGroups.includes(group.id);
   const isLeaderOrWorker = currentUser && (
@@ -110,11 +111,14 @@ export const GroupCard = ({ group }) => {
         <div className="p-4 border-t bg-slate-50/50 dark:bg-slate-900/60 border-slate-100 dark:border-slate-800 flex items-center gap-2">
           {isJoined || isFacilitator ? (
             <button
-              onClick={() => setShowCircleModal(true)}
+              onClick={() => {
+                setCircleInitialTab('chat');
+                setShowCircleModal(true);
+              }}
               className="flex-1 py-3 rounded-2xl font-black text-xs sm:text-sm bg-emerald-600 hover:bg-emerald-500 text-white shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
             >
               <MessageSquare className="w-4 h-4" />
-              <span>Open Circle & Chat ({group.chatMessages?.length || 0})</span>
+              <span>Circle Chat ({group.chatMessages?.length || 0})</span>
             </button>
           ) : (
             <button
@@ -126,9 +130,27 @@ export const GroupCard = ({ group }) => {
             </button>
           )}
 
+          {/* Group Prayers Trigger */}
+          <button
+            onClick={() => {
+              setCircleInitialTab('prayers');
+              setShowCircleModal(true);
+            }}
+            className={`px-3 py-3 rounded-2xl border font-bold text-xs transition-all cursor-pointer shrink-0 flex items-center gap-1.5 ${
+              isDark ? 'bg-rose-950/40 border-rose-500/30 text-rose-300 hover:bg-rose-900/40' : 'bg-rose-50 border-rose-200 text-rose-700 hover:bg-rose-100'
+            }`}
+            title="Open Group Prayer Stream"
+          >
+            <span>🙏</span>
+            <span className="font-mono text-[11px] font-black">{group.groupPrayers?.length || 0}</span>
+          </button>
+
           {/* Quick Roster / Details Trigger */}
           <button
-            onClick={() => setShowCircleModal(true)}
+            onClick={() => {
+              setCircleInitialTab('members');
+              setShowCircleModal(true);
+            }}
             className={`p-3 rounded-2xl border font-bold text-xs transition-all cursor-pointer shrink-0 ${
               isDark ? 'bg-slate-800 border-slate-700 text-slate-300 hover:text-white' : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
             }`}
@@ -149,6 +171,7 @@ export const GroupCard = ({ group }) => {
         isOpen={showCircleModal}
         onClose={() => setShowCircleModal(false)}
         group={group}
+        initialTab={circleInitialTab}
       />
 
       <EditGroupModal

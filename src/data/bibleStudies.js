@@ -62,9 +62,35 @@ export const INITIAL_BIBLE_STUDIES = [
         senderName: 'Bea Claridad',
         senderAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
         senderRole: 'Student Member',
-        message: 'Excited for this! Please pray for my Bio practicals on Thursday as well. Looking forward to fellowship!',
+        message: 'Excited for this! Looking forward to Friday fellowship and group prayer time!',
         timestamp: 'Yesterday at 5:15 PM',
-        tag: 'Prayer'
+        tag: 'Fellowship'
+      }
+    ],
+    groupPrayers: [
+      {
+        id: 'g-pray-1',
+        author: 'Bea Claridad',
+        authorRole: 'Student Member',
+        authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+        request: 'Please pray for peace and wisdom for my upcoming Biology practical exam on Thursday, and for balance with dorm chores.',
+        category: 'Academics & Exams',
+        createdAt: 'Yesterday',
+        prayedCount: 6,
+        isAnswered: false,
+        encouragements: ['Praying for clarity and calm mind Bea!', 'You got this in Christ! Philippians 4:6-7']
+      },
+      {
+        id: 'g-pray-2',
+        author: 'Kuya Daniel Chavez',
+        authorRole: 'Youth Worker',
+        authorAvatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+        request: 'Praise report! Our midterm coffee giveaway at UPV Miagao and CPU reached over 120 students with free reviewers and gospel tracts!',
+        category: 'Praise & Thanksgiving',
+        createdAt: '2 days ago',
+        prayedCount: 14,
+        isAnswered: true,
+        encouragements: ['Praise God for the fruit in Western Visayas!']
       }
     ]
   }

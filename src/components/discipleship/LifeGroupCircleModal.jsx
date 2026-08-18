@@ -16,25 +16,40 @@ import {
   Heart,
   BookOpen,
   Sparkles,
-  CheckCircle2
+  CheckCircle2,
+  PlusCircle,
+  MessageCircle,
+  Flame
 } from 'lucide-react';
 import { CAMPUSES } from '../../data/campuses';
 
-export const LifeGroupCircleModal = ({ isOpen, onClose, group }) => {
+export const LifeGroupCircleModal = ({ isOpen, onClose, group, initialTab = 'chat' }) => {
   const {
     currentUser,
     sendLifeGroupMessage,
     deleteLifeGroupMessage,
     addLifeGroupMember,
     removeLifeGroupMember,
+    addLifeGroupPrayer,
+    prayForLifeGroupPrayer,
+    toggleLifeGroupPrayerAnswered,
+    addLifeGroupPrayerEncouragement,
+    deleteLifeGroupPrayer,
     theme,
     showToast
   } = useApp();
 
   const isDark = theme === 'dark';
-  const [activeTab, setActiveTab] = useState('chat'); // 'chat' | 'members' | 'info'
+  const [activeTab, setActiveTab] = useState(initialTab); // 'chat' | 'prayers' | 'members' | 'info'
   const [messageInput, setMessageInput] = useState('');
   const [selectedTag, setSelectedTag] = useState('Fellowship'); // 'Fellowship' | 'Prayer' | 'Announcement' | 'Scripture'
+
+  // Prayer Form State
+  const [showNewPrayerForm, setShowNewPrayerForm] = useState(false);
+  const [prayerRequestText, setPrayerRequestText] = useState('');
+  const [prayerCategory, setPrayerCategory] = useState('Academics & Exams');
+  const [isPrayerAnonymous, setIsPrayerAnonymous] = useState(false);
+  const [encouragementInput, setEncouragementInput] = useState({});
 
   // Add Member Form State
   const [showAddMemberForm, setShowAddMemberForm] = useState(false);
@@ -66,6 +81,7 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group }) => {
   ];
 
   const chatMessages = group.chatMessages || [];
+  const groupPrayers = group.groupPrayers || [];
 
   const handleSendMessage = (e) => {
     e.preventDefault();
@@ -73,6 +89,31 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group }) => {
 
     sendLifeGroupMessage(group.id, messageInput.trim(), selectedTag);
     setMessageInput('');
+  };
+
+  const handleCreatePrayer = (e) => {
+    e.preventDefault();
+    if (!prayerRequestText.trim()) {
+      showToast('Please enter your prayer request or praise report.', 'error');
+      return;
+    }
+
+    addLifeGroupPrayer(group.id, {
+      request: prayerRequestText.trim(),
+      category: prayerCategory,
+      isAnonymous: isPrayerAnonymous
+    });
+
+    setPrayerRequestText('');
+    setShowNewPrayerForm(false);
+  };
+
+  const handleAddEncouragement = (prayerId) => {
+    const text = encouragementInput[prayerId];
+    if (!text || !text.trim()) return;
+
+    addLifeGroupPrayerEncouragement(group.id, prayerId, text.trim());
+    setEncouragementInput({ ...encouragementInput, [prayerId]: '' });
   };
 
   const handleAddMember = (e) => {
@@ -116,44 +157,56 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group }) => {
       maxWidth="max-w-3xl"
     >
       <div className="space-y-4">
-        {/* Navigation Subtabs */}
-        <div className={`flex items-center gap-1.5 p-1 rounded-2xl border ${
+        {/* Navigation Subtabs (4 Clean Tabs) */}
+        <div className={`grid grid-cols-4 gap-1 p-1 rounded-2xl border ${
           isDark ? 'bg-slate-900 border-slate-800' : 'bg-slate-100 border-slate-200'
         }`}>
           <button
             onClick={() => setActiveTab('chat')}
-            className={`flex-1 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+            className={`py-2 rounded-xl text-[11px] sm:text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
               activeTab === 'chat'
                 ? isDark ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-900 shadow-xs border border-slate-200'
                 : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900 font-bold'
             }`}
           >
             <MessageSquare className="w-3.5 h-3.5" />
-            <span>Circle Chat ({chatMessages.length})</span>
+            <span>Chat ({chatMessages.length})</span>
+          </button>
+
+          <button
+            onClick={() => setActiveTab('prayers')}
+            className={`py-2 rounded-xl text-[11px] sm:text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+              activeTab === 'prayers'
+                ? 'bg-rose-600 text-white shadow-md'
+                : isDark ? 'text-rose-400 hover:text-white' : 'text-rose-700 hover:text-slate-900 font-bold'
+            }`}
+          >
+            <Heart className="w-3.5 h-3.5 fill-rose-400/20 text-rose-500" />
+            <span>Prayers ({groupPrayers.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('members')}
-            className={`flex-1 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+            className={`py-2 rounded-xl text-[11px] sm:text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
               activeTab === 'members'
                 ? isDark ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-900 shadow-xs border border-slate-200'
                 : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900 font-bold'
             }`}
           >
             <Users className="w-3.5 h-3.5" />
-            <span>Roster & Members ({membersList.length})</span>
+            <span>Members ({membersList.length})</span>
           </button>
 
           <button
             onClick={() => setActiveTab('info')}
-            className={`flex-1 py-2 rounded-xl text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
+            className={`py-2 rounded-xl text-[11px] sm:text-xs font-black transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
               activeTab === 'info'
                 ? isDark ? 'bg-indigo-600 text-white shadow-md' : 'bg-white text-slate-900 shadow-xs border border-slate-200'
                 : isDark ? 'text-slate-400 hover:text-white' : 'text-slate-600 hover:text-slate-900 font-bold'
             }`}
           >
             <Info className="w-3.5 h-3.5" />
-            <span>Meeting Details</span>
+            <span>Details</span>
           </button>
         </div>
 
@@ -165,7 +218,7 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group }) => {
             }`}>
               <div className="flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-indigo-500 shrink-0" />
-                <span>Life Group Prayer & Fellowship Stream. Share prayer items and weekly encouragement.</span>
+                <span>Life Group stream. Share weekly updates and encouragement.</span>
               </div>
             </div>
 
@@ -204,17 +257,17 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group }) => {
                                   {msg.senderRole}
                                 </span>
                               )}
-                              {msg.tag && (
-                                <span className={`px-2 py-0.2 rounded-full text-[9px] font-bold ${
-                                  msg.tag === 'Prayer'
-                                    ? 'bg-rose-500/10 text-rose-600 border border-rose-500/20'
-                                    : msg.tag === 'Announcement'
-                                    ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
-                                    : 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
-                                }`}>
-                                  #{msg.tag}
-                                </span>
-                              )}
+                                {msg.tag && (
+                                  <span className={`px-2 py-0.2 rounded-full text-[9px] font-bold ${
+                                    msg.tag === 'Prayer'
+                                      ? 'bg-rose-500/10 text-rose-600 border border-rose-500/20'
+                                      : msg.tag === 'Announcement'
+                                      ? 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                                      : 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                                  }`}>
+                                    #{msg.tag}
+                                  </span>
+                                )}
                             </div>
                             <p className={`text-xs mt-1 leading-relaxed ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
                               {msg.message}
@@ -243,7 +296,7 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group }) => {
                 })
               ) : (
                 <div className="py-12 text-center text-xs text-slate-400">
-                  No messages yet in this Life Group circle. Be the first to say hello or ask for prayer!
+                  No messages yet in this Life Group circle. Be the first to say hello!
                 </div>
               )}
             </div>
@@ -290,7 +343,248 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group }) => {
           </div>
         )}
 
-        {/* TAB 2: MEMBER ROSTER & MANAGEMENT */}
+        {/* TAB 2: LIFE GROUP PRAYERS & PRAISES */}
+        {activeTab === 'prayers' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h4 className={`text-sm font-extrabold font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  Group Prayer Requests & Praises ({groupPrayers.length})
+                </h4>
+                <p className="text-xs text-slate-400">
+                  Shared specifically within {group.title} Life Group.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setShowNewPrayerForm(!showNewPrayerForm)}
+                className="px-3.5 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs shadow-sm transition-all cursor-pointer flex items-center gap-1.5"
+              >
+                <PlusCircle className="w-3.5 h-3.5" />
+                <span>{showNewPrayerForm ? 'Close Form' : '+ Share Prayer Item'}</span>
+              </button>
+            </div>
+
+            {/* New Prayer Form */}
+            {showNewPrayerForm && (
+              <form onSubmit={handleCreatePrayer} className={`p-4 rounded-3xl border space-y-3 animate-in fade-in duration-200 ${
+                isDark ? 'bg-slate-900 border-slate-800' : 'bg-rose-50/70 border-rose-200'
+              }`}>
+                <div className="text-xs font-black uppercase tracking-wider text-rose-500 flex items-center gap-1.5">
+                  <Heart className="w-4 h-4 text-rose-500 fill-rose-500/30" />
+                  <span>Share Prayer Request or Praise with {group.title}</span>
+                </div>
+
+                <div>
+                  <textarea
+                    rows={3}
+                    required
+                    placeholder="How can your Life Group family stand in prayer with you this week? (e.g. Midterm exams, family health, spiritual breakthrough, praise report)..."
+                    value={prayerRequestText}
+                    onChange={(e) => setPrayerRequestText(e.target.value)}
+                    className={`w-full p-3 rounded-2xl border text-xs leading-relaxed ${
+                      isDark ? 'bg-slate-950 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900'
+                    }`}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] font-bold text-slate-400 mb-1">Category</label>
+                    <select
+                      value={prayerCategory}
+                      onChange={(e) => setPrayerCategory(e.target.value)}
+                      className={`w-full px-3 py-2 rounded-xl border text-xs ${
+                        isDark ? 'bg-slate-950 border-slate-700 text-white' : 'bg-white border-slate-300 text-slate-900'
+                      }`}
+                    >
+                      <option value="Academics & Exams">📚 Academics & Exams</option>
+                      <option value="Spiritual Growth">🌱 Spiritual Growth & Faith</option>
+                      <option value="Family & Health">🏡 Family & Health</option>
+                      <option value="Emotional & Peace">🕊️ Mental Peace & Strength</option>
+                      <option value="Praise & Thanksgiving">✨ Praise & Thanksgiving</option>
+                      <option value="Campus Mission">🌍 Campus Mission & Outreach</option>
+                    </select>
+                  </div>
+
+                  <div className="flex items-center gap-2 self-end pb-2">
+                    <label className="flex items-center gap-2 text-xs font-bold text-slate-400 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={isPrayerAnonymous}
+                        onChange={(e) => setIsPrayerAnonymous(e.target.checked)}
+                        className="rounded text-rose-600 focus:ring-rose-500"
+                      />
+                      <span>Post Anonymously</span>
+                    </label>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => setShowNewPrayerForm(false)}
+                    className="px-3.5 py-1.5 rounded-xl text-xs font-bold text-slate-400 hover:text-white cursor-pointer"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-xs shadow-md cursor-pointer flex items-center gap-1.5"
+                  >
+                    <Heart className="w-3.5 h-3.5 text-white" />
+                    <span>Post Prayer Item</span>
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {/* Prayer Cards Stream */}
+            <div className="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+              {groupPrayers.length > 0 ? (
+                groupPrayers.map((prayer) => {
+                  const isAuthor = currentUser.name && prayer.author && currentUser.name.toLowerCase() === prayer.author.toLowerCase();
+                  const canManage = isAuthor || isLeader;
+
+                  return (
+                    <div
+                      key={prayer.id}
+                      className={`p-4 rounded-3xl border space-y-3 transition-all ${
+                        prayer.isAnswered
+                          ? isDark ? 'bg-emerald-950/20 border-emerald-500/30' : 'bg-emerald-50/70 border-emerald-200'
+                          : isDark ? 'bg-slate-900 border-slate-800' : 'bg-white border-slate-200 shadow-xs'
+                      }`}
+                    >
+                      <div className="flex items-start justify-between gap-3">
+                        <div className="flex items-start gap-2.5">
+                          <img
+                            src={prayer.authorAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
+                            alt={prayer.author}
+                            className="w-8 h-8 rounded-xl object-cover ring-1 ring-rose-500/30 shrink-0 mt-0.5"
+                          />
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className={`font-extrabold text-xs ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                                {prayer.author}
+                              </span>
+                              {prayer.authorRole && (
+                                <span className="px-2 py-0.2 rounded-full text-[9px] font-bold bg-rose-500/10 text-rose-600 dark:text-rose-400 border border-rose-500/20">
+                                  {prayer.authorRole}
+                                </span>
+                              )}
+                              <span className="text-[10px] text-slate-400">
+                                • {prayer.createdAt}
+                              </span>
+                            </div>
+
+                            <span className="inline-block mt-0.5 px-2 py-0.2 rounded-full text-[9px] font-bold bg-slate-800 text-slate-300">
+                              {prayer.category}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5">
+                          {prayer.isAnswered ? (
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30">
+                              ✨ Answered Prayer
+                            </span>
+                          ) : canManage ? (
+                            <button
+                              type="button"
+                              onClick={() => toggleLifeGroupPrayerAnswered(group.id, prayer.id)}
+                              className="px-2 py-0.5 rounded-full text-[10px] font-bold text-emerald-600 dark:text-emerald-400 hover:bg-emerald-500/10 border border-emerald-500/30 cursor-pointer"
+                            >
+                              Mark Answered
+                            </button>
+                          ) : null}
+
+                          {canManage && (
+                            <button
+                              type="button"
+                              onClick={() => deleteLifeGroupPrayer(group.id, prayer.id)}
+                              className="p-1 rounded-lg text-slate-400 hover:text-rose-500 transition-colors cursor-pointer"
+                              title="Delete prayer item"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          )}
+                        </div>
+                      </div>
+
+                      <p className={`text-xs sm:text-sm leading-relaxed ${isDark ? 'text-slate-200' : 'text-slate-800'}`}>
+                        {prayer.request}
+                      </p>
+
+                      {/* Prayer Count & Action */}
+                      <div className="flex items-center justify-between pt-2 border-t border-slate-800/40 text-xs">
+                        <button
+                          type="button"
+                          onClick={() => prayForLifeGroupPrayer(group.id, prayer.id)}
+                          className="px-3 py-1.5 rounded-xl bg-rose-500/10 hover:bg-rose-500 hover:text-white text-rose-600 dark:text-rose-400 border border-rose-500/30 font-black text-xs transition-all cursor-pointer flex items-center gap-1.5 active:scale-95"
+                        >
+                          <Heart className="w-3.5 h-3.5 fill-rose-500" />
+                          <span>Praying ({prayer.prayedCount || 1})</span>
+                        </button>
+
+                        <span className="text-[10px] text-slate-400">
+                          {prayer.encouragements?.length || 0} Encouragements
+                        </span>
+                      </div>
+
+                      {/* Encouragement Comments */}
+                      {prayer.encouragements && prayer.encouragements.length > 0 && (
+                        <div className="space-y-1.5 pt-1">
+                          {prayer.encouragements.map((enc, eIdx) => (
+                            <div key={eIdx} className={`p-2 rounded-xl text-[11px] leading-relaxed ${
+                              isDark ? 'bg-slate-950/60 text-slate-300' : 'bg-slate-100 text-slate-700'
+                            }`}>
+                              💬 {enc}
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Quick encouragement comment input */}
+                      <div className="flex items-center gap-1.5 pt-1">
+                        <input
+                          type="text"
+                          placeholder="Leave a short Bible verse or prayer encouragement..."
+                          value={encouragementInput[prayer.id] || ''}
+                          onChange={(e) => setEncouragementInput({ ...encouragementInput, [prayer.id]: e.target.value })}
+                          className={`flex-1 px-3 py-1.5 rounded-xl border text-[11px] ${
+                            isDark ? 'bg-slate-950 border-slate-800 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'
+                          }`}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handleAddEncouragement(prayer.id);
+                            }
+                          }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleAddEncouragement(prayer.id)}
+                          className="px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white text-[11px] font-bold cursor-pointer"
+                        >
+                          Send
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="py-12 text-center text-xs text-slate-400 border border-dashed rounded-3xl border-slate-800">
+                  <Heart className="w-8 h-8 mx-auto text-rose-400 mb-2 opacity-60" />
+                  <div>No prayer requests posted in this Life Group yet.</div>
+                  <p className="text-[11px] mt-0.5">Click "+ Share Prayer Item" above to share with your group family.</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* TAB 3: MEMBER ROSTER & MANAGEMENT */}
         {activeTab === 'members' && (
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -480,7 +774,7 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group }) => {
           </div>
         )}
 
-        {/* TAB 3: MEETING DETAILS & DISCIPLESHIP INFO */}
+        {/* TAB 4: MEETING DETAILS & DISCIPLESHIP INFO */}
         {activeTab === 'info' && (
           <div className="space-y-4 text-xs">
             <div className={`p-5 rounded-3xl border space-y-3 ${

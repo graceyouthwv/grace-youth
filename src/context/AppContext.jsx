@@ -15,7 +15,7 @@ export { DEMO_ACCOUNTS };
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v12_meet_greet_reg';
+const STORAGE_VERSION = 'gy_clean_v13_life_group_prayers';
 
 const GUEST_USER = {
   id: 'guest',
@@ -938,6 +938,93 @@ export const AppProvider = ({ children }) => {
     showToast('Member removed from Life Group roster.', 'info');
   };
 
+  const addLifeGroupPrayer = (groupId, prayerData) => {
+    const newPrayer = {
+      id: `g-pray-${Date.now()}`,
+      author: prayerData.isAnonymous ? 'Anonymous Member' : (currentUser.name || prayerData.author || 'Student Member'),
+      authorRole: currentUser.role === 'worker' ? 'Youth Worker' : currentUser.role === 'leader' ? 'Pastor / Admin' : currentUser.roleLabel || 'Student Member',
+      authorAvatar: prayerData.isAnonymous ? 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80' : (currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'),
+      request: prayerData.request.trim(),
+      category: prayerData.category || 'General Prayer',
+      createdAt: 'Just now',
+      prayedCount: 1,
+      isAnswered: prayerData.isAnswered || false,
+      encouragements: []
+    };
+
+    setBibleStudies((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId) {
+          const groupPrayers = [newPrayer, ...(g.groupPrayers || [])];
+          return { ...g, groupPrayers };
+        }
+        return g;
+      })
+    );
+    showToast('🙏 Prayer request posted to Life Group family!', 'success');
+    triggerConfetti();
+  };
+
+  const prayForLifeGroupPrayer = (groupId, prayerId) => {
+    setBibleStudies((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId && g.groupPrayers) {
+          const groupPrayers = g.groupPrayers.map((p) =>
+            p.id === prayerId ? { ...p, prayedCount: (p.prayedCount || 0) + 1 } : p
+          );
+          return { ...g, groupPrayers };
+        }
+        return g;
+      })
+    );
+    showToast('❤️ You lifted up this prayer with your Life Group!', 'info');
+  };
+
+  const toggleLifeGroupPrayerAnswered = (groupId, prayerId) => {
+    setBibleStudies((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId && g.groupPrayers) {
+          const groupPrayers = g.groupPrayers.map((p) =>
+            p.id === prayerId ? { ...p, isAnswered: !p.isAnswered } : p
+          );
+          return { ...g, groupPrayers };
+        }
+        return g;
+      })
+    );
+    showToast('✨ Prayer status updated (Praise Report)!', 'success');
+    triggerConfetti();
+  };
+
+  const addLifeGroupPrayerEncouragement = (groupId, prayerId, text) => {
+    if (!text.trim()) return;
+    setBibleStudies((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId && g.groupPrayers) {
+          const groupPrayers = g.groupPrayers.map((p) =>
+            p.id === prayerId ? { ...p, encouragements: [...(p.encouragements || []), text.trim()] } : p
+          );
+          return { ...g, groupPrayers };
+        }
+        return g;
+      })
+    );
+    showToast('Encouragement added to prayer item!', 'success');
+  };
+
+  const deleteLifeGroupPrayer = (groupId, prayerId) => {
+    setBibleStudies((prev) =>
+      prev.map((g) => {
+        if (g.id === groupId && g.groupPrayers) {
+          const groupPrayers = g.groupPrayers.filter((p) => p.id !== prayerId);
+          return { ...g, groupPrayers };
+        }
+        return g;
+      })
+    );
+    showToast('Prayer request removed from Life Group.', 'info');
+  };
+
   const deletePrayer = (prayerId) => {
     setPrayers((prev) => prev.filter((p) => p.id !== prayerId));
     showToast('Prayer request removed.', 'info');
@@ -1237,6 +1324,11 @@ export const AppProvider = ({ children }) => {
         deleteLifeGroupMessage,
         addLifeGroupMember,
         removeLifeGroupMember,
+        addLifeGroupPrayer,
+        prayForLifeGroupPrayer,
+        toggleLifeGroupPrayerAnswered,
+        addLifeGroupPrayerEncouragement,
+        deleteLifeGroupPrayer,
         deletePrayer,
         volunteerApplications,
         addVolunteerApplication,
