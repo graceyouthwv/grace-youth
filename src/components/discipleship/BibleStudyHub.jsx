@@ -77,6 +77,20 @@ export const BibleStudyHub = () => {
     return matchesSearch;
   });
 
+  // Priority sorting: Rank by Place (Campus -> Region -> Online Nationwide -> Others)
+  const prioritizedGroups = [...filteredGroups].sort((a, b) => {
+    const aCampusMatch = (selectedCampus !== 'all' && a.campusId === selectedCampus) || (currentUser?.campusId && currentUser.campusId !== 'all' && a.campusId === currentUser.campusId);
+    const bCampusMatch = (selectedCampus !== 'all' && b.campusId === selectedCampus) || (currentUser?.campusId && currentUser.campusId !== 'all' && b.campusId === currentUser.campusId);
+
+    const aRegionMatch = selectedRegion !== 'all' && a.regionId === selectedRegion;
+    const bRegionMatch = selectedRegion !== 'all' && b.regionId === selectedRegion;
+
+    const aScore = (aCampusMatch ? 100 : 0) + (aRegionMatch ? 50 : 0) + (a.isOpenNationwide ? 25 : 0);
+    const bScore = (bCampusMatch ? 100 : 0) + (bRegionMatch ? 50 : 0) + (b.isOpenNationwide ? 25 : 0);
+
+    return bScore - aScore;
+  });
+
   return (
     <div className="space-y-8">
       {/* Clean, Non-Muddy Header Banner */}
@@ -212,10 +226,10 @@ export const BibleStudyHub = () => {
           </button>
         </div>
 
-        {/* Grid of Life Groups */}
-        {filteredGroups.length > 0 ? (
+        {/* Grid of Life Groups (Prioritized by Student's Place & Campus) */}
+        {prioritizedGroups.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredGroups.map((group) => (
+            {prioritizedGroups.map((group) => (
               <GroupCard key={group.id} group={group} />
             ))}
           </div>

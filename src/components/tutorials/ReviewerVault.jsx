@@ -7,7 +7,7 @@ import { EditReviewerModal } from './EditReviewerModal';
 import { ViewReviewerModal } from './ViewReviewerModal';
 
 export const ReviewerVault = () => {
-  const { reviewers, incrementReviewerDownload, selectedCampus, theme } = useApp();
+  const { reviewers, incrementReviewerDownload, selectedRegion, selectedCampus, currentUser, theme } = useApp();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All Subjects');
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -16,7 +16,7 @@ export const ReviewerVault = () => {
   const isDark = theme === 'dark';
 
   const filteredReviewers = reviewers.filter((rev) => {
-    const matchesCampus = selectedCampus === 'all' || rev.campusId === selectedCampus;
+    const matchesCampus = selectedCampus === 'all' || rev.campusId === selectedCampus || rev.campusId === 'all';
     const matchesCategory = selectedCategory === 'All Subjects' || rev.category === selectedCategory;
     const matchesSearch =
       rev.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -24,6 +24,20 @@ export const ReviewerVault = () => {
       rev.tags?.some((t) => t.toLowerCase().includes(searchQuery.toLowerCase()));
 
     return matchesCampus && matchesCategory && matchesSearch;
+  });
+
+  const prioritizedReviewers = [...filteredReviewers].sort((a, b) => {
+    const aCampusMatch = (selectedCampus !== 'all' && a.campusId === selectedCampus) || (currentUser?.campusId && currentUser.campusId !== 'all' && a.campusId === currentUser.campusId);
+    const bCampusMatch = (selectedCampus !== 'all' && b.campusId === selectedCampus) || (currentUser?.campusId && currentUser.campusId !== 'all' && b.campusId === currentUser.campusId);
+
+    const aRegionMatch = selectedRegion !== 'all' && a.regionId === selectedRegion;
+    const bRegionMatch = selectedRegion !== 'all' && b.regionId === selectedRegion;
+
+    const aScore = (aCampusMatch ? 100 : 0) + (aRegionMatch ? 50 : 0);
+    const bScore = (bCampusMatch ? 100 : 0) + (bRegionMatch ? 50 : 0);
+
+    if (bScore !== aScore) return bScore - aScore;
+    return (b.downloads || 0) - (a.downloads || 0);
   });
 
   return (
@@ -97,8 +111,8 @@ export const ReviewerVault = () => {
 
       {/* Reviewer Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
-        {filteredReviewers.length > 0 ? (
-          filteredReviewers.map((rev) => (
+        {prioritizedReviewers.length > 0 ? (
+          prioritizedReviewers.map((rev) => (
             <div
               key={rev.id}
               className={`p-5 sm:p-6 rounded-3xl border flex flex-col justify-between transition-all duration-200 hover:-translate-y-1 ${

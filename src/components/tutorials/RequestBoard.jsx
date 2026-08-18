@@ -5,7 +5,7 @@ import { Modal } from '../common/Modal';
 import { CAMPUSES, SUBJECT_CATEGORIES } from '../../data/campuses';
 
 export const RequestBoard = () => {
-  const { requests, addTutorialRequest, claimRequest, currentUser, selectedCampus, theme } = useApp();
+  const { requests, addTutorialRequest, claimRequest, currentUser, selectedRegion, selectedCampus, theme } = useApp();
   const [showNewRequestModal, setShowNewRequestModal] = useState(false);
   const isDark = theme === 'dark';
 
@@ -18,7 +18,17 @@ export const RequestBoard = () => {
 
   const filteredRequests = requests.filter((req) => {
     if (selectedCampus === 'all') return true;
-    return req.campusId === selectedCampus;
+    return req.campusId === selectedCampus || req.campusId === 'all';
+  });
+
+  const prioritizedRequests = [...filteredRequests].sort((a, b) => {
+    const aCampusMatch = (selectedCampus !== 'all' && a.campusId === selectedCampus) || (currentUser?.campusId && currentUser.campusId !== 'all' && a.campusId === currentUser.campusId);
+    const bCampusMatch = (selectedCampus !== 'all' && b.campusId === selectedCampus) || (currentUser?.campusId && currentUser.campusId !== 'all' && b.campusId === currentUser.campusId);
+
+    const aScore = aCampusMatch ? 100 : 0;
+    const bScore = bCampusMatch ? 100 : 0;
+
+    return bScore - aScore;
   });
 
   const handleSubmit = (e) => {
@@ -74,9 +84,9 @@ export const RequestBoard = () => {
         </button>
       </div>
 
-      {/* Requests Grid */}
+      {/* Requests Grid (Prioritized by Student's Place & Campus) */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {filteredRequests.map((req) => {
+        {prioritizedRequests.map((req) => {
           const isUrgent = req.urgency.toLowerCase().includes('high');
           const isClaimed = req.status.includes('Claimed');
           const isOwnRequest = currentUser && (

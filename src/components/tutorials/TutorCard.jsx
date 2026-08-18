@@ -5,9 +5,12 @@ import { useApp } from '../../context/AppContext';
 
 export const TutorCard = ({ tutor }) => {
   const [showBooking, setShowBooking] = useState(false);
-  const { currentUser, language, theme } = useApp();
+  const { currentUser, selectedRegion, selectedCampus, language, theme } = useApp();
   const isDark = theme === 'dark';
   const isHlg = language === 'hlg' || language === 'hil';
+
+  const isCampusMatch = (selectedCampus !== 'all' && tutor.campusId === selectedCampus) || (currentUser?.campusId && currentUser.campusId !== 'all' && tutor.campusId === currentUser.campusId);
+  const isRegionMatch = selectedRegion !== 'all' && tutor.regionId === selectedRegion;
 
   const isOwnListing = currentUser && (
     (currentUser.id && tutor.id && currentUser.id === tutor.id) ||
@@ -20,10 +23,19 @@ export const TutorCard = ({ tutor }) => {
 
   return (
     <>
-      <div className={`genz-card p-5 sm:p-6 border flex flex-col justify-between overflow-hidden group transition-all ${
-        isDark ? 'border-slate-800 bg-[#111625]' : 'border-slate-200 bg-white shadow-xs'
+      <div className={`genz-card p-5 sm:p-6 border flex flex-col justify-between overflow-hidden group transition-all relative ${
+        isCampusMatch ? (isDark ? 'border-pink-500/40 bg-[#141226] ring-1 ring-pink-500/30' : 'border-pink-300 bg-pink-50/20 ring-1 ring-pink-400/30 shadow-sm') : (isDark ? 'border-slate-800 bg-[#111625]' : 'border-slate-200 bg-white shadow-xs')
       }`}>
         <div>
+          {/* Place Priority Tag if on user's campus */}
+          {isCampusMatch && (
+            <div className="mb-3">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-pink-500/15 text-pink-600 dark:text-pink-300 border border-pink-500/30 shadow-xs">
+                <School className="w-3 h-3" />
+                <span>📍 Your Campus Priority Match</span>
+              </span>
+            </div>
+          )}
           {/* Card Header & Profile */}
           <div className="flex items-start justify-between gap-3 mb-4">
             <div className="flex items-center gap-3">

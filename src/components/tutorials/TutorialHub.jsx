@@ -103,6 +103,23 @@ export const TutorialHub = () => {
     return matchesRegion && matchesCampus && matchesCategory && matchesSearch;
   });
 
+  // Priority sorting: Rank by Place (Campus -> Region -> Online Nationwide -> Others)
+  const prioritizedTutors = [...filteredTutors].sort((a, b) => {
+    const aExactCampus = (selectedCampus !== 'all' && a.campusId === selectedCampus) || (currentUser?.campusId && currentUser.campusId !== 'all' && a.campusId === currentUser.campusId);
+    const bExactCampus = (selectedCampus !== 'all' && b.campusId === selectedCampus) || (currentUser?.campusId && currentUser.campusId !== 'all' && b.campusId === currentUser.campusId);
+
+    const aRegionMatch = selectedRegion !== 'all' && a.regionId === selectedRegion;
+    const bRegionMatch = selectedRegion !== 'all' && b.regionId === selectedRegion;
+
+    const aScore = (aExactCampus ? 100 : 0) + (aRegionMatch ? 50 : 0) + (a.isOnlineNationwide ? 25 : 0);
+    const bScore = (bExactCampus ? 100 : 0) + (bRegionMatch ? 50 : 0) + (b.isOnlineNationwide ? 25 : 0);
+
+    if (bScore !== aScore) {
+      return bScore - aScore;
+    }
+    return (b.rating || 5.0) - (a.rating || 5.0);
+  });
+
   return (
     <div className="space-y-6">
       {/* 1. REGIONAL & MODALITY BANNER BAR */}
@@ -300,10 +317,10 @@ export const TutorialHub = () => {
             </button>
           </div>
 
-          {/* Tutor Cards Grid */}
-          {filteredTutors.length > 0 ? (
+          {/* Tutor Cards Grid (Prioritized by Student's Place & Campus) */}
+          {prioritizedTutors.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filteredTutors.map((tutor) => (
+              {prioritizedTutors.map((tutor) => (
                 <TutorCard key={tutor.id} tutor={tutor} />
               ))}
             </div>
