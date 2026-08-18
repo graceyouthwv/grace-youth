@@ -19,7 +19,7 @@ export { DEMO_ACCOUNTS, PH_REGIONS, getRegionById };
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v17_cartoon_avatars';
+const STORAGE_VERSION = 'gy_v18_unlimited_meet';
 
 const GUEST_USER = {
   id: 'guest',
