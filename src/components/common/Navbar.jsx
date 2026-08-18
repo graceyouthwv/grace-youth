@@ -19,12 +19,10 @@ import {
   Tent,
   ShieldCheck,
   ChevronDown,
-  Database,
   Calendar
 } from 'lucide-react';
 import { ProfileModal } from '../profile/ProfileModal';
 import { MySessionsModal } from '../profile/MySessionsModal';
-import { DbSchemaModal } from './DbSchemaModal';
 import { AuthModal } from '../auth/AuthModal';
 import { InstallModal } from './InstallModal';
 import { ConnectWorkerModal } from '../worker/ConnectWorkerModal';
@@ -47,7 +45,6 @@ export const Navbar = () => {
 
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showSessionsModal, setShowSessionsModal] = useState(false);
-  const [showDbModal, setShowDbModal] = useState(false);
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [showInstallModal, setShowInstallModal] = useState(false);
   const [showConnectWorkerModal, setShowConnectWorkerModal] = useState(false);
@@ -300,17 +297,6 @@ export const Navbar = () => {
                         <span>Pastoral Care & Counseling</span>
                       </button>
 
-                      <button
-                        onClick={() => {
-                          setShowDbModal(true);
-                          setMenuOpen(false);
-                        }}
-                        className="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                      >
-                        <Database className="w-4 h-4 text-amber-500" />
-                        <span>Supabase Database Setup</span>
-                      </button>
-
                       <div className="border-t border-slate-100 dark:border-slate-800 my-1" />
 
                       <button
@@ -341,11 +327,6 @@ export const Navbar = () => {
       <MySessionsModal
         isOpen={showSessionsModal}
         onClose={() => setShowSessionsModal(false)}
-      />
-
-      <DbSchemaModal
-        isOpen={showDbModal}
-        onClose={() => setShowDbModal(false)}
       />
 
       <AuthModal
