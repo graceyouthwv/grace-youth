@@ -21,14 +21,9 @@ import {
   Trash2
 } from 'lucide-react';
 
-const PRESET_AVATARS = [
-  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
-  'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=150&auto=format&fit=crop&q=80'
-];
+import { CARTOON_PRESET_AVATARS, DEFAULT_CARTOON_AVATAR } from '../../data/avatars';
+
+const PRESET_AVATARS = CARTOON_PRESET_AVATARS;
 
 export const EditProfileModal = ({ isOpen, onClose }) => {
   const {

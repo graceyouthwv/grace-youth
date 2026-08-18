@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../../context/AppContext';
+import { getRoleCartoonAvatar } from '../../data/avatars';
 import {
   ShieldCheck,
   Users,
@@ -251,7 +252,7 @@ export const AdminPortal = () => {
         roleLabel: 'Ministry Admin / Coordinator',
         campusId: 'wvsu',
         campusName: 'WVSU & Regional Network',
-        avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+        avatar: getRoleCartoonAvatar('leader', 'Pastor Tim')
       };
 
       setCurrentUser(activeAccount);

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
+import { getRoleCartoonAvatar } from '../../data/avatars';
 import { UserPlus, ShieldCheck, Mail, Lock, User, School, BookOpen, GraduationCap } from 'lucide-react';
 
 export const AddUserModal = ({ isOpen, onClose }) => {
@@ -34,17 +35,14 @@ export const AddUserModal = ({ isOpen, onClose }) => {
     const campusObj = CAMPUSES.find((c) => c.id === campusId);
 
     let roleLabel = 'Student Member';
-    let defaultAvatar = 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80';
+    let defaultAvatar = getRoleCartoonAvatar(role, name.trim());
 
     if (role === 'leader') {
       roleLabel = 'Ministry Admin / Coordinator';
-      defaultAvatar = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80';
     } else if (role === 'worker') {
       roleLabel = 'Campus Youth Worker / Missionary';
-      defaultAvatar = 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80';
     } else if (role === 'tutor') {
       roleLabel = `Volunteer Peer Tutor (${program || 'Peer Leader'})`;
-      defaultAvatar = 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80';
     } else {
       roleLabel = `Student (${program || 'College Member'})`;
     }

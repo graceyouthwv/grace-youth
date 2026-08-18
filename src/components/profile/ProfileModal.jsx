@@ -5,6 +5,8 @@ import { LogOut, User, Mail, School, ShieldCheck, BookOpen, Heart, ArrowRight, H
 import { VolunteerModal } from '../common/VolunteerModal';
 import { EditProfileModal } from './EditProfileModal';
 
+import { DEFAULT_CARTOON_AVATAR } from '../../data/avatars';
+
 export const ProfileModal = ({ isOpen, onClose }) => {
   const { currentUser, logout, setActiveTab, myBookings, myGroups, prayers, theme, showToast } = useApp();
   const [showVolunteerModal, setShowVolunteerModal] = useState(false);
@@ -42,7 +44,7 @@ export const ProfileModal = ({ isOpen, onClose }) => {
                 title="Click to Change Profile Picture"
               >
                 <img
-                  src={currentUser.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80'}
+                  src={currentUser.avatar || DEFAULT_CARTOON_AVATAR}
                   alt={currentUser.name}
                   className="w-14 h-14 rounded-2xl object-cover ring-2 ring-indigo-500/40 group-hover:scale-105 transition-transform"
                 />

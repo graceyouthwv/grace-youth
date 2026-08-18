@@ -3,6 +3,7 @@ import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
 import { Users, Sparkles, Send, CheckCircle2, MessageCircle, Heart, Calendar, LogIn, ArrowRight, UserPlus, Lock } from 'lucide-react';
+import { getCartoonAvatar } from '../../data/avatars';
 import { AuthModal } from '../auth/AuthModal';
 
 export const JoinLifeGroupModal = ({ isOpen, onClose, group }) => {
@@ -63,7 +64,7 @@ export const JoinLifeGroupModal = ({ isOpen, onClose, group }) => {
           yearLevel,
           status: 'Active',
           isApproved: true,
-          avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+          avatar: getCartoonAvatar(name.trim()),
           bio: prayerNote || 'Active campus student member.'
         };
 

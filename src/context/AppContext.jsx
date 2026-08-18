@@ -13,11 +13,13 @@ import { PH_REGIONS, getRegionById } from '../data/regions';
 import { CAMPUSES } from '../data/campuses';
 import { triggerConfetti } from '../utils/helpers';
 
+import { DEFAULT_CARTOON_AVATAR, getCartoonAvatar, getRoleCartoonAvatar } from '../data/avatars';
+
 export { DEMO_ACCOUNTS, PH_REGIONS, getRegionById };
 
 const AppContext = createContext();
 
-const STORAGE_VERSION = 'gy_clean_v16_production_zero_samples';
+const STORAGE_VERSION = 'gy_clean_v17_cartoon_avatars';
 
 const GUEST_USER = {
   id: 'guest',
@@ -30,7 +32,7 @@ const GUEST_USER = {
   regionId: 'all',
   regionName: 'All Philippines (Nationwide)',
   email: '',
-  avatar: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+  avatar: DEFAULT_CARTOON_AVATAR,
   bio: 'Exploring Grace Youth campus tutorials and community across the Philippines.'
 };
 
@@ -290,12 +292,7 @@ export const AppProvider = ({ children }) => {
         backgroundCheck: false,
         certified: false
       },
-      avatar:
-        role === 'worker'
-          ? 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80'
-          : role === 'tutor'
-          ? 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80'
-          : 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80',
+      avatar: getRoleCartoonAvatar(role, userData.name || 'Student'),
       bio: isWorkerApp ? 'Applying as campus youth missionary.' : isTutorApp ? 'Applying as volunteer peer tutor.' : 'College student.'
     };
 
@@ -385,7 +382,7 @@ export const AppProvider = ({ children }) => {
           id: `tut-${Date.now()}`,
           name: approvedUserObj.name,
           email: approvedUserObj.email,
-          avatar: approvedUserObj.avatar || 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
+          avatar: approvedUserObj.avatar || getRoleCartoonAvatar('tutor', approvedUserObj.name),
           role: `Volunteer Peer Tutor (${approvedUserObj.program || 'Academics'})`,
           campusId: approvedUserObj.campusId,
           campusName: approvedUserObj.campusName,
@@ -416,7 +413,7 @@ export const AppProvider = ({ children }) => {
     const newTutor = {
       id: `tut-${Date.now()}`,
       name: currentUser.name || 'Volunteer Peer Tutor',
-      avatar: currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      avatar: currentUser.avatar || getRoleCartoonAvatar('tutor', currentUser.name),
       role: `Volunteer Peer Tutor (${tutorData.category || 'Academics'})`,
       rating: 5.0,
       sessionsGiven: 0,
@@ -832,7 +829,7 @@ export const AppProvider = ({ children }) => {
       id: `msg-${Date.now()}`,
       senderId: currentUser.id || 'guest',
       senderName: currentUser.name || 'Student Member',
-      senderAvatar: currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      senderAvatar: currentUser.avatar || getCartoonAvatar(currentUser.name || 'Member'),
       senderRole: currentUser.role === 'worker' ? 'Youth Worker' : currentUser.role === 'leader' ? 'Pastor / Admin' : currentUser.roleLabel || 'Student Member',
       message: messageText.trim(),
       timestamp: 'Just now',
@@ -872,7 +869,7 @@ export const AppProvider = ({ children }) => {
       campus: memberData.campus || currentUser.campusName || 'Iloilo Campus',
       role: memberData.role || 'Student Member',
       yearLevel: memberData.yearLevel || 'Student',
-      avatar: memberData.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+      avatar: memberData.avatar || getCartoonAvatar(memberData.name || 'Member'),
       joinedAt: 'Just now'
     };
 
@@ -915,7 +912,7 @@ export const AppProvider = ({ children }) => {
       id: `g-pray-${Date.now()}`,
       author: prayerData.isAnonymous ? 'Anonymous Member' : (currentUser.name || prayerData.author || 'Student Member'),
       authorRole: currentUser.role === 'worker' ? 'Youth Worker' : currentUser.role === 'leader' ? 'Pastor / Admin' : currentUser.roleLabel || 'Student Member',
-      authorAvatar: prayerData.isAnonymous ? 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80' : (currentUser.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'),
+      authorAvatar: prayerData.isAnonymous ? getCartoonAvatar('Anonymous') : (currentUser.avatar || getCartoonAvatar(currentUser.name || 'Member')),
       request: prayerData.request.trim(),
       category: prayerData.category || 'General Prayer',
       createdAt: 'Just now',

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
+import { DEFAULT_CARTOON_AVATAR, getCartoonAvatar } from '../../data/avatars';
 import {
   MessageSquare,
   Users,
@@ -75,7 +76,7 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group, initialTab = 'cha
       campus: group.campusName || 'All Campuses',
       role: 'Facilitator / Youth Worker',
       yearLevel: 'Staff',
-      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+      avatar: getCartoonAvatar(group.facilitator || 'Leader'),
       joinedAt: 'Jan 2026'
     }
   ];
@@ -129,7 +130,7 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group, initialTab = 'cha
       campus: newMemberCampus,
       role: newMemberRole,
       yearLevel: newMemberYear,
-      avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'
+      avatar: getCartoonAvatar(newMemberName.trim())
     });
 
     setNewMemberName('');
@@ -243,7 +244,7 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group, initialTab = 'cha
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-start gap-2.5">
                           <img
-                            src={msg.senderAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
+                            src={msg.senderAvatar || getCartoonAvatar(msg.senderName)}
                             alt={msg.senderName}
                             className="w-8 h-8 rounded-xl object-cover ring-1 ring-indigo-500/30 shrink-0 mt-0.5"
                           />
@@ -459,7 +460,7 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group, initialTab = 'cha
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-start gap-2.5">
                           <img
-                            src={prayer.authorAvatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
+                            src={prayer.authorAvatar || getCartoonAvatar(prayer.author)}
                             alt={prayer.author}
                             className="w-8 h-8 rounded-xl object-cover ring-1 ring-rose-500/30 shrink-0 mt-0.5"
                           />
@@ -731,7 +732,7 @@ export const LifeGroupCircleModal = ({ isOpen, onClose, group, initialTab = 'cha
                     <div className="flex items-center gap-3">
                       <div className="relative">
                         <img
-                          src={mem.avatar || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80'}
+                          src={mem.avatar || getCartoonAvatar(mem.name)}
                           alt={mem.name}
                           className="w-10 h-10 rounded-xl object-cover ring-1 ring-emerald-500/30"
                         />

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
-import { HeartHandshake, PhoneCall, MessageSquare, Coffee, Send, Sparkles, CheckCircle2, ShieldCheck, Heart } from 'lucide-react';
+import { getCartoonAvatar } from '../../data/avatars';
 
 const YOUTH_WORKERS = [
   {
@@ -12,7 +12,7 @@ const YOUTH_WORKERS = [
     campus: 'ISUFST (Barotac Nuevo) & UP Visayas',
     phone: '0917-882-9471',
     email: 'graceyouth.wv@proton.me',
-    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80',
+    avatar: getCartoonAvatar('HannahGrace'),
     bio: 'Guiding college freshmen, leading life groups, and providing spiritual counsel for academic stress.'
   },
   {
@@ -22,7 +22,7 @@ const YOUTH_WORKERS = [
     campus: 'WVSU, CPU, ISAT-U & San Agustin',
     phone: '0918-392-1144',
     email: 'graceyouth.wv@proton.me',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80',
+    avatar: getCartoonAvatar('PastorTim'),
     bio: 'Pastoral counseling, thesis burnout support, pre-marital guidance, and campus leadership.'
   }
 ];

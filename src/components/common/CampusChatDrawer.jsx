@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useApp } from '../../context/AppContext';
 import { MessageSquare, Send, X, Users, Sparkles, BookOpen, Heart, ShieldCheck, Hash } from 'lucide-react';
+import { DEFAULT_CARTOON_AVATAR, getCartoonAvatar } from '../../data/avatars';
 
 const INITIAL_MESSAGES = {
   fellowship: [],
@@ -34,7 +35,7 @@ export const CampusChatDrawer = ({ isOpen, onClose }) => {
     const newMessage = {
       id: `msg-${Date.now()}`,
       sender: currentUser.name || 'Student Member',
-      avatar: currentUser.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=150&auto=format&fit=crop&q=80',
+      avatar: currentUser.avatar || DEFAULT_CARTOON_AVATAR,
       role: currentUser.role || 'student',
       roleLabel: currentUser.roleLabel || 'Student',
       campus: currentUser.campusName?.split(' ')[0] || 'Iloilo',
@@ -55,7 +56,7 @@ export const CampusChatDrawer = ({ isOpen, onClose }) => {
         const autoReply = {
           id: `reply-${Date.now()}`,
           sender: 'Grace Youth Peer Bot',
-          avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80',
+          avatar: getCartoonAvatar('PeerBot'),
           role: 'tutor',
           roleLabel: 'Verified Tutor',
           campus: 'Iloilo Hub',
