@@ -4,10 +4,6 @@ import {
   Sparkles,
   ExternalLink,
   Play,
-  Pause,
-  Volume2,
-  VolumeX,
-  Maximize2,
   Brain,
   BookOpen,
   Camera,
@@ -16,13 +12,11 @@ import {
   LayoutDashboard,
   Zap,
   CheckCircle2,
-  ChevronLeft,
-  ChevronRight,
-  ZoomIn,
-  Eye,
-  Clock,
-  MapPin,
-  Bot
+  Image as ImageIcon,
+  Video,
+  Layers,
+  ArrowRight,
+  ShieldCheck
 } from 'lucide-react';
 import { Modal } from '../common/Modal';
 
@@ -31,10 +25,7 @@ export const PartnersHub = () => {
   const isDark = theme === 'dark';
 
   const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
-  const [isPlayingVideo, setIsPlayingVideo] = useState(false);
-  const [isMuted, setIsMuted] = useState(false);
-  const [activeScreenshotIdx, setActiveScreenshotIdx] = useState(0);
-  const [previewModalImg, setPreviewModalImg] = useState(null);
+  const [activeTab, setActiveTab] = useState('all'); // 'all' | 'dashboard' | 'ai' | 'vault' | 'camera' | 'thesis' | 'tools'
 
   const [studentForm, setStudentForm] = useState({
     studentName: '',
@@ -63,283 +54,80 @@ export const PartnersHub = () => {
     });
   };
 
-  const PRODUCT_SCREENSHOTS = [
+  const SHORT_FEATURES = [
     {
-      id: 'dashboard',
-      tabName: 'Dashboard & Schedule',
-      icon: LayoutDashboard,
-      title: 'Personalized Daily Schedule & Academic Cockpit',
-      subtitle: 'Tracks active class countdowns, daily baon, cumulative GWA, and urgent assignment deadlines.',
-      tag: 'Student Home',
-      renderUI: (
-        <div className="p-4 sm:p-6 bg-slate-900 text-white rounded-2xl space-y-4 font-sans border border-slate-800 text-xs">
-          {/* Top Bar */}
-          <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-            <div>
-              <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">TUESDAY, FEBRUARY 2026</span>
-              <h3 className="text-lg font-black font-heading text-white">Good morning, Bea 👋</h3>
-            </div>
-            <div className="flex items-center gap-2">
-              <span className="px-2.5 py-1 rounded-xl bg-emerald-500/20 text-emerald-400 font-mono font-bold text-[11px] border border-emerald-500/30">
-                1.38 GWA (Magna Cum Laude)
-              </span>
-              <span className="px-2.5 py-1 rounded-xl bg-indigo-500/20 text-indigo-400 font-mono font-bold text-[11px] border border-indigo-500/30">
-                ₱250 Baon
-              </span>
-            </div>
-          </div>
-
-          {/* Active Class Hero */}
-          <div className="p-4 rounded-xl bg-gradient-to-r from-emerald-950/40 to-slate-900 border border-emerald-500/30 flex items-center justify-between">
-            <div className="space-y-1">
-              <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-emerald-400 uppercase tracking-wider">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                Class in Session
-              </span>
-              <div className="text-sm font-black text-white">BIO 120 • Genetics & Molecular Biology</div>
-              <div className="text-[11px] text-slate-400 flex items-center gap-3">
-                <span className="flex items-center gap-1"><Clock className="w-3 h-3 text-emerald-400" /> 10:00 AM - 11:30 AM</span>
-                <span className="flex items-center gap-1"><MapPin className="w-3 h-3 text-emerald-400" /> CAS Room 204 • Prof. Santos</span>
-              </div>
-            </div>
-            <span className="px-3 py-1.5 rounded-xl bg-emerald-500 text-slate-950 font-black text-xs">
-              Record Trans
-            </span>
-          </div>
-
-          {/* Grid Tasks */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
-              <span className="text-[10px] font-bold text-amber-400 uppercase">Upcoming Exam Tasks</span>
-              <div className="space-y-1 text-[11px]">
-                <div className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between">
-                  <span>Organic Chem Lab Report</span>
-                  <span className="text-amber-400 font-mono font-bold">Tomorrow</span>
-                </div>
-                <div className="p-1.5 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-between">
-                  <span>Integral Calculus Problem Set #4</span>
-                  <span className="text-slate-400 font-mono">Friday</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
-              <span className="text-[10px] font-bold text-indigo-400 uppercase">Quick Actions</span>
-              <div className="grid grid-cols-2 gap-2 text-center text-[10px] font-bold">
-                <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-                  📸 Smart Camera
-                </div>
-                <div className="p-2 rounded-lg bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-                  🧠 Socratic Tutor
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )
-    },
-    {
-      id: 'ai-studio',
-      tabName: 'AI Study Studio',
       icon: Brain,
-      title: 'Metacognitive Socratic Dialogue Studio',
-      subtitle: 'Step-by-step problem solver with active recall drills, final answer takeaways, and exam pro-tips.',
-      tag: 'AI Tutor Copilot',
-      renderUI: (
-        <div className="p-4 sm:p-6 bg-slate-900 text-white rounded-2xl space-y-3 font-sans border border-slate-800 text-xs">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800 text-indigo-400 font-bold">
-            <span className="flex items-center gap-1.5"><Bot className="w-4 h-4" /> SmartPath Socratic Assistant</span>
-            <span className="text-[10px] px-2 py-0.5 rounded-md bg-indigo-500/20 border border-indigo-500/30">PRC & Exam Aligned</span>
-          </div>
-
-          <div className="p-3 rounded-xl bg-indigo-600/30 border border-indigo-500/40 text-indigo-200">
-            <strong>Student:</strong> "Explain why SN2 reactions cause stereochemical inversion with an example."
-          </div>
-
-          <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 space-y-2 text-[12px] leading-relaxed text-slate-200">
-            <div className="font-bold text-indigo-400 flex items-center gap-1">
-              <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-              <span>Metacognitive Socratic Breakdown:</span>
-            </div>
-            <p>
-              <strong>1. Backside Attack:</strong> The nucleophile approaches the carbon center from 180° opposite the leaving group to avoid electron repulsion.
-            </p>
-            <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-emerald-200">
-              <div className="font-bold text-emerald-400 text-xs">🎯 Final Answer & Takeaway:</div>
-              <div>• <strong>Walden Inversion:</strong> A chiral (R)-substrate flips into (S) configuration like an umbrella blown inside-out.</div>
-            </div>
-            <div className="p-2.5 rounded-xl bg-amber-950/40 border border-amber-500/30 text-amber-200 text-[11px]">
-              ⭐ <strong>Exam Pro-Tip:</strong> Primary alkyl halides react fastest via SN2 due to low steric hindrance.
-            </div>
-          </div>
-        </div>
-      )
+      title: 'AI Metacognitive Copilot',
+      description: 'Socratic problem solving, active recall prompts, and step-by-step concept breakdown for college subjects.',
+      color: 'from-violet-600 to-indigo-600'
     },
     {
-      id: 'vault',
-      tabName: 'Note Vault & Trans',
       icon: BookOpen,
-      title: 'Automated Lecture Transcriptions & High-Yield Vault',
-      subtitle: 'Converts lecture audio into structured high-yield summaries, key equations, and Anki-ready flashcards.',
-      tag: 'Lecture Trans',
-      renderUI: (
-        <div className="p-4 sm:p-6 bg-slate-900 text-white rounded-2xl space-y-3 font-sans border border-slate-800 text-xs">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-            <span className="font-bold text-slate-300">Generated Lecture Transes & Audio Sync</span>
-            <span className="text-[10px] text-emerald-400 font-bold bg-emerald-500/10 px-2 py-0.5 rounded-md border border-emerald-500/30">
-              3 Decks Ready
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[9px] font-black uppercase text-indigo-400">BIO 101 • 45 mins audio</span>
-                <span className="text-[10px] text-emerald-400">18 Flashcards</span>
-              </div>
-              <h4 className="font-bold text-sm text-white">Mitochondrial ATP Synthesis</h4>
-              <p className="text-[11px] text-slate-400 line-clamp-2">
-                Chemiosmotic proton motive force, ATP synthase complex, and oxidative phosphorylation yields.
-              </p>
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[10px] font-bold text-indigo-400">
-                <span>View Summary Trans</span>
-                <span>Export Anki →</span>
-              </div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[9px] font-black uppercase text-indigo-400">NURS 204 • 1h 10m audio</span>
-                <span className="text-[10px] text-emerald-400">30 Flashcards</span>
-              </div>
-              <h4 className="font-bold text-sm text-white">Pharmacology: Antihypertensives</h4>
-              <p className="text-[11px] text-slate-400 line-clamp-2">
-                ACE Inhibitors, ARBs, Beta-blockers, mechanism of action, side effects, and nursing alerts.
-              </p>
-              <div className="pt-2 border-t border-slate-800 flex items-center justify-between text-[10px] font-bold text-indigo-400">
-                <span>View Summary Trans</span>
-                <span>Export Anki →</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      )
+      title: 'Note Vault & Audio Trans',
+      description: 'Converts lecture audio into structured high-yield summaries, key equations, and Anki-compatible flashcards.',
+      color: 'from-indigo-600 to-blue-600'
     },
     {
-      id: 'camera',
-      tabName: 'Smart Camera OCR',
-      icon: Camera,
-      title: 'Photo-to-Study Notes & LaTeX Synthesizer',
-      subtitle: 'Snap blackboard math, chemical mechanisms, or textbook pages to generate clean digitized study sheets.',
-      tag: 'Blackboard OCR',
-      renderUI: (
-        <div className="p-4 sm:p-6 bg-slate-900 text-white rounded-2xl space-y-3 font-sans border border-slate-800 text-xs">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-            <span className="font-bold text-slate-300">Live OCR LaTeX Synthesis</span>
-            <span className="text-[10px] text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/30">
-              Chalkboard Capture
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
-              <span className="text-[10px] font-black uppercase text-amber-400">Raw Blackboard Snap</span>
-              <div className="aspect-video rounded-lg bg-black/60 border border-slate-800 flex items-center justify-center text-center p-2 text-slate-400 font-mono text-[11px]">
-                📸 [Chalkboard image: Laplace Transform & Diff Eq]
-              </div>
-            </div>
-
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1.5">
-              <span className="text-[10px] font-black uppercase text-emerald-400">✨ Synthesized LaTeX Card</span>
-              <div className="p-2.5 rounded-lg bg-emerald-950/30 border border-emerald-500/30 font-mono text-[11px] text-emerald-300 space-y-1">
-                <div>L&#123;e^(at)&#125; = 1 / (s - a), s &gt; a</div>
-                <div>L&#123;sin(wt)&#125; = w / (s^2 + w^2)</div>
-                <div className="text-[10px] font-sans text-slate-300 pt-1">
-                  • 1-click exported to printable flashcards!
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )
-    },
-    {
-      id: 'thesis',
-      tabName: 'Thesis & Defense',
       icon: GraduationCap,
-      title: 'Undergraduate & Graduate Thesis Defense Studio',
-      subtitle: 'Literature review (RRL) matrix synthesizer across Scopus/PubMed and mock panel defense simulator.',
-      tag: 'Research Studio',
-      renderUI: (
-        <div className="p-4 sm:p-6 bg-slate-900 text-white rounded-2xl space-y-3 font-sans border border-slate-800 text-xs">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-            <span className="font-bold text-slate-300">Chapter 2: Review of Related Literature (RRL) Matrix</span>
-            <span className="text-[10px] text-violet-400 font-bold bg-violet-500/10 px-2 py-0.5 rounded-md border border-violet-500/30">
-              14 Papers Synthesized
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5 pt-1">
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-              <strong className="text-violet-300 text-xs">Synthesis Matrix</strong>
-              <p className="text-[11px] text-slate-400">Auto-correlated 14 Scopus papers comparing Bloom's vs Metacognition.</p>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-              <strong className="text-violet-300 text-xs">APA 7th Citations</strong>
-              <p className="text-[11px] text-slate-400">1-click formatted in-text citations and reference list export.</p>
-            </div>
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-              <strong className="text-violet-300 text-xs">Mock Defense</strong>
-              <p className="text-[11px] text-slate-400">Simulates panel defense questions from tough research panelists.</p>
-            </div>
-          </div>
-        </div>
-      )
+      title: 'Thesis & Defense Studio',
+      description: 'Literature review (RRL) synthesis matrix builder across Scopus/PubMed and mock panel defense simulator.',
+      color: 'from-emerald-600 to-teal-600'
     },
     {
-      id: 'calculator',
-      tabName: 'GWA & Exam Target',
       icon: Calculator,
-      title: 'Collegiate GWA & Exam Target Planner',
-      subtitle: 'Latin Honors standing tracker, target score planner for finals, and KKB baon expense tracker.',
-      tag: 'GWA Planner',
-      renderUI: (
-        <div className="p-4 sm:p-6 bg-slate-900 text-white rounded-2xl space-y-3 font-sans border border-slate-800 text-xs">
-          <div className="flex items-center justify-between pb-2 border-b border-slate-800">
-            <span className="font-bold text-slate-300">Cumulative GWA & Latin Honors Standing</span>
-            <span className="text-[10px] text-amber-400 font-bold bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/30">
-              Semester 2
-            </span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-            <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-              <div className="text-[10px] font-black uppercase text-slate-400">Cumulative GWA</div>
-              <div className="text-xl font-black text-emerald-400 font-heading">1.38</div>
-              <div className="text-[10px] text-emerald-400 font-bold">★ Magna Cum Laude Standing</div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-              <div className="text-[10px] font-black uppercase text-slate-400">Enrolled Units</div>
-              <div className="text-xl font-black text-indigo-400 font-heading">21.0 Units</div>
-              <div className="text-[10px] text-slate-400">7 Major Subjects</div>
-            </div>
-
-            <div className="p-3.5 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-              <div className="text-[10px] font-black uppercase text-slate-400">Finals Target</div>
-              <div className="text-xl font-black text-amber-400 font-heading">88%</div>
-              <div className="text-[10px] text-slate-400">Needed for Flat 1.25</div>
-            </div>
-          </div>
-        </div>
-      )
+      title: 'GWA & Exam Target Planner',
+      description: 'Latin Honors trajectory calculator, target finals grade planner, and daily baon budget tracker.',
+      color: 'from-amber-600 to-orange-600'
     }
   ];
 
-  const currentScreenshot = PRODUCT_SCREENSHOTS[activeScreenshotIdx];
+  const SCREENSHOT_PLACEHOLDERS = [
+    {
+      id: 'dashboard',
+      title: 'Student Dashboard & Class Schedule',
+      category: 'Home & Schedule',
+      desc: 'Active class countdown, upcoming exam tasks, and GWA milestone tracker.',
+      imgPlaceholder: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?w=1200&auto=format&fit=crop&q=80'
+    },
+    {
+      id: 'ai-studio',
+      title: 'AI Study Studio (Socratic Copilot)',
+      category: 'Metacognitive Tutor',
+      desc: 'Step-by-step problem decomposition, final answer takeaways, and exam pro-tips.',
+      imgPlaceholder: 'https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=1200&auto=format&fit=crop&q=80'
+    },
+    {
+      id: 'vault',
+      title: 'Lecture Note Vault & Transcriptions',
+      category: 'Audio Trans & Notes',
+      desc: 'Audio lecture synchronization, high-yield summary transes, and flashcards.',
+      imgPlaceholder: 'https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=1200&auto=format&fit=crop&q=80'
+    },
+    {
+      id: 'camera',
+      title: 'Smart Camera OCR Synthesizer',
+      category: 'Blackboard OCR',
+      desc: 'Converts chalkboard chalk equations into clean LaTeX study cards.',
+      imgPlaceholder: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=1200&auto=format&fit=crop&q=80'
+    },
+    {
+      id: 'thesis',
+      title: 'Thesis & Defense Studio',
+      category: 'Research & Capstone',
+      desc: 'Chapter 2 RRL literature synthesis matrix and mock panel defense simulator.',
+      imgPlaceholder: 'https://images.unsplash.com/photo-1457369804613-52c61a468e7d?w=1200&auto=format&fit=crop&q=80'
+    },
+    {
+      id: 'tools',
+      title: 'Collegiate GWA & Exam Target Tools',
+      category: 'Academic Tools',
+      desc: 'Honors trajectory computation and exam score requirements.',
+      imgPlaceholder: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1200&auto=format&fit=crop&q=80'
+    }
+  ];
 
   return (
-    <div className="space-y-4 animate-tab-in pb-12">
+    <div className="space-y-6 animate-tab-in pb-12">
       {/* 1. COMPACT MINISTRY DEDICATION BANNER */}
       <div className={`p-3.5 sm:p-4 rounded-2xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 ${
         isDark
@@ -368,19 +156,19 @@ export const PartnersHub = () => {
         </a>
       </div>
 
-      {/* 2. PRODUCT HEADER + IMMEDIATE ACTION CTA */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-1">
-        <div>
+      {/* 2. PRODUCT TITLE & ACTION HEADER */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="space-y-1">
           <div className="flex items-center gap-2">
             <h2 className={`text-2xl sm:text-3xl font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
               SmartPath College™
             </h2>
             <span className="text-[10px] font-black uppercase tracking-wider px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-500 dark:text-amber-300 border border-amber-400/30">
-              Student Software App
+              Student App
             </span>
           </div>
 
-          <p className="text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-300 mt-0.5">
+          <p className="text-xs sm:text-sm font-bold text-indigo-600 dark:text-indigo-300">
             ✨ “An AI-Powered Academic Success & Metacognitive Copilot for Higher Education Students.”
           </p>
         </div>
@@ -394,155 +182,153 @@ export const PartnersHub = () => {
         </button>
       </div>
 
-      {/* 3. PRODUCT VIDEO SHOWCASE WALKTHROUGH */}
+      {/* 3. VIDEO SHOWCASE PLACEHOLDER */}
       <div className={`p-4 sm:p-5 rounded-3xl border overflow-hidden relative shadow-lg ${
         isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200'
       }`}>
         <div className="flex items-center justify-between mb-2.5 px-1">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-500" />
-            <span className="text-xs font-mono font-bold text-slate-400 ml-2">🎬 SmartPath College™ • Student App Video Walkthrough</span>
+            <Video className="w-4 h-4 text-indigo-400" />
+            <span className="text-xs font-mono font-bold text-slate-400">Video Showcase & Product Walkthrough</span>
           </div>
           <span className="text-[10px] font-mono px-2.5 py-0.5 rounded-full bg-indigo-500/10 text-indigo-500 font-bold">
-            HD 1080p • 03:45
+            Video Showcase Placeholder
           </span>
         </div>
 
-        {/* 16:9 Video Demo Player Box */}
+        {/* 16:9 Video Box Placeholder */}
         <div className="relative aspect-video rounded-2xl overflow-hidden bg-slate-950 border border-slate-800 flex items-center justify-center group shadow-xl">
           <img
             src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1600&auto=format&fit=crop&q=80"
-            alt="SmartPath College Video Demo"
+            alt="Video Showcase Placeholder"
             className="absolute inset-0 w-full h-full object-cover opacity-35 group-hover:scale-102 transition-transform duration-700"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-black/30" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30" />
 
-          <div className="relative z-10 text-center max-w-lg px-4 space-y-2">
+          <div className="relative z-10 text-center max-w-lg px-4 space-y-2.5">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-600/70 backdrop-blur-md text-white text-[11px] font-bold border border-indigo-400/30">
               <Sparkles className="w-3 h-3 text-amber-300" />
-              <span>Student Software Demo Reel</span>
+              <span>Official Video Walkthrough</span>
             </div>
 
-            <h3 className="text-base sm:text-xl font-black text-white font-heading">
-              SmartPath College™ in Action
+            <h3 className="text-lg sm:text-2xl font-black text-white font-heading">
+              SmartPath College™ Product Showcase
             </h3>
             <p className="text-xs text-slate-300">
-              See how undergraduate & graduate students use the AI Metacognitive Copilot, audio trans vault, and GWA target calculator.
+              Watch how undergraduate and graduate students use the AI Metacognitive Copilot, audio trans vault, and thesis studio.
             </p>
 
-            {/* Play Button */}
-            <div className="pt-2 flex items-center justify-center gap-3">
+            <div className="pt-2">
               <button
                 type="button"
-                onClick={() => setIsPlayingVideo(!isPlayingVideo)}
-                className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-slate-950 font-black text-xs shadow-lg hover:scale-105 active:scale-95 transition-all cursor-pointer flex items-center gap-2"
+                onClick={() => showToast('Video walkthrough is coming soon!', 'info')}
+                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 text-slate-950 font-black text-xs sm:text-sm shadow-xl hover:scale-105 active:scale-95 transition-all cursor-pointer inline-flex items-center gap-2"
               >
-                {isPlayingVideo ? (
-                  <>
-                    <Pause className="w-3.5 h-3.5 text-slate-950 fill-slate-950" />
-                    <span>Pause Demo</span>
-                  </>
-                ) : (
-                  <>
-                    <Play className="w-3.5 h-3.5 text-slate-950 fill-slate-950" />
-                    <span>Watch Video Demo</span>
-                  </>
-                )}
-              </button>
-            </div>
-          </div>
-
-          {/* Player controls */}
-          <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/95 to-transparent flex items-center justify-between text-white text-xs z-20">
-            <div className="flex items-center gap-3">
-              <button
-                type="button"
-                onClick={() => setIsPlayingVideo(!isPlayingVideo)}
-                className="p-1 rounded bg-white/20 hover:bg-white/30 cursor-pointer"
-              >
-                {isPlayingVideo ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3 fill-white" />}
-              </button>
-              <span className="font-mono text-[10px] opacity-80">
-                {isPlayingVideo ? '01:14' : '00:00'} / 03:45
-              </span>
-              <div className="hidden sm:block w-36 sm:w-48 h-1 bg-white/20 rounded-full overflow-hidden">
-                <div className={`h-full bg-amber-400 rounded-full ${isPlayingVideo ? 'w-1/3 animate-pulse' : 'w-0'}`} />
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={() => setIsMuted(!isMuted)}
-                className="p-1 rounded bg-white/20 hover:bg-white/30 cursor-pointer"
-              >
-                {isMuted ? <VolumeX className="w-3 h-3" /> : <Volume2 className="w-3 h-3" />}
+                <Play className="w-4 h-4 text-slate-950 fill-slate-950" />
+                <span>Watch Product Demo</span>
               </button>
             </div>
           </div>
         </div>
       </div>
 
-      {/* 4. PRODUCT SCREENSHOTS GALLERY */}
+      {/* 4. SHORT PRODUCT FEATURES (4 CORE PILLARS) */}
+      <div className="space-y-3 pt-1">
+        <div className="flex items-center justify-between">
+          <h3 className={`text-base sm:text-lg font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
+            Core Software Features
+          </h3>
+          <span className="text-xs text-slate-400">Undergraduate & Graduate</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5">
+          {SHORT_FEATURES.map((feature, idx) => {
+            const Icon = feature.icon;
+            return (
+              <div
+                key={idx}
+                className={`p-4 sm:p-5 rounded-3xl border flex flex-col justify-between transition-all hover:scale-[1.02] ${
+                  isDark ? 'bg-slate-900/70 border-slate-800 text-white' : 'bg-white border-slate-200 text-slate-900 shadow-xs'
+                }`}
+              >
+                <div className="space-y-2">
+                  <div className={`w-9 h-9 rounded-2xl bg-gradient-to-tr ${feature.color} text-white flex items-center justify-center shadow-md`}>
+                    <Icon className="w-4 h-4" />
+                  </div>
+                  <h4 className="font-extrabold text-xs sm:text-sm font-heading">
+                    {feature.title}
+                  </h4>
+                  <p className={`text-[11px] sm:text-xs leading-relaxed ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
+                    {feature.description}
+                  </p>
+                </div>
+
+                <div className="pt-2.5 border-t border-slate-800/30 dark:border-slate-800 flex items-center gap-1 text-[10px] font-bold text-indigo-500">
+                  <span>Student Companion</span>
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* 5. APP SCREENSHOTS GALLERY PLACEHOLDERS */}
       <div className={`p-4 sm:p-6 rounded-3xl border space-y-4 shadow-lg ${
         isDark ? 'bg-slate-900/90 border-slate-800' : 'bg-white border-slate-200'
       }`}>
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-800/40">
-          <div>
-            <span className="text-[10px] font-black uppercase tracking-widest text-indigo-500">📸 Product Screenshots</span>
+          <div className="flex items-center gap-2">
+            <ImageIcon className="w-4 h-4 text-indigo-400" />
             <h3 className={`text-base sm:text-lg font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-              SmartPath College™ Screen Gallery
+              App Screenshots Gallery
             </h3>
           </div>
           <span className="text-xs text-slate-400">
-            Click tabs to inspect each app screen:
+            Preview of SmartPath College™ mobile & web app screens
           </span>
         </div>
 
-        {/* Screenshot Category Selector Tabs */}
-        <div className="flex items-center gap-1.5 overflow-x-auto pb-1 text-xs">
-          {PRODUCT_SCREENSHOTS.map((item, idx) => {
-            const Icon = item.icon;
-            const isSelected = idx === activeScreenshotIdx;
-            return (
-              <button
-                key={item.id}
-                onClick={() => setActiveScreenshotIdx(idx)}
-                className={`px-3.5 py-2 rounded-xl font-bold whitespace-nowrap transition-all cursor-pointer flex items-center gap-1.5 text-xs ${
-                  isSelected
-                    ? 'bg-indigo-600 text-white shadow-md'
-                    : isDark ? 'bg-slate-800 text-slate-300 hover:text-white' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                }`}
-              >
-                <Icon className="w-3.5 h-3.5" />
-                <span>{item.tabName}</span>
-              </button>
-            );
-          })}
-        </div>
+        {/* 6-Card Screenshot Grid Placeholders */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {SCREENSHOT_PLACEHOLDERS.map((item, idx) => (
+            <div
+              key={item.id}
+              className={`rounded-2xl border overflow-hidden transition-all group ${
+                isDark ? 'bg-slate-950 border-slate-800' : 'bg-slate-50 border-slate-200'
+              }`}
+            >
+              {/* Image Preview Container */}
+              <div className="aspect-video relative overflow-hidden bg-slate-900 flex items-center justify-center">
+                <img
+                  src={item.imgPlaceholder}
+                  alt={item.title}
+                  className="w-full h-full object-cover opacity-60 group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
 
-        {/* Active Screenshot Display Area */}
-        <div className="space-y-2">
-          <div className="flex items-center justify-between">
-            <div>
-              <h4 className={`text-sm font-black font-heading ${isDark ? 'text-white' : 'text-slate-900'}`}>
-                {currentScreenshot.title}
-              </h4>
-              <p className="text-xs text-slate-400">
-                {currentScreenshot.subtitle}
-              </p>
+                <span className="absolute top-2.5 left-2.5 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-black/70 text-indigo-300 border border-white/10 backdrop-blur-md">
+                  {item.category}
+                </span>
+
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40">
+                  <span className="px-3 py-1 rounded-xl bg-white/20 backdrop-blur-md text-white text-xs font-bold border border-white/30">
+                    Screenshot Placeholder
+                  </span>
+                </div>
+              </div>
+
+              {/* Caption */}
+              <div className="p-3.5 space-y-1">
+                <h4 className={`font-bold text-xs sm:text-sm line-clamp-1 ${isDark ? 'text-white' : 'text-slate-900'}`}>
+                  {item.title}
+                </h4>
+                <p className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
             </div>
-            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider bg-indigo-500/20 text-indigo-400 border border-indigo-500/30">
-              {currentScreenshot.tag}
-            </span>
-          </div>
-
-          {/* Render High-Fidelity UI Screenshot Card */}
-          <div className="pt-1">
-            {currentScreenshot.renderUI}
-          </div>
+          ))}
         </div>
       </div>
 
