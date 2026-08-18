@@ -69,9 +69,9 @@ export const HeroBanner = () => {
                     Academics.
                   </span>
                   <br />
-                  Find your{' '}
+                  Grow in{' '}
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-300">
-                    Tribe in Christ.
+                    Faith & Community.
                   </span>
                 </h1>
                 <p className="text-sm sm:text-base lg:text-lg text-slate-600 dark:text-slate-300 font-medium leading-relaxed max-w-xl pt-2">
