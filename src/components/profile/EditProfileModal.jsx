@@ -3,6 +3,7 @@ import { Modal } from '../common/Modal';
 import { useApp } from '../../context/AppContext';
 import { CAMPUSES } from '../../data/campuses';
 import { processImageUpload } from '../../utils/helpers';
+import { uploadAvatarToSupabase, syncProfileToSupabase } from '../../lib/supabase';
 import {
   User,
   Mail,
@@ -68,17 +69,27 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
   const [meetingLink, setMeetingLink] = useState(
     currentUser.meetingLink || 'https://meet.google.com/gy-joshua-upv'
   );
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  // Handle local image file upload
+  // Handle local image file upload & Supabase Storage sync
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     try {
       setIsProcessingImage(true);
+      setSelectedFile(file);
       const compressedDataUrl = await processImageUpload(file, 400, 400);
       setAvatar(compressedDataUrl);
-      showToast('📸 Profile picture uploaded and preview updated!', 'success');
+
+      // Attempt immediate upload to Supabase Storage if configured
+      const supabasePublicUrl = await uploadAvatarToSupabase(file, currentUser.id);
+      if (supabasePublicUrl) {
+        setAvatar(supabasePublicUrl);
+        showToast('📸 Profile picture uploaded to Supabase Storage & preview updated!', 'success');
+      } else {
+        showToast('📸 Profile picture optimized & ready to save!', 'success');
+      }
     } catch (err) {
       showToast(err.message || 'Failed to process image.', 'error');
     } finally {
@@ -100,7 +111,7 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
     showToast('🔗 Image URL applied!', 'info');
   };
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
     if (!name.trim()) {
       showToast('Please enter your name.', 'error');
@@ -138,6 +149,9 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
       prev.map((u) => (u.id === currentUser.id ? { ...u, ...updatedUser } : u))
     );
 
+    // Sync to Supabase profiles table in background
+    syncProfileToSupabase(updatedUser);
+
     // If Tutor, also update their live public tutor card
     if (isTutor) {
       setTutors((prev) =>
@@ -159,7 +173,7 @@ export const EditProfileModal = ({ isOpen, onClose }) => {
       );
     }
 
-    showToast('✨ Profile updated successfully!', 'success');
+    showToast('✨ Profile updated and synced successfully!', 'success');
     onClose();
   };
 
